@@ -1,4 +1,4 @@
-package com.lmca.cotiz.util;
+package com.poli.productApp.util;
 
 import java.util.UUID;
 
