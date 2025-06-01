@@ -49,57 +49,58 @@ ssh-keygen -t rsa -b 4096 -C "tu-email@example.com"
 
 ## 🗂️ Estructura del proyecto
 
-```
 producapp/
 ├── backend/
-│   ├── .mvn/
-│   │     └──  wrapper
-│   │         └──  maven-wrapper.jar
-│   ├── docker/
-│   │     ├── docker-compose.yml
-│   │     └──  Dockerfile
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/
-│   │   │   │   └── com.poli.productApp
-│   │   │   │       ├── config/
-│   │   │   │       ├── controller/
-│   │   │   │       ├── filter
-│   │   │   │       ├── model/
-│   │   │   │       ├── repository/
-│   │   │   │       ├── security/
-│   │   │   │       ├── service/
-│   │   │   │       └── util/
-│   │   │   └── resources/ 
-│   │   │       └── application.properties
-│   │   └── test/
-│   │       └── java/
-│   │           └── com.poli.productApp
-│   │          
-│   ├── target/
-│   ├── HELP.md
-│   ├── mvnw
-│   ├── mvnw.cmd
-│   └── pom.xml
-├── docker/
-│   └── docker-compose.yml  
+│ ├── .mvn/
+│ │ └── wrapper
+│ │ └── maven-wrapper.jar
+│ ├── docker/
+│ │ └── Dockerfile
+│ ├── src/
+│ │ ├── main/
+│ │ │ ├── java/
+│ │ │ │ └── com.poli.productApp
+│ │ │ │ ├── config/
+│ │ │ │ ├── controller/
+│ │ │ │ ├── filter/
+│ │ │ │ ├── model/
+│ │ │ │ ├── repository/
+│ │ │ │ ├── security/
+│ │ │ │ ├── service/
+│ │ │ │ └── util/
+│ │ │ └── resources/
+│ │ │ └── application.properties
+│ │ └── test/
+│ │ └── java/
+│ │ └── com.poli.productApp
+│ ├── target/
+│ ├── HELP.md
+│ ├── mvnw
+│ ├── mvnw.cmd
+│ └── pom.xml
 ├── frontend/
-│   ├── android/
-│   ├── docker/
-│   ├── ios/
-│   ├── lib/
-│   ├── linux/
-│   ├── macos/
-│   ├── test/
-│   ├── web/
-│   ├── windows/    
-│   ├── .metadata/
-│   ├── analysis_options.yaml
-│   ├── pubspec.lock
-│   └── pubspec.yaml
-├── .gitignore   
+│ ├── android/
+│ ├── docker/
+│ │ ├── Dockerfile
+│ │ └── Dockerfile.flutter
+│ ├── ios/
+│ ├── lib/
+│ ├── linux/
+│ ├── macos/
+│ ├── test/
+│ ├── web/
+│ ├── windows/
+│ ├── .env
+│ ├── .metadata/
+│ ├── analysis_options.yaml
+│ ├── pubspec.lock
+│ └── pubspec.yaml
+├── nginx/
+│ └── default.conf
+├── .gitignore
+├── docker-compose.yml
 └── README.md
-```
+
 
 ## 🧑‍💻 Instalación y ejecución
 

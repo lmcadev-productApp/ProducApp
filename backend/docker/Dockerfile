@@ -5,7 +5,7 @@ FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
 
 # Copiamos el archivo JAR (asegúrate que en target esté el jar)
-COPY ../target/productApp-0.0.1-SNAPSHOT.jar app.jar
+COPY target/productApp-0.0.1-SNAPSHOT.jar app.jar
 
 # Exponemos el puerto 8080
 EXPOSE 8080
