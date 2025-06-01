@@ -60,13 +60,20 @@ producapp/
 ```bash
 cd backend
 ./mvnw spring-boot:run
+```
 
+### Front End
+```bash
 cd frontend
 flutter pub get
 flutter run
+```
 
+### Docker
+```bash
 cd docker
 docker-compose up -d
+```
 
 🧪 Pruebas
 Pruebas unitarias disponibles para servicios principales en el backend con JUnit.
@@ -81,5 +88,7 @@ Castañeda Arciniegas Luis Miguel
 Cortes Cubides Julian David
 Cortes Guayara Juan Felipe
 Cárdenas Peláez William Felipe 
+
+---
 
 Proyecto desarrollado como solución para la digitalización de procesos productivos en pequeñas industrias.
