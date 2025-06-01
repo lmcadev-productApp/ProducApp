@@ -33,19 +33,21 @@
 - Uptime Kuma (monitoring del backend)
 
 ## 🗂️ Estructura del proyecto
+
+```
 producapp/
 ├── backend/
-│ ├── src/main/java/com/producapp/...
-│ ├── pom.xml
-│ └── README.md
+│   ├── src/main/java/com/producapp/...
+│   ├── pom.xml
+│   └── README.md
 ├── frontend/
-│ ├── lib/
-│ ├── assets/
-│ ├── pubspec.yaml
-│ └── README.md
+│   ├── lib/
+│   ├── assets/
+│   ├── pubspec.yaml
+│   └── README.md
 └── docker/
-└── docker-compose.yml
-
+    └── docker-compose.yml
+```
 
 ## 🧑‍💻 Instalación y ejecución
 
@@ -80,15 +82,18 @@ Pruebas unitarias disponibles para servicios principales en el backend con JUnit
 
 En el frontend, se usan pruebas con flutter_test.
 
-📬Proyecto de materia ÉNFASIS EN PROGRAMACIÓN MÓVIL-[GRUPO B03]
-[GRUPO B03]
-EPMB03-G2
-Cardenas Jaramillo Yuliana Aide
-Castañeda Arciniegas Luis Miguel
-Cortes Cubides Julian David
-Cortes Guayara Juan Felipe
-Cárdenas Peláez William Felipe 
+## 📬 Información del proyecto
+
+**Proyecto de materia ÉNFASIS EN PROGRAMACIÓN MÓVIL - [GRUPO B03]**
+
+### Integrantes - EPMB03-G2
+- Cardenas Jaramillo Yuliana Aide
+- Castañeda Arciniegas Luis Miguel
+- Cortes Cubides Julian David
+- Cortes Guayara Juan Felipe
+- Cárdenas Peláez William Felipe
 
 ---
 
-Proyecto desarrollado como solución para la digitalización de procesos productivos en pequeñas industrias.
+*Proyecto desarrollado como solución para la digitalización de procesos productivos en pequeñas industrias.*
+
