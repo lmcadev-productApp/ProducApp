@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/login_page.dart'; // Asegúrate que la ruta y nombre sean correctos
 
 void main() {
-  runApp(const MyApp());
+  runApp(ProducApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+class ProducApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'ProduApp',
-      home: Scaffold(
-        appBar: AppBar(title: const Text('ProduApp')),
-        body: const Center(child: Text('Bienvenido a ProduApp')),
-      ),
+      home: const LoginPage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
