@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'recover_password_dialog.dart';
+import 'package:frontend/screens/home_page.dart';
 
 class LoginForm extends StatelessWidget {
   final _emailController = TextEditingController();
@@ -65,10 +66,17 @@ class LoginForm extends StatelessWidget {
               //Logica
               String email = _emailController.text;
               String password = _passwordController.text;
+              String userRole = 'operario';
 
               if (email.isNotEmpty && password.isNotEmpty) {
                 print(email);
                 print(password);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(userRole: userRole),
+                  ),
+                );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Complete todos los campos')),
