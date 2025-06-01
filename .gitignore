@@ -1,0 +1,102 @@
+# === JAVA / SPRING BOOT ===
+target/
+*.log
+*.class
+*.jar
+*.war
+*.iml
+*.hprof
+.DS_Store
+.settings/
+.idea/
+.vscode/
+*.swp
+
+# Maven
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Spring Boot local config
+application-local.properties
+application-dev.properties
+application-prod.properties
+application-test.properties
+local.properties
+
+# === FLUTTER / DART ===
+# Flutter/Dart build outputs
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+pubspec.lock
+
+# Android
+android/.gradle/
+android/app/build/
+android/local.properties
+android/gradle.properties
+android/.idea/
+android/.DS_Store
+android/.settings/
+*.keystore
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/.flutter-plugins
+ios/.generated
+ios/.DS_Store
+ios/Flutter/Flutter.podspec
+ios/Runner.xcworkspace/
+ios/Runner.xcodeproj/project.xcworkspace/
+ios/build/
+
+# Web
+web/.dart_tool/
+web/build/
+
+# === GENERAL ===
+*.tmp
+*.bak
+*.orig
+*.swp
+*.swo
+*.swn
+
+# === ENV / SENSITIVE ===
+.env
+*.env
+*.key
+*.pem
+*.crt
+*.der
+*.jks
+
+# === DOCKER ===
+**/docker-compose.override.yml
+**/.env
+docker-compose.yml
+**/Dockerfile
+
+# === IDE CONFIGS (VSCode, IntelliJ, etc.) ===
+*.code-workspace
+*.launch
+.idea/
+.vscode/
+
+# === SYSTEM ===
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
