@@ -12,8 +12,14 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - producapp-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend:
     build:
@@ -21,7 +27,8 @@ services:
       dockerfile: docker/Dockerfile
     container_name: producapp-backend
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://sql-db:3306/producappdb
       SPRING_DATASOURCE_USERNAME: producuser
@@ -37,33 +44,17 @@ services:
       context: ./frontend
       dockerfile: docker/Dockerfile
       args:
-        API_URL: http://145.223.79.134/api
+        API_URL: "http://producapp-backend:8080/api"
     container_name: producapp-frontend
     depends_on:
       - backend
-    volumes:
-      - flutter_build:/app/build/web
-    networks:
-      - producapp-net
-
-  nginx:
-    image: nginx:latest
-    container_name: producapp-nginx
     ports:
       - "80:80"
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - flutter_build:/usr/share/nginx/html
-    depends_on:
-      - backend
-      - frontend
     networks:
       - producapp-net
-
 
 volumes:
   mysql_data:
-  flutter_build:
 
 networks:
   producapp-net:

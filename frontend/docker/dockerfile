@@ -1,60 +1,53 @@
-# Etapa 1: Build de Flutter app
 FROM ubuntu:22.04 AS build
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Instalar dependencias base y OpenJDK para Flutter y Android SDK
 RUN apt-get update && apt-get install -y \
     curl git unzip xz-utils zip libglu1-mesa openjdk-21-jdk \
     && rm -rf /var/lib/apt/lists/*
 
-# Variables Android SDK
 ENV ANDROID_SDK_ROOT=/opt/android-sdk-linux
 ENV PATH="$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin"
 
-# Crear usuario no root para build
 RUN useradd -m flutteruser
 
-# Instalar Android SDK command line tools y aceptar licencias
 RUN mkdir -p $ANDROID_SDK_ROOT/cmdline-tools && \
     curl -o sdk-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip && \
     unzip sdk-tools.zip -d $ANDROID_SDK_ROOT/cmdline-tools && \
     mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest && \
     rm sdk-tools.zip && \
-    yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses && \
-    $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
+    yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses && \
+    $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager \
         "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
-RUN chown -R flutteruser:flutteruser $ANDROID_SDK_ROOT
-
-# Descargar Flutter SDK estable y asignar permisos
 RUN curl -o flutter_linux.tar.xz https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.32.1-stable.tar.xz && \
-    tar xf flutter_linux.tar.xz -C /usr/local && rm flutter_linux.tar.xz && \
+    tar xf flutter_linux.tar.xz -C /usr/local && \
+    rm flutter_linux.tar.xz && \
     chown -R flutteruser:flutteruser /usr/local/flutter
 
-# Declarar ARG para API_URL
-ARG API_URL
 
 USER flutteruser
+
 WORKDIR /app
 
+# Añadir safe directory para git
 RUN git config --global --add safe.directory /usr/local/flutter
 
-# Copiar el código fuente
+ENV PATH="$PATH:/usr/local/flutter/bin"
+
+# Copia sólo el contenido del proyecto Flutter (que está en ./frontend en host)
 COPY --chown=flutteruser:flutteruser . .
 
-# Flutter precache, pub get y build web release con dart-define para API_URL
-RUN flutter precache --web && flutter pub get && flutter build web --release --dart-define=API_URL=$API_URL
+ARG API_URL
 
-# Etapa 2: Servir la app con Nginx
+RUN flutter precache --web && \
+    flutter pub get && \
+    flutter build web --release --dart-define=API_URL=$API_URL
+
 FROM nginx:alpine
 
-# Copiar build web de Flutter a la carpeta de nginx para servir
 COPY --from=build /app/build/web /usr/share/nginx/html
-
-# Opcional: copiar archivo nginx.conf personalizado para SPA si es necesario
-# COPY nginx.conf /etc/nginx/nginx.conf
+COPY --from=build /app/nginx/default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]
