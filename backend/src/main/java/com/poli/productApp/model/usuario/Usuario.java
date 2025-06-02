@@ -1,7 +1,11 @@
-package com.poli.productApp.model;
+package com.poli.productApp.model.usuario;
+
+import com.poli.productApp.model.ENUMS.Rol;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,7 +42,7 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long usuario_id;
 
     @NotBlank(message = "El correo es obligatorio")
     @Email(message = "Debe ingresar un correo válido")
@@ -50,9 +54,8 @@ public class Usuario {
     @Column(nullable = false)
     private String contrasena;
 
-    @NotBlank(message = "El rol es obligatorio")
-    @Column(nullable = false)
-    private String rol;
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
 
     @NotBlank(message = "Ingrese el nombre de usuario")
     @Column(nullable = false)
@@ -64,4 +67,10 @@ public class Usuario {
     @Column(nullable = true)
     private String direccion;
 
+
+    public Long getId() {
+        return usuario_id;
+    }
 }
+
+

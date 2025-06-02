@@ -1,6 +1,6 @@
 package com.poli.productApp.security;
 
-import com.poli.productApp.model.Usuario;
+import com.poli.productApp.model.usuario.Usuario;
 import com.poli.productApp.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.*;

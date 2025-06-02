@@ -1,6 +1,7 @@
 package com.poli.productApp.service;
 
-import com.poli.productApp.model.Usuario;
+import com.poli.productApp.model.ENUMS.Rol;
+import com.poli.productApp.model.usuario.Usuario;
 import com.poli.productApp.repository.UsuarioRepository;
 
 import java.util.List;
@@ -19,12 +20,18 @@ public class UsuarioService {
     private PasswordEncoder passwordEncoder;
 
     public Usuario guardar(Usuario usuario) {
+        // Asignar rol por defecto si no viene asignado
+        if (usuario.getRol() == null) {
+            usuario.setRol(Rol.OPERARIO);
+        }
+
         // Encriptar la contraseña antes de guardar
         String contrasenaEncriptada = passwordEncoder.encode(usuario.getContrasena());
         usuario.setContrasena(contrasenaEncriptada);
 
         return usuarioRepository.save(usuario);
     }
+
 
     public Usuario buscarPorCorreo(String correo) {
         return usuarioRepository.findByCorreo(correo).orElse(null);

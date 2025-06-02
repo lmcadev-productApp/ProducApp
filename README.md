@@ -55,7 +55,7 @@ producapp/
 │ │ └── wrapper
 │ │ └── maven-wrapper.jar
 │ ├── docker/
-│ │ └── Dockerfile
+│ │ └── docker/
 │ ├── src/
 │ │ ├── main/
 │ │ │ ├── java/
@@ -81,8 +81,7 @@ producapp/
 ├── frontend/
 │ ├── android/
 │ ├── docker/
-│ │ ├── Dockerfile
-│ │ └── Dockerfile.flutter
+│ │ └── Dockerfile
 │ ├── ios/
 │ ├── lib/
 │ ├── linux/
@@ -94,9 +93,9 @@ producapp/
 │ ├── .metadata/
 │ ├── analysis_options.yaml
 │ ├── pubspec.lock
-│ └── pubspec.yaml
-├── nginx/
-│ └── default.conf
+│ ├──  pubspec.yaml
+│ └──nginx/
+│   └── default.conf
 ├── .gitignore
 ├── docker-compose.yml
 └── README.md

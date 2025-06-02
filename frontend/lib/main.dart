@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/screens/login_page.dart'; // Asegúrate que la ruta y nombre sean correctos
+import 'package:frontend/screens/login/login_page.dart';
 
 void main() {
   runApp(ProducApp());

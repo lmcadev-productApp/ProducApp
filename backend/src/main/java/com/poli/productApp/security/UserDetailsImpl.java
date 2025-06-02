@@ -1,6 +1,6 @@
 package com.poli.productApp.security;
 
-import com.poli.productApp.model.Usuario;
+import com.poli.productApp.model.usuario.Usuario;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,8 +18,8 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // El rol debe estar en formato "ROLE_ADMIN", "ROLE_USUARIO", etc.
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + usuario.getRol().toUpperCase()));
+        // El rol debe estar en formato "ROL_ADMIN", "ROL_USUARIO", etc.
+        return Collections.<GrantedAuthority>singletonList(new SimpleGrantedAuthority("ROL_" + usuario.getRol().name().toUpperCase()));
     }
 
     @Override
