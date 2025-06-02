@@ -16,10 +16,10 @@ services:
     networks:
       - producapp-net
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-proot123" ]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   backend:
     build:
@@ -27,8 +27,7 @@ services:
       dockerfile: docker/Dockerfile
     container_name: producapp-backend
     depends_on:
-      mysql:
-        condition: service_healthy
+      - mysql
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://sql-db:3306/producappdb
       SPRING_DATASOURCE_USERNAME: producuser
