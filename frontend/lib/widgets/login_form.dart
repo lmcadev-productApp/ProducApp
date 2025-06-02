@@ -66,7 +66,7 @@ class LoginForm extends StatelessWidget {
               //Logica
               String email = _emailController.text;
               String password = _passwordController.text;
-              String userRole = 'operario';
+              String userRole = 'admin';
 
               if (email.isNotEmpty && password.isNotEmpty) {
                 print(email);

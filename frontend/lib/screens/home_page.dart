@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/test_navbar_page.dart';
+import 'package:frontend/screens/admin/users_page.dart';
 
 class HomePage extends StatefulWidget {
   final String userRole;
@@ -24,8 +25,7 @@ class _HomePageState extends State<HomePage> {
       case 'admin':
         _pages = [
           WidgetGenerico(),
-          WidgetGenerico(),
-          WidgetGenerico(),
+          UserManagementScreen(),
           WidgetGenerico(),
           WidgetGenerico(),
           //AdminDashboard(),
@@ -39,7 +39,6 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.dashboard),
             label: 'Dashboard',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.security), label: 'Roles'),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Usuarios'),
           BottomNavigationBarItem(icon: Icon(Icons.layers), label: 'Etapas'),
           BottomNavigationBarItem(
