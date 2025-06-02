@@ -2,8 +2,6 @@
 *.class
 *.jar
 *.war
-build/
-.dart_tool/
 
 # === Logs y temporales ===
 *.log
@@ -31,7 +29,6 @@ local.properties
 # === IDE / editor configs ===
 .idea/
 .vscode/
-*.iml
 
 # === Sistema ===
 .DS_Store
