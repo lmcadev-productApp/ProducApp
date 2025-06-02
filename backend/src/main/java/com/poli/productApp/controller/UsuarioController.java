@@ -1,17 +1,16 @@
 package com.poli.productApp.controller;
 
-import com.poli.productApp.dto.UsuarioDTO;
-import com.poli.productApp.model.Usuario;
+
+import com.poli.productApp.model.ENUMS.Rol;
+import com.poli.productApp.model.usuario.Usuario;
 import com.poli.productApp.service.UsuarioService;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -21,8 +20,6 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     // Crear nuevo usuario
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @PostMapping
     public ResponseEntity<?> registrarUsuario(@Valid @RequestBody Usuario usuario) {
@@ -32,7 +29,7 @@ public class UsuarioController {
         }
 
         // Asignar rol
-        usuario.setRol("USER");
+        usuario.setRol(Rol.OPERARIO);
 
 
         Usuario guardado = usuarioService.guardar(usuario);
@@ -40,32 +37,7 @@ public class UsuarioController {
     }
 
 
-    // Listar todos los usuarios
-    @GetMapping
-    public List<UsuarioDTO> listarUsuarios() {
-        return usuarioService.listarTodos().stream()
-                .map(u -> new UsuarioDTO(u.getId(), u.getCorreo(), u.getRol(), u.getNombre(), u.getTelefono(), u.getDireccion()))
-                .collect(Collectors.toList());
-    }
-
-
-    // Obtener un usuario por ID
-    @GetMapping("/{id}")
-    public ResponseEntity<?> obtenerPorId(@PathVariable Long id) {
-        Usuario usuario = usuarioService.buscarPorId(id);
-        if (usuario == null) {
-            return ResponseEntity.notFound().build();
-        }
-        UsuarioDTO dto = new UsuarioDTO(
-                usuario.getId(),
-                usuario.getCorreo(),
-                usuario.getRol(),
-                usuario.getNombre(),
-                usuario.getTelefono(),
-                usuario.getDireccion()
-        );
-        return ResponseEntity.ok(dto);
-    }
+  
 
     // Eliminar usuario
     @DeleteMapping("/{id}")
