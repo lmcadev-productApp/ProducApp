@@ -3,7 +3,9 @@ FROM ubuntu:22.04 AS build
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
-    curl git unzip xz-utils zip libglu1-mesa openjdk-21-jdk \
+    curl git unzip xz-utils zip libglu1-mesa ca-certificates \
+    software-properties-common gnupg wget \
+    openjdk-21-jdk \
     && rm -rf /var/lib/apt/lists/*
 
 ENV ANDROID_SDK_ROOT=/opt/android-sdk-linux
