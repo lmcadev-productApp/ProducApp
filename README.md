@@ -55,8 +55,7 @@ producapp/
 │ │ └── wrapper
 │ │ └── maven-wrapper.jar
 │ ├── docker/
-│ │ ├── docker/
-│ │ └── init.sql
+│ │ └── docker/
 │ ├── src/
 │ │ ├── main/
 │ │ │ ├── java/
@@ -94,9 +93,9 @@ producapp/
 │ ├── .metadata/
 │ ├── analysis_options.yaml
 │ ├── pubspec.lock
-│ └── pubspec.yaml
-├── nginx/
-│ └── default.conf
+│ ├──  pubspec.yaml
+│ └──nginx/
+│   └── default.conf
 ├── .gitignore
 ├── docker-compose.yml
 └── README.md
