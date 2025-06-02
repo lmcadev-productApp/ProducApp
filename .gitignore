@@ -70,7 +70,6 @@ web/build/
 *.tmp
 *.bak
 *.orig
-*.swp
 *.swo
 *.swn
 
@@ -82,12 +81,6 @@ web/build/
 *.crt
 *.der
 *.jks
-
-# === DOCKER ===
-**/docker-compose.override.yml
-**/.env
-docker-compose.yml
-**/Dockerfile
 
 # === IDE CONFIGS (VSCode, IntelliJ, etc.) ===
 *.code-workspace
