@@ -55,7 +55,8 @@ producapp/
 │ │ └── wrapper
 │ │ └── maven-wrapper.jar
 │ ├── docker/
-│ │ └── Dockerfile
+│ │ ├── docker/
+│ │ └── init.sql
 │ ├── src/
 │ │ ├── main/
 │ │ │ ├── java/
@@ -81,8 +82,7 @@ producapp/
 ├── frontend/
 │ ├── android/
 │ ├── docker/
-│ │ ├── Dockerfile
-│ │ └── Dockerfile.flutter
+│ │ └── Dockerfile
 │ ├── ios/
 │ ├── lib/
 │ ├── linux/
