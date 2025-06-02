@@ -1,0 +1,37 @@
+# === Build / compilados / artefactos ===
+*.class
+*.jar
+*.war
+
+# === Logs y temporales ===
+*.log
+*.tmp
+*.bak
+*.orig
+*.swp
+*.swo
+*.swn
+
+# === Configuraciones locales sensibles / entorno ===
+application-local.properties
+application-dev.properties
+application-prod.properties
+application-test.properties
+local.properties
+
+# === Llaves / certificados (no subir) ===
+*.key
+*.pem
+*.crt
+*.der
+*.jks
+
+# === IDE / editor configs ===
+.idea/
+.vscode/
+
+# === Sistema ===
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini

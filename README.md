@@ -27,27 +27,80 @@
 - Maven
 - Docker (para base de datos en entorno local o producción)
 
+### Deploy del proyecto ProducApp
+
+## Configuración previa: Claves SSH para acceso sin contraseña
+
+Para evitar tener que escribir la contraseña cada vez que se use el script de deploy, deben generar y copiar una clave SSH pública a nuestro VPS.
+
+### Paso 1: Generar clave SSH (si no tienen una)
+
+En Windows PowerShell o Git Bash:
+
+```bash
+ssh-keygen -t rsa -b 4096 -C "tu-email@example.com"
+
 ### Otros
 - Swagger (documentación de API)
 - GitHub Actions (CI/CD en desarrollo)
 - Uptime Kuma (monitoring del backend)
 
+
+
 ## 🗂️ Estructura del proyecto
 
-```
 producapp/
 ├── backend/
-│   ├── src/main/java/com/producapp/...
-│   ├── pom.xml
-│   └── README.md
+│ ├── .mvn/
+│ │ └── wrapper
+│ │ └── maven-wrapper.jar
+│ ├── docker/
+│ │ └── Dockerfile
+│ ├── src/
+│ │ ├── main/
+│ │ │ ├── java/
+│ │ │ │ └── com.poli.productApp
+│ │ │ │ ├── config/
+│ │ │ │ ├── controller/
+│ │ │ │ ├── filter/
+│ │ │ │ ├── model/
+│ │ │ │ ├── repository/
+│ │ │ │ ├── security/
+│ │ │ │ ├── service/
+│ │ │ │ └── util/
+│ │ │ └── resources/
+│ │ │ └── application.properties
+│ │ └── test/
+│ │ └── java/
+│ │ └── com.poli.productApp
+│ ├── target/
+│ ├── HELP.md
+│ ├── mvnw
+│ ├── mvnw.cmd
+│ └── pom.xml
 ├── frontend/
-│   ├── lib/
-│   ├── assets/
-│   ├── pubspec.yaml
-│   └── README.md
-└── docker/
-    └── docker-compose.yml
-```
+│ ├── android/
+│ ├── docker/
+│ │ ├── Dockerfile
+│ │ └── Dockerfile.flutter
+│ ├── ios/
+│ ├── lib/
+│ ├── linux/
+│ ├── macos/
+│ ├── test/
+│ ├── web/
+│ ├── windows/
+│ ├── .env
+│ ├── .metadata/
+│ ├── analysis_options.yaml
+│ ├── pubspec.lock
+│ └── pubspec.yaml
+├── nginx/
+│ └── default.conf
+├── .gitignore
+├── docker-compose.yml
+└── README.md
+
 
 ## 🧑‍💻 Instalación y ejecución
 
