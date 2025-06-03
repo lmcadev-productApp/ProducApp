@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/admin/user_test.dart';
 import 'package:frontend/services/data_service_test.dart';
 import 'package:frontend/widgets/admin/user_card.dart';
+import 'package:frontend/widgets/admin/add_user_dialog.dart';
 
 class UserManagementScreen extends StatefulWidget {
   @override
@@ -33,8 +34,12 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
   }
 
   void _addUser() {
-    print("Agregar usuario");
-    // Navegar o abrir diálogo
+    mostrarAgregarUsuario(context, (User nuevoUsuario) {
+      setState(() {
+        users.add(nuevoUsuario);
+        filteredUsers = users;
+      });
+    });
   }
 
   void _editUser(User user) {
