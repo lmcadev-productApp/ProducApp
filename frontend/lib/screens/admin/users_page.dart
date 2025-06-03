@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/admin/user_test.dart';
 import 'package:frontend/services/data_service_test.dart';
-import 'package:frontend/widgets/admin/user_card.dart';
 import 'package:frontend/widgets/Section/section_header.dart';
+import 'package:frontend/widgets/buttons/custom-button.dart';
+import 'package:frontend/widgets/lists/admin/user-list.dart';
+import 'package:frontend/widgets/lists/general_options_list.dart';
+import 'package:frontend/widgets/searches/search_input.dart';
 import 'package:frontend/widgets/admin/add_user_dialog.dart';
 import 'package:frontend/widgets/admin/edit_user_dialog.dart';
 
@@ -71,34 +74,22 @@ class _UserStateManagementState extends State<UserStateManagement> {
   void _mostrarOpcionesUsuario(User usuario) {
     showModalBottomSheet(
       context: context,
-      builder: (_) => Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              usuario.name,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              leading: const Icon(Icons.edit, color: Colors.blue),
-              title: const Text('Editar'),
-              onTap: () {
-                Navigator.pop(context);
-                _editarUsuario(usuario);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.delete, color: Colors.red),
-              title: const Text('Eliminar'),
-              onTap: () {
-                Navigator.pop(context);
-                _eliminarUsuario(usuario);
-              },
-            ),
-          ],
-        ),
+      builder: (_) => GeneralOptionsSheet(
+        titulo: usuario.name,
+        opciones: [
+          OpcionItem(
+            icono: Icons.edit,
+            colorIcono: Colors.blue,
+            texto: 'Editar',
+            onTap: () => _editarUsuario(usuario),
+          ),
+          OpcionItem(
+            icono: Icons.delete,
+            colorIcono: Colors.red,
+            texto: 'Eliminar',
+            onTap: () => _eliminarUsuario(usuario),
+          ),
+        ],
       ),
     );
   }
@@ -111,79 +102,30 @@ class _UserStateManagementState extends State<UserStateManagement> {
 
   @override
   Widget build(BuildContext context) {
-    // Aquí defines el contenido específico de esta pantalla
+    // Contenido de la pantalla
     Widget contenidoPantalla = Column(
       children: [
         // Campo de búsqueda
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(25),
-            border: Border.all(
-              color: const Color.fromARGB(255, 109, 109, 109),
-              width: 1,
-            ),
-          ),
-          child: TextField(
+        SearchInput(
             controller: _controladorBusqueda,
-            style: const TextStyle(color: Colors.black87),
-            decoration: InputDecoration(
-              hintText: 'Buscar usuario...',
-              hintStyle: TextStyle(color: Colors.grey[500]),
-              prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 15,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
+            hintText: 'Buscar Usuario...',
+            espacioInferior: true),
 
         // Botón agregar
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: _agregarUsuario,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF4A90E2),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
-              ),
-              elevation: 2,
-            ),
-            child: const Text(
-              'Agregar Usuario',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-          ),
+        CustomButton(
+          texto: 'Agregar Usuario',
+          espacioInferior: true,
+          onPressed: _agregarUsuario,
         ),
-        const SizedBox(height: 20),
 
         // Lista de usuarios
-        Expanded(
-          child: usuariosFiltrados.isEmpty
-              ? Center(
-                  child: Text(
-                    'No se encontraron usuarios',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: usuariosFiltrados.length,
-                  itemBuilder: (_, i) {
-                    final usuario = usuariosFiltrados[i];
-                    return UserCard(
-                      user: usuario,
-                      onTap: () => print("👤 Usuario: ${usuario.name}"),
-                      onLongPress: () => _mostrarOpcionesUsuario(usuario),
-                    );
-                  },
-                ),
-        ),
+        ListUser(
+          usuarios: usuariosFiltrados,
+          onUsuarioTap: (usuario) {
+            print("👤 Usuario: ${usuario.name}");
+          },
+          onUsuarioLongPress: _mostrarOpcionesUsuario,
+        )
       ],
     );
 
