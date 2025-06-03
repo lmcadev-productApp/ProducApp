@@ -3,6 +3,7 @@ import 'package:frontend/models/admin/user_test.dart';
 import 'package:frontend/services/data_service_test.dart';
 import 'package:frontend/widgets/admin/user_card.dart';
 import 'package:frontend/widgets/admin/add_user_dialog.dart';
+import 'package:frontend/widgets/admin/edit_user_dialog.dart';
 
 class UserManagementScreen extends StatefulWidget {
   @override
@@ -28,7 +29,11 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       filteredUsers = users.where((user) {
         return user.name.toLowerCase().contains(query) ||
             user.email.toLowerCase().contains(query) ||
-            user.role.toLowerCase().contains(query);
+            user.role.toLowerCase().contains(query) ||
+            (user.celular != null &&
+                user.celular!.toLowerCase().contains(query)) ||
+            (user.especialidad != null &&
+                user.especialidad!.toLowerCase().contains(query));
       }).toList();
     });
   }
@@ -43,7 +48,15 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
   }
 
   void _editUser(User user) {
-    print("Editar usuario: ${user.name}");
+    mostrarEditarUsuario(context, user, (User usuarioEditado) {
+      setState(() {
+        final index = users.indexWhere((u) => u.email == user.email);
+        if (index != -1) {
+          users[index] = usuarioEditado;
+        }
+        filteredUsers = users;
+      });
+    });
   }
 
   void _deleteUser(User user) {

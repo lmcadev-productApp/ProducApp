@@ -2,18 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:frontend/widgets/dialogs/dialog_general.dart';
 import 'package:frontend/models/admin/user_test.dart';
 
-void mostrarAgregarUsuario(BuildContext context, Function(User) onUserCreated) {
-  final nombreController = TextEditingController();
-  final emailController = TextEditingController();
+void mostrarEditarUsuario(
+  BuildContext context,
+  User usuario,
+  Function(User) onUserUpdated,
+) {
+  final nombreController = TextEditingController(text: usuario.name);
+  final emailController = TextEditingController(text: usuario.email);
   final passwordController = TextEditingController();
-  final celularController = TextEditingController();
-  String rolSeleccionado = 'Administrador'; // Valor por defecto
-  String especialidadSeleccionada = 'Pintura'; // Valor por defecto
+  final celularController = TextEditingController(text: usuario.celular ?? '');
+  String? rolSeleccionado = usuario.role.isNotEmpty ? usuario.role : null;
+  String? especialidadSeleccionada = usuario.especialidad ?? null;
 
   showDialog(
     context: context,
     builder: (context) => DialogoGeneral(
-      titulo: 'Agregar un nuevo usuario',
+      titulo: 'Editar usuario',
       contenido: StatefulBuilder(
         builder: (context, setState) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,9 +82,14 @@ void mostrarAgregarUsuario(BuildContext context, Function(User) onUserCreated) {
               }).toList(),
               onChanged: (String? nuevoRol) {
                 setState(() {
-                  rolSeleccionado = nuevoRol!;
+                  rolSeleccionado = nuevoRol;
+                  if (nuevoRol != 'Operador') {
+                    celularController.clear();
+                    especialidadSeleccionada = null;
+                  }
                 });
               },
+              hint: Text('Seleccione un rol'),
             ),
             SizedBox(height: 15),
 
@@ -128,22 +137,23 @@ void mostrarAgregarUsuario(BuildContext context, Function(User) onUserCreated) {
                 }).toList(),
                 onChanged: (String? nuevaEspecialidad) {
                   setState(() {
-                    especialidadSeleccionada = nuevaEspecialidad!;
+                    especialidadSeleccionada = nuevaEspecialidad;
                   });
                 },
+                hint: Text('Seleccione una especialidad'),
               ),
               SizedBox(height: 15),
             ],
 
-            // Contraseña
-            Text('Contraseña',
+            // Contraseña (opcional)
+            Text('Contraseña (dejar vacío para no cambiar)',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
             SizedBox(height: 8),
             TextField(
               controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
-                hintText: 'Ingrese la contraseña',
+                hintText: 'Ingrese la nueva contraseña',
                 filled: true,
                 fillColor: Colors.grey[50],
                 border:
@@ -158,7 +168,6 @@ void mostrarAgregarUsuario(BuildContext context, Function(User) onUserCreated) {
       textoBotonOk: 'Guardar',
       textoBotonCancelar: 'Cancelar',
       onOk: () {
-        // Validar campos basicos
         if (nombreController.text.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Ingrese el nombre completo')),
@@ -171,14 +180,12 @@ void mostrarAgregarUsuario(BuildContext context, Function(User) onUserCreated) {
           );
           return;
         }
-        if (passwordController.text.isEmpty) {
+        if (rolSeleccionado == null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Ingrese la contraseña')),
+            SnackBar(content: Text('Seleccione un rol')),
           );
           return;
         }
-
-        // Validar campos de operador
         if (rolSeleccionado == 'Operador' && celularController.text.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Ingrese el número de celular')),
@@ -186,26 +193,25 @@ void mostrarAgregarUsuario(BuildContext context, Function(User) onUserCreated) {
           return;
         }
 
-        // Crear el objeto usuario
-        User nuevoUsuario = User(
+        // Construir el usuario actualizado, manteniendo la contraseña si está vacía
+        User usuarioActualizado = User(
           name: nombreController.text,
           email: emailController.text,
-          role: rolSeleccionado,
-          password: passwordController.text,
+          role: rolSeleccionado!,
+          password: passwordController.text.isEmpty
+              ? usuario.password
+              : passwordController.text,
           celular:
               rolSeleccionado == 'Operador' ? celularController.text : null,
           especialidad:
               rolSeleccionado == 'Operador' ? especialidadSeleccionada : null,
         );
 
-        print('Nuevo usuario creado: ${nuevoUsuario.toJson()}');
         Navigator.pop(context);
-
-        // Llamar el callback para avisar que se creo un usuario
-        onUserCreated(nuevoUsuario);
+        onUserUpdated(usuarioActualizado);
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Usuario creado exitosamente')),
+          SnackBar(content: Text('Usuario actualizado exitosamente')),
         );
       },
     ),
