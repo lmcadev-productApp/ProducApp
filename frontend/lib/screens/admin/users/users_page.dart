@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/admin/user_test.dart';
 import 'package:frontend/services/data_service_test.dart';
-import 'package:frontend/widgets/Section/section_header.dart';
+import 'package:frontend/widgets/section/section_header.dart';
 import 'package:frontend/widgets/buttons/custom-button.dart';
 import 'package:frontend/widgets/lists/admin/user-list.dart';
 import 'package:frontend/widgets/lists/general_options_list.dart';
@@ -9,12 +9,13 @@ import 'package:frontend/widgets/searches/search_input.dart';
 import 'package:frontend/widgets/admin/add_user_dialog.dart';
 import 'package:frontend/widgets/admin/edit_user_dialog.dart';
 
-class UserStateManagement extends StatefulWidget {
+class AdminUserStateManagement extends StatefulWidget {
   @override
-  _UserStateManagementState createState() => _UserStateManagementState();
+  _AdminUserStateManagementState createState() =>
+      _AdminUserStateManagementState();
 }
 
-class _UserStateManagementState extends State<UserStateManagement> {
+class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
   final TextEditingController _controladorBusqueda = TextEditingController();
 
   List<User> usuarios = DataService.users;

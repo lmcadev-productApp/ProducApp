@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/admin/analytics/analytics_page.dart';
+import 'package:frontend/screens/admin/orders/orders_page.dart';
+import 'package:frontend/screens/admin/stage/stages_page.dart';
 import 'package:frontend/screens/test_navbar_page.dart';
-import 'package:frontend/screens/admin/users_page.dart';
+import 'package:frontend/screens/admin/users/users_page.dart';
+import 'package:frontend/screens/admin/dashboard/dashboard_page.dart';
 
 class HomePage extends StatefulWidget {
   final String userRole;
@@ -24,15 +28,11 @@ class _HomePageState extends State<HomePage> {
     switch (widget.userRole) {
       case 'admin':
         _pages = [
-          WidgetGenerico(),
-          UserStateManagement(),
-          WidgetGenerico(),
-          WidgetGenerico(),
-          //AdminDashboard(),
-          //GestionRoles(),
-          //UsuariosPage(),
-          //EtapasPage(),
-          //AnalisisProduccion(),
+          AdminDashboard(),
+          AdminUserStateManagement(),
+          AdminStages(),
+          AdminOrders(),
+          AdminAnalytics(),
         ];
         _navItems = [
           BottomNavigationBarItem(
@@ -41,6 +41,8 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Usuarios'),
           BottomNavigationBarItem(icon: Icon(Icons.layers), label: 'Etapas'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.assignment), label: 'Ordenes'),
           BottomNavigationBarItem(
             icon: Icon(Icons.analytics),
             label: 'Análisis',

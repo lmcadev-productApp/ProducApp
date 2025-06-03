@@ -21,7 +21,7 @@ class BaseScreen extends StatelessWidget {
         title: Text(
           titulo,
           style: const TextStyle(
-            fontSize: 24,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
