@@ -2,73 +2,73 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/admin/user_test.dart';
 import 'package:frontend/services/data_service_test.dart';
 import 'package:frontend/widgets/admin/user_card.dart';
+import 'package:frontend/widgets/Section/section_header.dart';
 import 'package:frontend/widgets/admin/add_user_dialog.dart';
 import 'package:frontend/widgets/admin/edit_user_dialog.dart';
 
-class UserManagementScreen extends StatefulWidget {
+class UserStateManagement extends StatefulWidget {
   @override
-  _UserManagementScreenState createState() => _UserManagementScreenState();
+  _UserStateManagementState createState() => _UserStateManagementState();
 }
 
-class _UserManagementScreenState extends State<UserManagementScreen> {
-  final TextEditingController _searchController = TextEditingController();
+class _UserStateManagementState extends State<UserStateManagement> {
+  final TextEditingController _controladorBusqueda = TextEditingController();
 
-  List<User> users = DataService.users;
-  List<User> filteredUsers = [];
+  List<User> usuarios = DataService.users;
+  List<User> usuariosFiltrados = [];
 
   @override
   void initState() {
     super.initState();
-    filteredUsers = users;
-    _searchController.addListener(_filterUsers);
+    usuariosFiltrados = usuarios;
+    _controladorBusqueda.addListener(_filtrarUsuarios);
   }
 
-  void _filterUsers() {
-    final query = _searchController.text.toLowerCase();
+  void _filtrarUsuarios() {
+    final consulta = _controladorBusqueda.text.toLowerCase();
     setState(() {
-      filteredUsers = users.where((user) {
-        return user.name.toLowerCase().contains(query) ||
-            user.email.toLowerCase().contains(query) ||
-            user.role.toLowerCase().contains(query) ||
-            (user.celular != null &&
-                user.celular!.toLowerCase().contains(query)) ||
-            (user.especialidad != null &&
-                user.especialidad!.toLowerCase().contains(query));
+      usuariosFiltrados = usuarios.where((usuario) {
+        return usuario.name.toLowerCase().contains(consulta) ||
+            usuario.email.toLowerCase().contains(consulta) ||
+            usuario.role.toLowerCase().contains(consulta) ||
+            (usuario.celular != null &&
+                usuario.celular!.toLowerCase().contains(consulta)) ||
+            (usuario.especialidad != null &&
+                usuario.especialidad!.toLowerCase().contains(consulta));
       }).toList();
     });
   }
 
-  void _addUser() {
+  void _agregarUsuario() {
     mostrarAgregarUsuario(context, (User nuevoUsuario) {
       setState(() {
-        users.add(nuevoUsuario);
-        filteredUsers = users;
+        usuarios.add(nuevoUsuario);
+        usuariosFiltrados = usuarios;
       });
     });
   }
 
-  void _editUser(User user) {
-    mostrarEditarUsuario(context, user, (User usuarioEditado) {
+  void _editarUsuario(User usuario) {
+    mostrarEditarUsuario(context, usuario, (User usuarioEditado) {
       setState(() {
-        final index = users.indexWhere((u) => u.email == user.email);
-        if (index != -1) {
-          users[index] = usuarioEditado;
+        final indice = usuarios.indexWhere((u) => u.email == usuario.email);
+        if (indice != -1) {
+          usuarios[indice] = usuarioEditado;
         }
-        filteredUsers = users;
+        usuariosFiltrados = usuarios;
       });
     });
   }
 
-  void _deleteUser(User user) {
+  void _eliminarUsuario(User usuario) {
     setState(() {
-      users.remove(user);
-      filteredUsers.remove(user);
+      usuarios.remove(usuario);
+      usuariosFiltrados.remove(usuario);
     });
-    print("Usuario eliminado: ${user.name}");
+    print("Usuario eliminado: ${usuario.name}");
   }
 
-  //Mini ventana que sale al manetner precionado a un usuario
-  void _showUserOptions(User user) {
+  void _mostrarOpcionesUsuario(User usuario) {
     showModalBottomSheet(
       context: context,
       builder: (_) => Padding(
@@ -77,7 +77,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              user.name,
+              usuario.name,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -85,18 +85,16 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
               leading: const Icon(Icons.edit, color: Colors.blue),
               title: const Text('Editar'),
               onTap: () {
-                //Logica Editar
                 Navigator.pop(context);
-                _editUser(user);
+                _editarUsuario(usuario);
               },
             ),
             ListTile(
               leading: const Icon(Icons.delete, color: Colors.red),
               title: const Text('Eliminar'),
               onTap: () {
-                //Logica Eliminar
                 Navigator.pop(context);
-                _deleteUser(user);
+                _eliminarUsuario(usuario);
               },
             ),
           ],
@@ -107,102 +105,93 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
 
   @override
   void dispose() {
-    _searchController.dispose();
+    _controladorBusqueda.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Gestión de Usuarios',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+    // Aquí defines el contenido específico de esta pantalla
+    Widget contenidoPantalla = Column(
+      children: [
+        // Campo de búsqueda
+        Container(
+          decoration: BoxDecoration(
             color: Colors.white,
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(
+              color: const Color.fromARGB(255, 109, 109, 109),
+              width: 1,
+            ),
+          ),
+          child: TextField(
+            controller: _controladorBusqueda,
+            style: const TextStyle(color: Colors.black87),
+            decoration: InputDecoration(
+              hintText: 'Buscar usuario...',
+              hintStyle: TextStyle(color: Colors.grey[500]),
+              prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 15,
+              ),
+            ),
           ),
         ),
-        backgroundColor: const Color(0xFF4A90E2),
-        elevation: 0,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // Búsqueda
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(25),
-                border: Border.all(
-                  color: Color.fromARGB(255, 109, 109, 109),
-                  width: 1,
-                ),
-              ),
-              child: TextField(
-                controller: _searchController,
-                style: TextStyle(color: Colors.black87),
-                decoration: InputDecoration(
-                  hintText: 'Buscar usuario...',
-                  hintStyle: TextStyle(color: Colors.grey[500]),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
-                  border: InputBorder
-                      .none, // Sin borde porque ya lo pone el Container
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 15,
-                  ),
-                ),
-              ),
-            ),
+        const SizedBox(height: 16),
 
-            const SizedBox(height: 16),
-            // Botón agregar
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _addUser,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4A90E2),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  elevation: 2,
-                ),
-                child: const Text(
-                  'Agregar Usuario',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
+        // Botón agregar
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _agregarUsuario,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF4A90E2),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
               ),
+              elevation: 2,
             ),
-            const SizedBox(height: 20),
-            // Lista de usuarios
-            Expanded(
-              child: filteredUsers.isEmpty
-                  ? Center(
-                      child: Text(
-                        'No se encontraron usuarios',
-                        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                      ),
-                    )
-                  : ListView.builder(
-                      itemCount: filteredUsers.length,
-                      itemBuilder: (_, i) {
-                        final user = filteredUsers[i];
-                        return UserCard(
-                          user: user,
-                          onTap: () => print("👤 Usuario: ${user.name}"),
-                          onLongPress: () => _showUserOptions(user),
-                        );
-                      },
-                    ),
+            child: const Text(
+              'Agregar Usuario',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
-          ],
+          ),
         ),
-      ),
+        const SizedBox(height: 20),
+
+        // Lista de usuarios
+        Expanded(
+          child: usuariosFiltrados.isEmpty
+              ? Center(
+                  child: Text(
+                    'No se encontraron usuarios',
+                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: usuariosFiltrados.length,
+                  itemBuilder: (_, i) {
+                    final usuario = usuariosFiltrados[i];
+                    return UserCard(
+                      user: usuario,
+                      onTap: () => print("👤 Usuario: ${usuario.name}"),
+                      onLongPress: () => _mostrarOpcionesUsuario(usuario),
+                    );
+                  },
+                ),
+        ),
+      ],
+    );
+
+    // Usar el widget reutilizable
+    return BaseScreen(
+      titulo: 'Gestión de Usuarios',
+      contenido: contenidoPantalla,
+      colorHeader: const Color(0xFF4A90E2),
     );
   }
 }

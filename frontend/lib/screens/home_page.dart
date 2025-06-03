@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
       case 'admin':
         _pages = [
           WidgetGenerico(),
-          UserManagementScreen(),
+          UserStateManagement(),
           WidgetGenerico(),
           WidgetGenerico(),
           //AdminDashboard(),
