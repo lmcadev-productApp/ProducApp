@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/utils/shared_preferences_helper.dart';
 import 'package:frontend/widgets/section/section_header.dart';
 import 'package:frontend/screens/login/login_page.dart';
 
@@ -23,7 +24,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
       titulo: 'DashBoard',
       mostrarLogout: true,
       mostrarBack: true,
-      onLogout: () {
+      onLogout: () async {
+        await SharedPreferencesHelper.clearToken(); // Elimina el token
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => LoginPage()),
