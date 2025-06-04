@@ -1,5 +1,5 @@
 # Imagen base con Flutter y Dart 3.4.1
-FROM ghcr.io/cirruslabs/flutter:3.22.0
+FROM ghcr.io/cirruslabs/flutter:3.22.1
 
 # Variables de entorno necesarias para Android SDK
 ENV ANDROID_HOME=/opt/android-sdk-linux
