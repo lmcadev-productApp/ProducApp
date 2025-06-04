@@ -32,16 +32,22 @@ jobs:
           script: |
             cd /home/${{ secrets.VPS_USER }}/producapp
 
-            # Crear secretos Docker si no existen
-            echo "${{ secrets.USER_ROOT }}" | docker secret create user_root_database || true
-            echo "${{ secrets.PASS_ROOT }}" | docker secret create password_root_database || true
-            echo "${{ secrets.USER_DB }}"   | docker secret create user_database_mysql || true
-            echo "${{ secrets.PASS_DB }}"   | docker secret create password_database_mysql || true
+            # Crear archivo .env con valores desde secretos
+            cat <<EOF > .env
+            API_URL=${{ secrets.API_URL }}
+            USER_ROOT_DATABASE=${{ secrets.USER_ROOT }}
+            PASSWORD_ROOT_DATABASE=${{ secrets.PASS_ROOT }}
+            NAME_DATABASE_MYSQL=${{ secrets.NAME_DB }}
+            MYSQL_ROOT_PASSWORD=${{ secrets.PASS_ROOT }}
+            MYSQL_NAME_DATABASE=${{ secrets.NAME_DB }}
+            MYSQL_USER_DATABASE=${{ secrets.USER_DB }}
+            MYSQL_PASSWORD_DATABASE=${{ secrets.PASS_DB }}
+            SPRING_DATASOURCE_URL=${{ secrets.SPRING_DB_URL }}
+            SPRING_JPA_HIBERNATE_DDL_AUTO=${{ secrets.JPA_MODE }}
+            SERVER_PORT=${{ secrets.PORT }}
+            EOF
 
-            # Crear archivo .env
-            echo "${{ secrets.ENV_PROD_CONTENT }}" > .env
-
-            # Construir y levantar contenedores
+            # Desplegar con Docker
             docker-compose down
             docker-compose pull || true
             docker-compose build || true
