@@ -18,20 +18,20 @@ jobs:
 
         with:
           host: ${{ secrets.VPS_HOST }}
-          # username: ${{ secrets.VPS_USER }}   # <-- elimina esta línea
+          username: yulianna
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "."
-          target: "/home/yulianna/producapp"
+          target: "/home/yulianna/ProducApp"
           rm: true
 
       - name: Run deploy commands on VPS
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.VPS_HOST }}
-          # username: ${{ secrets.VPS_USER }}   # <-- elimina esta línea
+          username: yulianna
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            cd /home/yulianna/producapp
+            cd /home/yulianna/ProducApp
 
             # Crear archivo .env con valores desde secretos
             cat <<EOF > .env
