@@ -16,7 +16,7 @@ public class Etapa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long etapa_id;
+    private Long id;
 
     @NotBlank(message = "Ingrese el nombre de la etapa")
     @Column(nullable = false)

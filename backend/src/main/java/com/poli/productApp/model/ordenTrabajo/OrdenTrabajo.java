@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.poli.productApp.model.ENUMS.Estado;
 import com.poli.productApp.model.etapa.EtapaProduccion;
-import com.poli.productApp.model.usuario.Cliente;
+import com.poli.productApp.model.usuario.Usuario;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -31,25 +31,25 @@ public class OrdenTrabajo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orden_trabajo_id;
+    private Long id;
 
     @Column(nullable = false)
     private String descripcion;
 
     @NotNull(message = "Ingrese la fecha de inicio")
     @Column(nullable = false)
-    private Date fecha_inicio;
+    private Date fechaInicio;
 
     @NotNull(message = "Ingrese la fecha de fin")
     @Column(nullable = false)
-    private Date fecha_fin;
+    private Date fechaFin;
 
     @Enumerated(EnumType.STRING)
     private Estado estado;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "cliente_id", nullable = false)
-    private Cliente cliente;
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
 
     @OneToMany(mappedBy = "ordenTrabajo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EtapaProduccion> etapas = new ArrayList<>();

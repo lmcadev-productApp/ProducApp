@@ -31,7 +31,7 @@ public class ArchivoTecnico {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long archivo_tecnico_id;
+    private Long id;
 
     @NotBlank(message = "El nombre del archivo no puede estar vacío")
     @Column(nullable = false)

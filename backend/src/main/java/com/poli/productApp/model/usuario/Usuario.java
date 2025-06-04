@@ -1,6 +1,7 @@
 package com.poli.productApp.model.usuario;
 
 import com.poli.productApp.model.ENUMS.Rol;
+import com.poli.productApp.model.especialidad.Especialidad;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +10,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -16,24 +19,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.ToString;
 
-/**
- * Entidad que representa un usuario en el sistema.
- * 
- * <p>Esta clase mapea la tabla "usuarios" en la base de datos y contiene la información
- * relevante de cada usuario, como correo electrónico, contraseña, rol, nombre, teléfono y dirección.</p>
- * 
- * <ul>
- *   <li><b>id</b>: Identificador único del usuario (clave primaria).</li>
- *   <li><b>correo</b>: Correo electrónico del usuario. Debe ser único y válido.</li>
- *   <li><b>contrasena</b>: Contraseña del usuario. Debe tener al menos 6 caracteres.</li>
- *   <li><b>rol</b>: Rol asignado al usuario (por ejemplo, administrador, cliente, etc.).</li>
- *   <li><b>nombre</b>: Nombre del usuario.</li>
- *   <li><b>telefono</b>: Teléfono de contacto del usuario (opcional).</li>
- *   <li><b>direccion</b>: Dirección del usuario (opcional).</li>
- * </ul>
- * 
- * <p>Las validaciones aseguran que los campos obligatorios no sean nulos o vacíos y que el correo tenga un formato válido.</p>
- */
+
 @Entity
 @Table(name = "usuarios")
 @Data
@@ -42,7 +28,7 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long usuario_id;
+    private Long id;
 
     @NotBlank(message = "El correo es obligatorio")
     @Email(message = "Debe ingresar un correo válido")
@@ -69,8 +55,18 @@ public class Usuario {
 
 
     public Long getId() {
-        return usuario_id;
+        return id;
     }
+
+     @ManyToOne
+    @JoinColumn(name = "especialidad_id")
+    private Especialidad especialidad;
+
+    @Column(nullable = true)
+    private String suguroSocial;
+
+    @Column(nullable = true)
+    private String arl;
 }
 
 

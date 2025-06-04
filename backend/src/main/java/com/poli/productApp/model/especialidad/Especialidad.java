@@ -17,7 +17,7 @@ public class Especialidad {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long especialidad_id;
+    private Long id;
 
     @NotBlank(message = "Ingrese el nombre de especialidad")
     @Column(nullable = false)
