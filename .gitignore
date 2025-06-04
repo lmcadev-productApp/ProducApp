@@ -35,3 +35,10 @@ local.properties
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# === Flutter / Dart ===
+.dart_tool/
+build/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
