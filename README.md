@@ -96,6 +96,9 @@ producapp/
 │ ├──  pubspec.yaml
 │ └──nginx/
 │   └── default.conf
+├── github/
+│   └── worksflows/
+│      └── deploy.yml
 ├── .gitignore
 ├── docker-compose.yml
 └── README.md
