@@ -127,7 +127,15 @@ flutter run
 ```bash
 cd docker
 docker-compose up -d
+
 ```
+
+## 📲 Descargar APK
+
+Puedes descargar la última versión compilada de la aplicación Android desde el siguiente enlace:
+
+👉 [Descargar APK](http://productapp.lmcadev.com/apk/app-release.apk)
+
 
 🧪 Pruebas
 Pruebas unitarias disponibles para servicios principales en el backend con JUnit.

@@ -1,55 +1,28 @@
-FROM ubuntu:22.04 AS build
+# Imagen base con Flutter preinstalado
+FROM cirrusci/flutter:stable
 
-ENV DEBIAN_FRONTEND=noninteractive
+# Variables de entorno necesarias para Android
+ENV ANDROID_HOME=/opt/android-sdk-linux
+ENV PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin
 
-RUN apt-get update && apt-get install -y \
-    curl git unzip xz-utils zip libglu1-mesa ca-certificates \
-    software-properties-common gnupg wget \
-    openjdk-21-jdk \
-    && rm -rf /var/lib/apt/lists/*
+# Instalamos el SDK Manager y herramientas necesarias
+RUN yes | sdkmanager --licenses \
+ && sdkmanager "platform-tools" \
+                "platforms;android-33" \
+                "build-tools;33.0.2" \
+                "ndk;26.3.11579264" \
+                "cmdline-tools;latest"
 
-ENV ANDROID_SDK_ROOT=/opt/android-sdk-linux
-ENV PATH="$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin"
+# Aseguramos permisos adecuados
+RUN chmod -R a+w $ANDROID_HOME
 
-RUN useradd -m flutteruser
-
-RUN mkdir -p $ANDROID_SDK_ROOT/cmdline-tools && \
-    curl -o sdk-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip && \
-    unzip sdk-tools.zip -d $ANDROID_SDK_ROOT/cmdline-tools && \
-    mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest && \
-    rm sdk-tools.zip && \
-    yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses && \
-    $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager \
-        "platform-tools" "platforms;android-33" "build-tools;33.0.2"
-
-RUN curl -o flutter_linux.tar.xz https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.32.1-stable.tar.xz && \
-    tar xf flutter_linux.tar.xz -C /usr/local && \
-    rm flutter_linux.tar.xz && \
-    chown -R flutteruser:flutteruser /usr/local/flutter
-
-
-USER flutteruser
-
+# Precache y build
 WORKDIR /app
+COPY . .
 
-# Añadir safe directory para git
-RUN git config --global --add safe.directory /usr/local/flutter
-
-ENV PATH="$PATH:/usr/local/flutter/bin"
-
-# Copia sólo el contenido del proyecto Flutter (que está en ./frontend en host)
-COPY --chown=flutteruser:flutteruser . .
-
-ARG API_URL
-
-RUN flutter precache --web && \
-    flutter pub get && \
-    flutter build web --release --dart-define=API_URL=$API_URL
-
-FROM nginx:alpine
-
-COPY --from=build /app/build/web /usr/share/nginx/html
-COPY --from=build /app/nginx/default.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+RUN flutter precache --web \
+ && flutter pub get \
+ && flutter build web --release --dart-define=API_URL=http://localhost:8080/api \
+ && flutter build apk --release \
+ && mkdir -p build/web/apk \
+ && cp build/app/outputs/flutter-apk/app-release.apk build/web/apk/

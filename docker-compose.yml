@@ -4,19 +4,18 @@ services:
     container_name: sql-db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: producappdb
-      MYSQL_USER: producuser
-      MYSQL_PASSWORD: producpass
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_NAME_DATABASE}
+      MYSQL_USER: ${MYSQL_USER_DATABASE}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD_DATABASE}
     ports:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - producapp-net
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-proot123" ]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p$(cat /run/secrets/password_root_database)"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -29,10 +28,10 @@ services:
     depends_on:
       - mysql
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://sql-db:3306/producappdb
-      SPRING_DATASOURCE_USERNAME: producuser
-      SPRING_DATASOURCE_PASSWORD: producpass
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER_DATABASE}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD_DATABASE}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
     ports:
       - "8081:8080"
     networks:
@@ -43,10 +42,12 @@ services:
       context: ./frontend
       dockerfile: docker/Dockerfile
       args:
-        API_URL: "http://producapp-backend:8080/api"
+        API_URL: ${API_URL}
     container_name: producapp-frontend
     depends_on:
       - backend
+    environment:
+      API_URL: ${API_URL}  
     ports:
       - "8082:80"
     networks:
@@ -58,3 +59,4 @@ volumes:
 networks:
   producapp-net:
     driver: bridge
+
