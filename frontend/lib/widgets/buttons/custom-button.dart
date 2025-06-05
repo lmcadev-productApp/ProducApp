@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   final String texto;
-  final VoidCallback onPressed;
   final Color backgroundColor;
   final Color foregroundColor;
   final bool espacioInferior;
@@ -10,7 +9,6 @@ class CustomButton extends StatelessWidget {
   const CustomButton({
     super.key,
     required this.texto,
-    required this.onPressed,
     this.backgroundColor = const Color(0xFF4A90E2),
     this.foregroundColor = Colors.white,
     this.espacioInferior = false,
@@ -21,7 +19,7 @@ class CustomButton extends StatelessWidget {
     final boton = SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: () {}, // Botón activo pero sin lógica
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: foregroundColor,
