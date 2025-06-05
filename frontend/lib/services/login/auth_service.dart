@@ -23,11 +23,19 @@ class AuthService {
         return LoginResponse.fromJson(data);
       } else {
         print('Error al iniciar sesión: ${response.statusCode}');
+<<<<<<< HEAD
         return null;
       }
     } catch (e) {
       print('Excepción durante login: $e');
       res
+=======
+        print(response.body);
+        return null;
+      }
+    } catch (e) {
+      print('Excepción capturada durante el login: $e');
+>>>>>>> origin/main
       return null;
     }
   }
