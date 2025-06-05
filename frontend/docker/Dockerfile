@@ -1,35 +1,29 @@
-# Stage 1: Build Flutter Web
+# Stage 1: Build Flutter app
 FROM ghcr.io/cirruslabs/flutter:3.22.1 AS builder
 
-# Crear usuario no root
-RUN adduser --disabled-password --gecos '' flutteruser
-USER flutteruser
-
-ENV FLUTTER_ROOT=/usr/local/flutter
-ENV PUB_ALLOW_ROOT=true
-
-ARG API_URL
+# Solución para el error de permisos en git config
+RUN git config --global --add safe.directory /sdks/flutter
 
 WORKDIR /app
 
+# Copiar pubspec.yaml y pubspec.lock para instalar dependencias primero
 COPY pubspec.* ./
+
 RUN flutter pub get
 
+# Copiar el resto de archivos
 COPY . .
 
-RUN flutter precache --web
+# Build release web app (o la plataforma que uses, por ejemplo web)
+RUN flutter build web --release
 
-RUN flutter build web --release --dart-define=API_URL=$API_URL
-
-# Stage 2: Serve with Nginx
+# Stage 2: Serve app with nginx
 FROM nginx:stable-alpine
 
-# Copiar el build web generado en builder
+# Copiar build generado a nginx html folder
 COPY --from=builder /app/build/web /usr/share/nginx/html
 
-# Copiar configuración personalizada nginx
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
-
+# Exponer puerto 80
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]

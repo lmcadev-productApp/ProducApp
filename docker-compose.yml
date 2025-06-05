@@ -1,7 +1,7 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: sql-db
+    container_name: producapp-db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -32,20 +32,11 @@ services:
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER_DATABASE}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD_DATABASE}
       SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+      SERVER_PORT: 8081
     ports:
       - "8081:8080"
     networks:
       - producapp-net
-    command: >
-      /bin/bash -c "
-      until nc -z -v -w30 sql-db 3306;
-      do
-        echo 'Esperando a la base de datos...';
-        sleep 2;
-      done;
-      echo 'Base de datos lista, arrancando aplicación...';
-      java -jar app.jar
-      "
 
   frontend:
     build:
