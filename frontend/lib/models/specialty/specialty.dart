@@ -10,8 +10,16 @@ class Specialty {
   });
 
   factory Specialty.fromJson(Map<String, dynamic> json) {
+    int parseId(dynamic value) {
+      if (value is int) return value;
+      if (value is String && value.trim().isNotEmpty) {
+        return int.tryParse(value) ?? 0;
+      }
+      return 0;
+    }
+
     return Specialty(
-      id: json['id'] ?? 0,
+      id: parseId(json['id']),
       nombre: json['nombre'] ?? '',
       descripcion: json['descripcion'] ?? '',
     );

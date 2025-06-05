@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SearchInput extends StatelessWidget {
-  final TextEditingController controller;
   final String hintText;
   final bool espacioInferior;
 
   const SearchInput({
     super.key,
-    required this.controller,
     this.hintText = 'Buscar...',
-    this.espacioInferior = false, // 🔹 por defecto, no agrega espacio
+    this.espacioInferior = false,
   });
 
   @override
@@ -24,7 +22,7 @@ class SearchInput extends StatelessWidget {
         ),
       ),
       child: TextField(
-        controller: controller,
+        readOnly: true, // Solo para mostrar, sin permitir edición
         style: const TextStyle(color: Colors.black87),
         decoration: InputDecoration(
           hintText: hintText,
@@ -39,7 +37,6 @@ class SearchInput extends StatelessWidget {
       ),
     );
 
-    // Si se pide espacio inferior, lo envuelve en Column con SizedBox
     return espacioInferior
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
