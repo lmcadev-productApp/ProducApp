@@ -22,6 +22,8 @@ class BaseScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final headerColor = colorHeader ?? const Color(0xFF4A90E2);
+
     return Scaffold(
       appBar: AppBar(
         leading: mostrarBack
@@ -38,8 +40,11 @@ class BaseScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        backgroundColor: colorHeader ?? const Color(0xFF4A90E2),
+        backgroundColor: headerColor,
         elevation: 0,
+        // Fuerza el tema de iconos a blanco
+        iconTheme: const IconThemeData(color: Colors.white),
+        actionsIconTheme: const IconThemeData(color: Colors.white),
         actions: mostrarLogout
             ? [
                 IconButton(
@@ -56,32 +61,3 @@ class BaseScreen extends StatelessWidget {
     );
   }
 }
-/*
-
-// Solo flecha de regreso
-BaseScreen(
-  titulo: 'Detalles',
-  mostrarBack: true,
-  contenido: MiContenido(),
-),
-
-// Solo botón de cerrar sesión
-BaseScreen(
-  titulo: 'Inicio',
-  mostrarLogout: true,
-  onLogout: () {
-    // Lógica de cerrar sesión
-  },
-  contenido: MiContenido(),
-),
-
-
-// Ambos
-BaseScreen(
-  titulo: 'Perfil',
-  mostrarBack: true,
-  mostrarLogout: true,
-  onLogout: () => cerrarSesion(),
-  contenido: MiContenido(),
-
-*/
