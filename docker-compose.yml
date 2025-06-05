@@ -36,16 +36,6 @@ services:
       - "8081:8080"
     networks:
       - producapp-net
-    command: >
-      /bin/bash -c "
-      until nc -z -v -w30 sql-db 3306;
-      do
-        echo 'Esperando a la base de datos...';
-        sleep 2;
-      done;
-      echo 'Base de datos lista, arrancando aplicación...';
-      java -jar app.jar
-      "
 
   frontend:
     build:
