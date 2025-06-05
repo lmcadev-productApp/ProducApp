@@ -29,6 +29,11 @@ services:
       - mysql
     env_file:
       - .env
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER_DATABASE}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD_DATABASE}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
     ports:
       - "8081:8080"
     networks:
