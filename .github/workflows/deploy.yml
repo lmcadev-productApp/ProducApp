@@ -48,16 +48,32 @@ jobs:
             SERVER_PORT=${{ secrets.PORT }}
             EOF
 
-            # Baja todos los contenedores
-            docker-compose down
-            
-            # Actualiza las imágenes (si las usas)
-            docker-compose pull || true
-            
-            # Construye las imágenes de nuevo
-            docker-compose build || true
-            
-            # Intenta parar el contenedor "frontend" si existe y está corriendo (ajusta el nombre del servicio si es diferente)
-            if [ $(docker ps -q -f name=producapp-frontend) ]; then
+            # Verificar si el contenedor frontend está corriendo y pararlo
+            if [ "$(docker ps -q -f name=producapp-frontend)" ]; then
+            echo "Deteniendo contenedor producapp-frontend..."
             docker stop producapp-frontend
             fi
+            
+            # Verificar si el contenedor backend está corriendo y pararlo
+            if [ "$(docker ps -q -f name=producapp-backend)" ]; then
+            echo "Deteniendo contenedor producapp-backend..."
+            docker stop producapp-backend
+            fi
+            
+            # Verificar si el contenedor base de datos está corriendo y pararlo
+            if [ "$(docker ps -q -f name=producapp-db)" ]; then
+            echo "Deteniendo contenedor producapp-db..."
+            docker stop producapp-db
+            fi
+            
+            # Opcional: también puedes usar docker-compose down para bajar todo junto en vez de parar contenedores uno por uno
+            # docker-compose down
+            
+            # Actualizar imágenes (si las usas)
+            docker-compose pull || true
+            
+            # Construir las imágenes de nuevo
+            docker-compose build || true
+            
+            # Levantar todos los servicios en segundo plano
+            docker-compose up -d
