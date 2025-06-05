@@ -5,10 +5,12 @@ class CustomButton extends StatelessWidget {
   final Color backgroundColor;
   final Color foregroundColor;
   final bool espacioInferior;
+  final VoidCallback? onPressed;
 
   const CustomButton({
     super.key,
     required this.texto,
+    required this.onPressed,
     this.backgroundColor = const Color(0xFF4A90E2),
     this.foregroundColor = Colors.white,
     this.espacioInferior = false,
@@ -19,7 +21,7 @@ class CustomButton extends StatelessWidget {
     final boton = SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {}, // Botón activo pero sin lógica
+        onPressed: onPressed, // Botón activo pero sin lógica
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: foregroundColor,

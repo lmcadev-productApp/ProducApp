@@ -6,7 +6,12 @@ import 'package:frontend/models/login/login_request.dart';
 import 'package:frontend/services/login/auth_service.dart';
 import 'package:frontend/widgets/dialogs/loading_general.dart';
 
-class LoginForm extends StatelessWidget {
+class LoginForm extends StatefulWidget {
+  @override
+  _LoginFormState createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -16,15 +21,25 @@ class LoginForm extends StatelessWidget {
       barrierDismissible: false,
       builder: (_) => const LoadingDialog(),
     );
-    // Cierre forzado si se queda colgado
+
+    //Cierre forzado por si se queda colgado el servidor
     Future.delayed(Duration(seconds: 5), () {
-      if (Navigator.of(context, rootNavigator: true).canPop()) {
-        Navigator.of(context, rootNavigator: true).pop();
+      if (!mounted) return; // Asegura que el widget sigue vivo
+      final nav = Navigator.of(context, rootNavigator: true);
+      if (nav.canPop()) {
+        nav.pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Sin respuesta del servidor')),
         );
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -86,7 +101,6 @@ class LoginForm extends StatelessWidget {
             onPressed: () async {
               String emailFlutter = _emailController.text.trim();
               String passwordFlutter = _passwordController.text;
-              String userRole = "admin";
 
               if (emailFlutter.isEmpty || passwordFlutter.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -99,25 +113,29 @@ class LoginForm extends StatelessWidget {
               mostrarLoading(context);
 
               final loginRequest = LoginRequest(
-                  correo: emailFlutter, contrasena: passwordFlutter);
+                correo: emailFlutter,
+                contrasena: passwordFlutter,
+              );
               final authService = AuthService();
 
               final response = await authService.login(loginRequest);
 
-              print('Token: ${response?.token}');
-              print('Rol: ${response?.rol}');
+              if (!mounted)
+                return; // <-- Evita usar context si widget desmontado
 
               // Cerrar el loading
               Navigator.of(context).pop();
 
               if (response != null) {
                 await SharedPreferencesHelper.saveToken(response.token);
-                await SharedPreferencesHelper.saveToken(response.rol);
-                print('Login exitoso, token guardado: ${response.token}');
+                await SharedPreferencesHelper.saveRol(response.rol);
+                print(
+                    'Login exitoso, token guardado: ${response.token} y rol guardado: ${response.rol}');
+                final savedRol = await SharedPreferencesHelper.getRol();
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => HomePage(userRole: userRole),
+                    builder: (context) => HomePage(userRole: savedRol!),
                   ),
                 );
               } else {

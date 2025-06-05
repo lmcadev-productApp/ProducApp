@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     switch (widget.userRole) {
-      case 'Administrador':
+      case 'ADMINISTRADOR':
         _pages = [
           AdminDashboard(),
           AdminUserStateManagement(),
@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
         ];
         break;
 
-      case 'Supervisor':
+      case 'SUPERVISOR':
         _pages = [
           WidgetGenerico(),
           WidgetGenerico(),
@@ -78,7 +78,32 @@ class _HomePageState extends State<HomePage> {
         ];
         break;
 
-      case 'Operario':
+      case 'OPERARIO':
+        _pages = [
+          WidgetGenerico(),
+          WidgetGenerico(),
+          WidgetGenerico(),
+          WidgetGenerico(),
+          //OperarioDashboard(),
+          //OrdenesAsignadas(),
+          //EjecucionEtapa(),
+          //ReporteAvance(),
+        ];
+        _navItems = const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assignment_turned_in),
+            label: 'Órdenes',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.layers), label: 'Etapas'),
+          BottomNavigationBarItem(icon: Icon(Icons.report), label: 'Reportes'),
+        ];
+        break;
+
+      case 'USUARIO':
         _pages = [
           WidgetGenerico(),
           WidgetGenerico(),
@@ -104,8 +129,20 @@ class _HomePageState extends State<HomePage> {
         break;
 
       default:
-        _pages = [Center(child: Text("Rol no reconocido"))];
-        _navItems = [];
+        _pages = [
+          Center(child: Text("Rol no reconocido")),
+          Center(child: Text("Página adicional")),
+        ];
+        _navItems = const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.error),
+            label: 'Error',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info),
+            label: 'Info',
+          ),
+        ];
     }
   }
 

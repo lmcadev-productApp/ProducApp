@@ -1,35 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/dialogs/dialog_general.dart';
-import 'package:frontend/models/admin/user_test.dart';
 
-void mostrarEditarUsuario(
-  BuildContext context,
-  User usuario,
-  Function(User) onUserUpdated,
-) {
-  final nombreController = TextEditingController(text: usuario.name);
-  final emailController = TextEditingController(text: usuario.email);
-  final passwordController = TextEditingController();
-  final celularController = TextEditingController(text: usuario.celular ?? '');
-  String? rolSeleccionado = usuario.role.isNotEmpty ? usuario.role : null;
-  String? especialidadSeleccionada = usuario.especialidad ?? null;
-
+void mostrarEditarUsuario(BuildContext context) {
+  // Solo para mostrar la UI, sin lógica ni controladores activos
   showDialog(
     context: context,
     builder: (context) => DialogoGeneral(
       titulo: 'Editar usuario',
-      contenido: StatefulBuilder(
-        builder: (context, setState) => Column(
+      contenido: SingleChildScrollView(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Nombre completo
-            Text('Nombre completo',
+            Text('Nombre',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
             SizedBox(height: 8),
             TextField(
-              controller: nombreController,
               decoration: InputDecoration(
-                hintText: 'Ingrese el nombre completo',
+                hintText: 'Ingrese el nombre',
                 filled: true,
                 fillColor: Colors.grey[50],
                 border:
@@ -37,18 +24,33 @@ void mostrarEditarUsuario(
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               ),
+              enabled: false,
             ),
             SizedBox(height: 15),
-
-            // Correo electrónico
-            Text('Correo electrónico',
+            Text('Correo',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
             SizedBox(height: 8),
             TextField(
-              controller: emailController,
+              decoration: InputDecoration(
+                hintText: 'Ingrese el correo',
+                filled: true,
+                fillColor: Colors.grey[50],
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              ),
+              enabled: false,
               keyboardType: TextInputType.emailAddress,
+            ),
+            SizedBox(height: 15),
+            Text('Contraseña',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+            SizedBox(height: 8),
+            TextField(
+              obscureText: true,
               decoration: InputDecoration(
-                hintText: 'Ingrese el correo electrónico',
+                hintText: 'Ingrese la contraseña',
                 filled: true,
                 fillColor: Colors.grey[50],
                 border:
@@ -56,15 +58,17 @@ void mostrarEditarUsuario(
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               ),
+              enabled: false,
             ),
             SizedBox(height: 15),
-
-            // Rol
             Text('Rol',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
             SizedBox(height: 8),
             DropdownButtonFormField<String>(
-              value: rolSeleccionado,
+              items: ['Administrador', 'Supervisor', 'Operador']
+                  .map((rol) => DropdownMenuItem(value: rol, child: Text(rol)))
+                  .toList(),
+              onChanged: null,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.grey[50],
@@ -73,87 +77,14 @@ void mostrarEditarUsuario(
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               ),
-              items:
-                  ['Administrador', 'Supervisor', 'Operador'].map((String rol) {
-                return DropdownMenuItem<String>(
-                  value: rol,
-                  child: Text(rol),
-                );
-              }).toList(),
-              onChanged: (String? nuevoRol) {
-                setState(() {
-                  rolSeleccionado = nuevoRol;
-                  if (nuevoRol != 'Operador') {
-                    celularController.clear();
-                    especialidadSeleccionada = null;
-                  }
-                });
-              },
-              hint: Text('Seleccione un rol'),
             ),
             SizedBox(height: 15),
-
-            // Campos extra para Operador
-            if (rolSeleccionado == 'Operador') ...[
-              // Celular
-              Text('Celular',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-              SizedBox(height: 8),
-              TextField(
-                controller: celularController,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  hintText: 'Ingrese el número de celular',
-                  filled: true,
-                  fillColor: Colors.grey[50],
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(6)),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                ),
-              ),
-              SizedBox(height: 15),
-
-              // Especialidad
-              Text('Especialidad',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-              SizedBox(height: 8),
-              DropdownButtonFormField<String>(
-                value: especialidadSeleccionada,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.grey[50],
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(6)),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                ),
-                items:
-                    ['Pintura', 'Plástico', 'Metal'].map((String especialidad) {
-                  return DropdownMenuItem<String>(
-                    value: especialidad,
-                    child: Text(especialidad),
-                  );
-                }).toList(),
-                onChanged: (String? nuevaEspecialidad) {
-                  setState(() {
-                    especialidadSeleccionada = nuevaEspecialidad;
-                  });
-                },
-                hint: Text('Seleccione una especialidad'),
-              ),
-              SizedBox(height: 15),
-            ],
-
-            // Contraseña (opcional)
-            Text('Contraseña (dejar vacío para no cambiar)',
+            Text('Teléfono',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
             SizedBox(height: 8),
             TextField(
-              controller: passwordController,
-              obscureText: true,
               decoration: InputDecoration(
-                hintText: 'Ingrese la nueva contraseña',
+                hintText: 'Ingrese el teléfono',
                 filled: true,
                 fillColor: Colors.grey[50],
                 border:
@@ -161,6 +92,74 @@ void mostrarEditarUsuario(
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               ),
+              enabled: false,
+              keyboardType: TextInputType.phone,
+            ),
+            SizedBox(height: 15),
+            Text('Dirección',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+            SizedBox(height: 8),
+            TextField(
+              decoration: InputDecoration(
+                hintText: 'Ingrese la dirección',
+                filled: true,
+                fillColor: Colors.grey[50],
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              ),
+              enabled: false,
+            ),
+            SizedBox(height: 15),
+            Text('Especialidad',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+            SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              items: ['Pintura', 'Carpintería', 'Acabados']
+                  .map((esp) => DropdownMenuItem(value: esp, child: Text(esp)))
+                  .toList(),
+              onChanged: null,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey[50],
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              ),
+            ),
+            SizedBox(height: 15),
+            Text('Seguro Social',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+            SizedBox(height: 8),
+            TextField(
+              decoration: InputDecoration(
+                hintText: 'Ingrese el seguro social',
+                filled: true,
+                fillColor: Colors.grey[50],
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              ),
+              enabled: false,
+            ),
+            SizedBox(height: 15),
+            Text('ARL',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+            SizedBox(height: 8),
+            TextField(
+              decoration: InputDecoration(
+                hintText: 'Ingrese la ARL',
+                filled: true,
+                fillColor: Colors.grey[50],
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              ),
+              enabled: false,
             ),
           ],
         ),
@@ -168,51 +167,7 @@ void mostrarEditarUsuario(
       textoBotonOk: 'Guardar',
       textoBotonCancelar: 'Cancelar',
       onOk: () {
-        if (nombreController.text.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Ingrese el nombre completo')),
-          );
-          return;
-        }
-        if (emailController.text.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Ingrese el correo electrónico')),
-          );
-          return;
-        }
-        if (rolSeleccionado == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Seleccione un rol')),
-          );
-          return;
-        }
-        if (rolSeleccionado == 'Operador' && celularController.text.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Ingrese el número de celular')),
-          );
-          return;
-        }
-
-        // Construir el usuario actualizado, manteniendo la contraseña si está vacía
-        User usuarioActualizado = User(
-          name: nombreController.text,
-          email: emailController.text,
-          role: rolSeleccionado!,
-          password: passwordController.text.isEmpty
-              ? usuario.password
-              : passwordController.text,
-          celular:
-              rolSeleccionado == 'Operador' ? celularController.text : null,
-          especialidad:
-              rolSeleccionado == 'Operador' ? especialidadSeleccionada : null,
-        );
-
-        Navigator.pop(context);
-        onUserUpdated(usuarioActualizado);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Usuario actualizado exitosamente')),
-        );
+        Navigator.of(context).pop(); // Cierra el diálogo
       },
     ),
   );

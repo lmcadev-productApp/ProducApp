@@ -6,11 +6,14 @@ import 'package:frontend/utils/role_color.dart';
 class ListUser extends StatelessWidget {
   final List<User> users; // Lista de usuarios
   final Function(User)? onTap; // Qué hacer cuando tocan un usuario
+  final Function(User)?
+      onLongPress; // Qué hacer cuando mantienen presionado un usuario
 
   const ListUser({
     Key? key,
     required this.users,
-    this.onTap,
+    required this.onTap,
+    this.onLongPress,
   }) : super(key: key);
 
   @override
@@ -40,6 +43,7 @@ class ListUser extends StatelessWidget {
           ),
           child: InkWell(
             onTap: onTap != null ? () => onTap!(user) : null,
+            onLongPress: onLongPress != null ? () => onLongPress!(user) : null,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -26,6 +26,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
       mostrarBack: true,
       onLogout: () async {
         await SharedPreferencesHelper.clearToken(); // Elimina el token
+        await SharedPreferencesHelper.clearRol(); // Elimina el rol
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => LoginPage()),

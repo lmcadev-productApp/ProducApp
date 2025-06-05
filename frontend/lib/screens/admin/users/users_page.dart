@@ -29,6 +29,11 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
         // Botón agregar
         CustomButton(
           texto: 'Agregar Usuario',
+          onPressed: () {
+            //Lógica aquí
+            mostrarAgregarUsuarioVisual(context);
+            print('Botón Agregar Usuario Presionado');
+          },
           espacioInferior: true,
         ),
 
@@ -37,7 +42,59 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
           child: ListUser(
             users: usuarios,
             onTap: (user) {
+              //Logica al tocar
               print('Usuario seleccionado: ${user.nombre}');
+            },
+            onLongPress: (user) {
+              showModalBottomSheet(
+                context: context,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
+                ),
+                backgroundColor: const Color(0xFF4A90E2),
+                builder: (BuildContext context) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          'Usuario seleccionado: ${user.nombre}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Divider(color: Colors.white70),
+                      ListTile(
+                        leading: Icon(Icons.edit, color: Colors.white),
+                        title: Text('Editar',
+                            style: TextStyle(color: Colors.white)),
+                        onTap: () {
+                          //Logica
+                          Navigator.pop(context);
+                          mostrarEditarUsuario(context);
+                          print('Editar usuario: ${user.nombre}');
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.delete, color: Colors.white),
+                        title: Text('Eliminar',
+                            style: TextStyle(color: Colors.white)),
+                        onTap: () {
+                          //Logica
+                          Navigator.pop(context);
+                          print('Eliminar usuario: ${user.nombre}');
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
             },
           ),
         ),

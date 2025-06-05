@@ -12,7 +12,7 @@ import 'package:frontend/widgets/dialogs/loading_general.dart';
 //     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3VhcmlvIiwiaWF0IjoxNjkxMjM0NTY3LCJleHAiOjE2OTEyMzgxNjd9.dGhpcy1pcy1hLXNlY3JldC1zaWduYXR1cmU',
 //   );
 
-//   await SharedPreferencesHelper.saveRol('admin');
+//   await SharedPreferencesHelper.saveRol('Administrador');
 
 //   runApp(ProducApp());
 // }
@@ -50,10 +50,26 @@ class ProducApp extends StatelessWidget {
                 );
               }
 
-              final userRole = rolSnapshot.data ??
-                  'operario'; // valor por defecto si no hay rol
+              // Aquí empieza la validación que agregamos
+              final rawRole = rolSnapshot.data;
 
-              return HomePage(userRole: userRole);
+              final validRoles = [
+                'ADMINISTRADOR',
+                'SUPERVISOR',
+                'OPERARIO',
+                'USUARIO'
+              ];
+
+              final normalizedRole = rawRole?.toUpperCase();
+
+              // Si el rol no es válido o no existe, enviamos a LoginPage (o lo que quieras)
+              if (normalizedRole == null ||
+                  !validRoles.contains(normalizedRole)) {
+                return const LoginPage();
+              }
+
+              // Si todo está OK, mandamos el rol normalizado a HomePage
+              return HomePage(userRole: normalizedRole);
             },
           );
         },
