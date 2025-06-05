@@ -46,7 +46,6 @@ services:
       echo 'Base de datos lista, arrancando aplicación...';
       java -jar app.jar
       "
-  
 
   frontend:
     build:
