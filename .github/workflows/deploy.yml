@@ -45,7 +45,7 @@ jobs:
             MYSQL_PASSWORD_DATABASE=${{ secrets.PASS_DB }}
             SPRING_DATASOURCE_URL=${{ secrets.SPRING_DB_URL }}
             SPRING_JPA_HIBERNATE_DDL_AUTO=${{ secrets.JPA_MODE }}
-            SERVER_PORT=${{ secrets.PORT }}
+            SERVER_PORT=8081
             EOF
 
             # Verificar si el contenedor frontend está corriendo y pararlo
