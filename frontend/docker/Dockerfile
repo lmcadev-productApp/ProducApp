@@ -1,6 +1,13 @@
 # Stage 1: Build Flutter Web
 FROM ghcr.io/cirruslabs/flutter:3.22.1 AS builder
 
+# Crear usuario no root
+RUN adduser --disabled-password --gecos '' flutteruser
+USER flutteruser
+
+ENV FLUTTER_ROOT=/usr/local/flutter
+ENV PUB_ALLOW_ROOT=true
+
 ARG API_URL
 
 WORKDIR /app
