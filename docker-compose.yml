@@ -34,9 +34,19 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
     ports:
       - "8081:8080"
-    command: ["/wait-for-it.sh", "sql-db:3306", "--", "java", "-jar", "app.jar"]
     networks:
       - producapp-net
+    command: >
+      /bin/bash -c "
+      until nc -z -v -w30 sql-db 3306;
+      do
+        echo 'Esperando a la base de datos...';
+        sleep 2;
+      done;
+      echo 'Base de datos lista, arrancando aplicación...';
+      java -jar app.jar
+      "
+  
 
   frontend:
     build:
@@ -48,7 +58,7 @@ services:
     depends_on:
       - backend
     environment:
-      API_URL: ${API_URL}  
+      API_URL: ${API_URL}
     ports:
       - "8082:80"
     networks:
