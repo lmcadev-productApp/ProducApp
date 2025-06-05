@@ -24,10 +24,12 @@ RUN flutter build web --release --dart-define=API_URL=$API_URL
 # Stage 2: Serve with Nginx
 FROM nginx:stable-alpine
 
+# Copiar el build web generado en builder
 COPY --from=builder /app/build/web /usr/share/nginx/html
+
+# Copiar configuración personalizada nginx
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
-
