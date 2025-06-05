@@ -48,4 +48,16 @@ public class UsuarioController {
             return ResponseEntity.status(404).body("Usuario no encontrado");
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerUsuarioPorId(@PathVariable Long id) {
+        Usuario usuario = usuarioService.buscarPorId(id);
+        if (usuario != null) {
+            return ResponseEntity.ok(usuario);
+        } else {
+            return ResponseEntity.status(404).body("Usuario no encontrado");
+        }
+    }
+
+
 }

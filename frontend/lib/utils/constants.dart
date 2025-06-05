@@ -1,1 +1,1 @@
-const String baseUrl = 'http://productapp.lmcadev.com:8081';
+const String baseUrl = 'localhost:8080';
