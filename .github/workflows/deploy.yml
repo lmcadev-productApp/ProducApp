@@ -48,8 +48,16 @@ jobs:
             SERVER_PORT=${{ secrets.PORT }}
             EOF
 
-            # Desplegar con Docker
+            # Baja todos los contenedores
             docker-compose down
+            
+            # Actualiza las imágenes (si las usas)
             docker-compose pull || true
+            
+            # Construye las imágenes de nuevo
             docker-compose build || true
-            docker-compose up -d --build
+            
+            # Intenta parar el contenedor "frontend" si existe y está corriendo (ajusta el nombre del servicio si es diferente)
+            if [ $(docker ps -q -f name=producapp-frontend) ]; then
+            docker stop producapp-frontend
+            fi
