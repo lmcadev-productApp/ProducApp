@@ -27,11 +27,8 @@ services:
     container_name: producapp-backend
     depends_on:
       - mysql
-    environment:
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
-      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER_DATABASE}
-      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD_DATABASE}
-      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+    env_file:
+      - .env
     ports:
       - "8081:8080"
     networks:
