@@ -105,12 +105,14 @@ class LoginForm extends StatelessWidget {
               final response = await authService.login(loginRequest);
 
               print('Token: ${response?.token}');
+              print('Rol: ${response?.rol}');
 
               // Cerrar el loading
               Navigator.of(context).pop();
 
               if (response != null) {
                 await SharedPreferencesHelper.saveToken(response.token);
+                await SharedPreferencesHelper.saveToken(response.rol);
                 print('Login exitoso, token guardado: ${response.token}');
                 Navigator.pushReplacement(
                   context,

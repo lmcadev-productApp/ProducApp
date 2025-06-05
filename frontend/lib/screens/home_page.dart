@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     switch (widget.userRole) {
-      case 'admin':
+      case 'Administrador':
         _pages = [
           AdminDashboard(),
           AdminUserStateManagement(),
@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
           AdminOrders(),
           AdminAnalytics(),
         ];
-        _navItems = [
+        _navItems = const [
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
             label: 'Dashboard',
@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
         ];
         break;
 
-      case 'supervisor':
+      case 'Supervisor':
         _pages = [
           WidgetGenerico(),
           WidgetGenerico(),
@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
           //OrdenesTrabajo(),
           //ReportesSupervisor(),
         ];
-        _navItems = [
+        _navItems = const [
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
             label: 'Dashboard',
@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
         ];
         break;
 
-      case 'operario':
+      case 'Operario':
         _pages = [
           WidgetGenerico(),
           WidgetGenerico(),
@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
           //EjecucionEtapa(),
           //ReporteAvance(),
         ];
-        _navItems = [
+        _navItems = const [
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
             label: 'Dashboard',
