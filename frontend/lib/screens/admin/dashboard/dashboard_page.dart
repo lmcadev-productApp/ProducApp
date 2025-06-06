@@ -23,7 +23,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     return BaseScreen(
       titulo: 'DashBoard',
       mostrarLogout: true,
-      mostrarBack: true,
+      mostrarBack: false,
       onLogout: () async {
         await SharedPreferencesHelper.clearToken(); // Elimina el token
         await SharedPreferencesHelper.clearRol(); // Elimina el rol

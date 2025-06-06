@@ -1,35 +1,47 @@
 import 'package:flutter/material.dart';
 
+/// Widget base reutilizable para crear pantallas con estructura consistente este el widget principal para todas las ptanllas
+/// Proporciona un AppBar personalizable y un área de contenido con padding
 class BaseScreen extends StatelessWidget {
-  final String titulo;
-  final Widget contenido;
-  final Color? colorHeader;
-  final bool mostrarBack;
-  final bool mostrarLogout;
-  final VoidCallback? onBack;
-  final VoidCallback? onLogout;
+  // Propiedades del widget
+  final String titulo; // Título que se muestra en el AppBar
+  final Widget contenido; // Widget principal que se renderiza en el body
+  final Color? colorHeader; // Color personalizable del AppBar (opcional)
+  final bool mostrarBack; // Controla si se muestra el botón de regreso
+  final bool mostrarLogout; // Controla si se muestra el botón de cerrar sesión
+  final VoidCallback? onBack; // Callback personalizado para el botón de regreso
+  final VoidCallback? onLogout; // Callback para el botón de cerrar sesión
 
+  /// Constructor del widget BaseScreen
+  /// [titulo] y
+  /// [contenido] son requeridos
+  /// Las demás propiedades tienen valores por defecto
   const BaseScreen({
     Key? key,
-    required this.titulo,
-    required this.contenido,
-    this.colorHeader,
-    this.mostrarBack = false,
-    this.mostrarLogout = false,
-    this.onBack,
-    this.onLogout,
+    required this.titulo, // Obligatorio: título del AppBar
+    required this.contenido, // Obligatorio: contenido principal
+    this.colorHeader, // Opcional: color del header
+    this.mostrarBack = false, // Por defecto no muestra botón de regreso
+    this.mostrarLogout = false, // Por defecto no muestra botón de logout
+    this.onBack, // Opcional: acción personalizada de regreso
+    this.onLogout, // Opcional: acción de cerrar sesión
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Configuración del AppBar
       appBar: AppBar(
+        // Botón de regreso condicional
         leading: mostrarBack
             ? IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
+                // Si se proporciona onBack personalizado lo usa, sino usa Navigator.pop
                 onPressed: onBack ?? () => Navigator.pop(context),
               )
-            : null,
+            : null, // No muestra botón si mostrarBack es false
+
+        // Configuración del título
         title: Text(
           titulo,
           style: const TextStyle(
@@ -38,50 +50,85 @@ class BaseScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
+
+        // Color del AppBar: usa colorHeader personalizado o azul por defecto
         backgroundColor: colorHeader ?? const Color(0xFF4A90E2),
-        elevation: 0,
+        elevation: 0, // Sin sombra en el AppBar
+
+        // Botón de logout condicional en el lado derecho
         actions: mostrarLogout
             ? [
                 IconButton(
                   icon: const Icon(Icons.logout, color: Colors.white),
-                  onPressed: onLogout,
+                  onPressed:
+                      onLogout, // Ejecuta la función de logout proporcionada
                 ),
               ]
-            : null,
+            : null, // No muestra acciones si mostrarLogout es false
       ),
+
+      // Cuerpo de la pantalla con padding consistente
       body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: contenido,
+        padding: const EdgeInsets.all(16), // Padding de 16px en todos los lados
+        child: contenido, // Renderiza el widget contenido proporcionado
       ),
     );
   }
 }
-/*
 
-// Solo flecha de regreso
+/*
+EJEMPLOS DE USO:
+
+// 1. Pantalla básica con solo título
+BaseScreen(
+  titulo: 'Mi Pantalla',
+  contenido: Text('Contenido aquí'),
+),
+
+// 2. Solo con flecha de regreso
 BaseScreen(
   titulo: 'Detalles',
   mostrarBack: true,
   contenido: MiContenido(),
 ),
 
-// Solo botón de cerrar sesión
+// 3. Solo con botón de cerrar sesión
 BaseScreen(
   titulo: 'Inicio',
   mostrarLogout: true,
   onLogout: () {
-    // Lógica de cerrar sesión
+    // Lógica personalizada de cerrar sesión
+    print('Cerrando sesión...');
   },
   contenido: MiContenido(),
 ),
 
-
-// Ambos
+// 4. Con ambos botones
 BaseScreen(
   titulo: 'Perfil',
   mostrarBack: true,
   mostrarLogout: true,
   onLogout: () => cerrarSesion(),
   contenido: MiContenido(),
+),
 
+// 5. Con color personalizado del header
+BaseScreen(
+  titulo: 'Configuración',
+  colorHeader: Colors.green,
+  mostrarBack: true,
+  contenido: MiContenido(),
+),
+
+// 6. Con callback personalizado de regreso
+BaseScreen(
+  titulo: 'Formulario',
+  mostrarBack: true,
+  onBack: () {
+    // Lógica personalizada antes de regresar
+    // Por ejemplo, mostrar diálogo de confirmación
+    showDialog(context: context, builder: (_) => AlertDialog(...));
+  },
+  contenido: MiFormulario(),
+),
 */

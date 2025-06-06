@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:async'; // Para TimeoutException
 import 'package:http/http.dart' as http;
-import 'package:frontend/utils/constants.dart'; // Asegúrate que baseUrl esté bien definido
+import 'package:frontend/utils/constants.dart';
 import 'package:frontend/models/login/login_request.dart';
 import 'package:frontend/models/login/login_response.dart';
 
@@ -9,11 +11,13 @@ class AuthService {
     final url = Uri.parse('$baseUrl/auth/login');
 
     try {
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(request.toJson()),
-      );
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(request.toJson()),
+          )
+          .timeout(Duration(seconds: 10)); // opcional
 
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
@@ -21,16 +25,21 @@ class AuthService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         return LoginResponse.fromJson(data);
-      } else {
-        print('Error al iniciar sesión: ${response.statusCode}');
-
-        print(response.body);
+      } else if (response.statusCode == 401) {
+        // Credenciales inválidas: devolver null
         return null;
+      } else {
+        // Otro error del servidor: lanzar excepción
+        throw HttpException(
+            'Error inesperado del servidor: ${response.statusCode}');
       }
+    } on SocketException {
+      throw SocketException('No se pudo conectar al servidor');
+    } on TimeoutException {
+      throw TimeoutException('Tiempo de espera agotado');
     } catch (e) {
-      print('Excepción capturada durante el login: $e');
-
-      return null;
+      // Otro error inesperado
+      throw Exception('Error desconocido: $e');
     }
   }
 }

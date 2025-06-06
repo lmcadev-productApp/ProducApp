@@ -28,7 +28,7 @@ void mostrarOpcionesUsuario(BuildContext context, dynamic user) {
         icono: Icons.edit,
         titulo: 'Editar',
         alPresionar: () {
-          // Navegar a editar usuario
+          // Lógica para editar usuario
           mostrarEditarUsuario(
               context, user); // donde 'usuario' es la instancia de Us
           print('Editar usuario: ${user.nombre}');
