@@ -6,8 +6,6 @@ import 'package:frontend/widgets/section/section_header.dart';
 import 'package:frontend/widgets/buttons/custom-button.dart';
 import 'package:frontend/widgets/lists/admin/user/user_list.dart';
 import 'package:frontend/widgets/searches/search_input.dart';
-import 'package:frontend/widgets/dialogs/admin/add_user_dialog.dart';
-import 'package:frontend/widgets/dialogs/admin/edit_user_dialog.dart';
 
 void mostrarOpcionesUsuario(BuildContext context, dynamic user) {
   ModalOptionsCustomizable.mostrar(
@@ -19,8 +17,6 @@ void mostrarOpcionesUsuario(BuildContext context, dynamic user) {
         titulo: 'Editar Rol',
         alPresionar: () {
           // Lógica para editar Rol
-          mostrarEditarUsuario(
-              context, user); // donde 'usuario' es la instancia de Us
           print('Editar usuario: ${user.nombre}');
         },
       ),
@@ -29,8 +25,6 @@ void mostrarOpcionesUsuario(BuildContext context, dynamic user) {
         titulo: 'Editar',
         alPresionar: () {
           // Lógica para editar usuario
-          mostrarEditarUsuario(
-              context, user); // donde 'usuario' es la instancia de Us
           print('Editar usuario: ${user.nombre}');
         },
       ),
@@ -69,7 +63,6 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
           texto: 'Agregar Usuario',
           onPressed: () {
             //Lógica aquí
-            mostrarAgregarUsuarioVisual(context);
             print('Botón Agregar Usuario Presionado');
           },
         ),

@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/users/user.dart';
+import 'package:frontend/services/users/user_service.dart';
 import 'package:frontend/widgets/dialogs/dialog_general.dart';
 
-void mostrarAgregarUsuarioVisual(BuildContext context) {
+void mostrarAgregarUsuarioVisual(
+    BuildContext context, VoidCallback onUsuarioCreado) {
   final nombreCtrl = TextEditingController();
   final correoCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
   final telefonoCtrl = TextEditingController();
   final direccionCtrl = TextEditingController();
-  final seguroSocialCtrl = TextEditingController();
-  final arlCtrl = TextEditingController();
-
-  String rolSeleccionado = 'Administrador';
-  String especialidadSeleccionada = 'Pintura';
 
   bool botonActivo = false;
+  bool passwordVisible = false;
+  bool listenersAgregados = false;
 
-  // Esta función actualizará el estado del botón
   void validarBoton(StateSetter setState) {
     final activo = nombreCtrl.text.isNotEmpty &&
         correoCtrl.text.isNotEmpty &&
@@ -27,15 +26,11 @@ void mostrarAgregarUsuarioVisual(BuildContext context) {
     }
   }
 
-  // Variable para evitar agregar listeners múltiples veces
-  bool listenersAgregados = false;
-
   showDialog(
     context: context,
     builder: (context) {
       return StatefulBuilder(
         builder: (context, setState) {
-          // Agregar listeners solo la primera vez
           if (!listenersAgregados) {
             nombreCtrl.addListener(() => validarBoton(setState));
             correoCtrl.addListener(() => validarBoton(setState));
@@ -49,7 +44,7 @@ void mostrarAgregarUsuarioVisual(BuildContext context) {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Nombre',
+                  Text('Nombre Completo',
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                   SizedBox(height: 8),
@@ -66,7 +61,7 @@ void mostrarAgregarUsuarioVisual(BuildContext context) {
                     ),
                   ),
                   SizedBox(height: 15),
-                  Text('Correo',
+                  Text('Correo Electrónico',
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                   SizedBox(height: 8),
@@ -84,13 +79,13 @@ void mostrarAgregarUsuarioVisual(BuildContext context) {
                     ),
                   ),
                   SizedBox(height: 15),
-                  Text('Contraseña',
+                  Text('Contraseña Temporal',
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                   SizedBox(height: 8),
                   TextField(
                     controller: passwordCtrl,
-                    obscureText: true,
+                    obscureText: !passwordVisible,
                     decoration: InputDecoration(
                       hintText: 'Ingrese la contraseña',
                       filled: true,
@@ -99,34 +94,19 @@ void mostrarAgregarUsuarioVisual(BuildContext context) {
                           borderRadius: BorderRadius.circular(6)),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          passwordVisible
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            passwordVisible = !passwordVisible;
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 15),
-                  Text('Rol',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  SizedBox(height: 8),
-                  DropdownButtonFormField<String>(
-                    value: rolSeleccionado,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.grey[50],
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    ),
-                    items: ['Administrador', 'Supervisor', 'Operador']
-                        .map((rol) => DropdownMenuItem(
-                              value: rol,
-                              child: Text(rol),
-                            ))
-                        .toList(),
-                    onChanged: (val) {
-                      setState(() {
-                        rolSeleccionado = val!;
-                      });
-                    },
                   ),
                   SizedBox(height: 15),
                   Text('Teléfono',
@@ -163,84 +143,34 @@ void mostrarAgregarUsuarioVisual(BuildContext context) {
                           EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                     ),
                   ),
-                  SizedBox(height: 15),
-                  Text('Especialidad',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  SizedBox(height: 8),
-                  DropdownButtonFormField<String>(
-                    value: especialidadSeleccionada,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.grey[50],
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    ),
-                    items: ['Pintura', 'Carpintería', 'Acabados']
-                        .map((esp) => DropdownMenuItem(
-                              value: esp,
-                              child: Text(esp),
-                            ))
-                        .toList(),
-                    onChanged: (val) {
-                      setState(() {
-                        especialidadSeleccionada = val!;
-                      });
-                    },
-                  ),
-                  SizedBox(height: 15),
-                  Text('Seguro Social',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  SizedBox(height: 8),
-                  TextField(
-                    controller: seguroSocialCtrl,
-                    decoration: InputDecoration(
-                      hintText: 'Ingrese el seguro social',
-                      filled: true,
-                      fillColor: Colors.grey[50],
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  Text('ARL',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  SizedBox(height: 8),
-                  TextField(
-                    controller: arlCtrl,
-                    decoration: InputDecoration(
-                      hintText: 'Ingrese la ARL',
-                      filled: true,
-                      fillColor: Colors.grey[50],
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    ),
-                  ),
                 ],
               ),
             ),
             textoBotonOk: 'Guardar',
             textoBotonCancelar: 'Cancelar',
             onOk: botonActivo
-                ? () {
-                    print('Nombre: ${nombreCtrl.text}');
-                    print('Correo: ${correoCtrl.text}');
-                    print('Contraseña: ${passwordCtrl.text}');
-                    print('Rol: $rolSeleccionado');
-                    print('Teléfono: ${telefonoCtrl.text}');
-                    print('Dirección: ${direccionCtrl.text}');
-                    print('Especialidad: $especialidadSeleccionada');
-                    print('Seguro Social: ${seguroSocialCtrl.text}');
-                    print('ARL: ${arlCtrl.text}');
-                    Navigator.of(context).pop();
+                ? () async {
+                    final nuevoUsuario = User(
+                      correo: correoCtrl.text,
+                      contrasena: passwordCtrl.text,
+                      nombre: nombreCtrl.text,
+                      telefono: telefonoCtrl.text,
+                      direccion: direccionCtrl.text,
+                      especialidad: null,
+                      suguroSocial: null,
+                      arl: null,
+                    );
+
+                    try {
+                      final userService = UserService();
+                      final mensaje =
+                          await userService.createUser(nuevoUsuario);
+                      print('Respuesta backend: $mensaje');
+                      Navigator.of(context).pop();
+                      onUsuarioCreado();
+                    } catch (e) {
+                      print('Error al crear usuario: $e');
+                    }
                   }
                 : null,
           );
@@ -248,13 +178,10 @@ void mostrarAgregarUsuarioVisual(BuildContext context) {
       );
     },
   ).then((_) {
-    // Limpiar controladores al cerrar diálogo
     nombreCtrl.dispose();
     correoCtrl.dispose();
     passwordCtrl.dispose();
     telefonoCtrl.dispose();
     direccionCtrl.dispose();
-    seguroSocialCtrl.dispose();
-    arlCtrl.dispose();
   });
 }

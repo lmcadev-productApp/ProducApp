@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/users/user.dart';
+import 'package:frontend/services/users/user_service.dart';
 import 'package:frontend/widgets/dialogs/dialog_general.dart';
 
-void mostrarEditarUsuario(BuildContext context, User usuario) {
+void mostrarEditarUsuario(
+    BuildContext context, User usuario, VoidCallback onUsuarioActualizado) {
   final nombreCtrl = TextEditingController(text: usuario.nombre);
   final correoCtrl = TextEditingController(text: usuario.correo);
   final passwordCtrl = TextEditingController(text: usuario.contrasena);
   final telefonoCtrl = TextEditingController(text: usuario.telefono);
   final direccionCtrl = TextEditingController(text: usuario.direccion);
-  final seguroSocialCtrl = TextEditingController(text: usuario.suguroSocial);
-  final arlCtrl = TextEditingController(text: usuario.arl);
-
-  String rolSeleccionado = usuario.rol;
 
   bool botonActivo = false;
+  bool passwordVisible = false;
 
   showDialog(
     context: context,
@@ -24,12 +23,9 @@ void mostrarEditarUsuario(BuildContext context, User usuario) {
             botonActivo = nombreCtrl.text.isNotEmpty &&
                 correoCtrl.text.isNotEmpty &&
                 passwordCtrl.text.isNotEmpty;
-            // Puedes agregar más validaciones si quieres
           });
         }
 
-        // Solo agregar listeners una vez para evitar múltiples
-        // Por simplicidad se puede usar un flag local, o mejor manejar en initState
         nombreCtrl.removeListener(validarBoton);
         correoCtrl.removeListener(validarBoton);
         passwordCtrl.removeListener(validarBoton);
@@ -38,7 +34,6 @@ void mostrarEditarUsuario(BuildContext context, User usuario) {
         correoCtrl.addListener(validarBoton);
         passwordCtrl.addListener(validarBoton);
 
-        // Llamar la validación al inicio para que el botón esté activo si ya hay datos
         validarBoton();
 
         return DialogoGeneral(
@@ -88,7 +83,7 @@ void mostrarEditarUsuario(BuildContext context, User usuario) {
                 SizedBox(height: 8),
                 TextField(
                   controller: passwordCtrl,
-                  obscureText: true,
+                  obscureText: !passwordVisible,
                   decoration: InputDecoration(
                     hintText: 'Ingrese la contraseña',
                     filled: true,
@@ -97,32 +92,19 @@ void mostrarEditarUsuario(BuildContext context, User usuario) {
                         borderRadius: BorderRadius.circular(6)),
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        passwordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          passwordVisible = !passwordVisible;
+                        });
+                      },
+                    ),
                   ),
-                ),
-                SizedBox(height: 15),
-                Text('Rol',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                SizedBox(height: 8),
-                DropdownButtonFormField<String>(
-                  value: rolSeleccionado,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.grey[50],
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6)),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  ),
-                  items: ['Administrador', 'Supervisor', 'Operador']
-                      .map((rol) =>
-                          DropdownMenuItem(value: rol, child: Text(rol)))
-                      .toList(),
-                  onChanged: (val) {
-                    setState(() {
-                      rolSeleccionado = val!;
-                    });
-                  },
                 ),
                 SizedBox(height: 15),
                 Text('Teléfono',
@@ -159,58 +141,37 @@ void mostrarEditarUsuario(BuildContext context, User usuario) {
                         EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                   ),
                 ),
-                SizedBox(height: 15),
-                Text('Seguro Social',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                SizedBox(height: 8),
-                TextField(
-                  controller: seguroSocialCtrl,
-                  decoration: InputDecoration(
-                    hintText: 'Ingrese el seguro social',
-                    filled: true,
-                    fillColor: Colors.grey[50],
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6)),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  ),
-                ),
-                SizedBox(height: 15),
-                Text('ARL',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                SizedBox(height: 8),
-                TextField(
-                  controller: arlCtrl,
-                  decoration: InputDecoration(
-                    hintText: 'Ingrese la ARL',
-                    filled: true,
-                    fillColor: Colors.grey[50],
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6)),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  ),
-                ),
               ],
             ),
           ),
           textoBotonOk: 'Guardar',
           textoBotonCancelar: 'Cancelar',
           onOk: botonActivo
-              ? () {
-                  // Aquí la lógica para guardar cambios
-                  print('Usuario editado:');
-                  print('Nombre: ${nombreCtrl.text}');
-                  print('Correo: ${correoCtrl.text}');
-                  print('Contraseña: ${passwordCtrl.text}');
-                  print('Rol: $rolSeleccionado');
-                  print('Teléfono: ${telefonoCtrl.text}');
-                  print('Dirección: ${direccionCtrl.text}');
-                  print('Seguro Social: ${seguroSocialCtrl.text}');
-                  print('ARL: ${arlCtrl.text}');
-                  Navigator.of(context).pop();
+              ? () async {
+                  final usuarioActualizado = User(
+                    id: usuario.id,
+                    nombre: nombreCtrl.text,
+                    correo: correoCtrl.text,
+                    contrasena: passwordCtrl.text,
+                    rol: usuario.rol,
+                    telefono: telefonoCtrl.text,
+                    direccion: direccionCtrl.text,
+                    especialidad: usuario.especialidad,
+                    suguroSocial: usuario.suguroSocial,
+                    arl: usuario.arl,
+                  );
+
+                  try {
+                    final userService = UserService();
+                    final mensaje = await userService.updateUser(
+                        usuario.id!, usuarioActualizado);
+                    print('Respuesta backend: $mensaje');
+                    Navigator.of(context).pop();
+                    onUsuarioActualizado();
+                  } catch (e) {
+                    print('Error al actualizar usuario: $e');
+                    print('Rol usuario original: ${usuario.rol}');
+                  }
                 }
               : null,
         );

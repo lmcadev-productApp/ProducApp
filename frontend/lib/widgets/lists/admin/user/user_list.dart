@@ -81,7 +81,7 @@ class ListUser extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
-            user.rol,
+            user.rol ?? 'Sin rol',
             style: const TextStyle(color: Colors.white, fontSize: 12),
           ),
         ),
@@ -124,15 +124,21 @@ class ListUser extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          //user.especialidad != null → ¿El usuario tiene una especialidad asignada?
+          // user.especialidad!.descripcion.isNotEmpty → ¿La descripción no está vacía?
+          // ? user.especialidad!.descripcion → Si ambas condiciones se cumplen, se muestra la descripción.
+          // : 'Sin descripción' → Si alguna falla, se muestra "Sin descripción".
           Text(
-            'Especialidad: ${user.especialidad.nombre}',
+            'Especialidad: ${user.especialidad?.nombre ?? "No asignada"}',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          if (user.especialidad.descripcion.isNotEmpty)
-            Text(
-              user.especialidad.descripcion,
-              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-            ),
+          Text(
+            (user.especialidad != null &&
+                    user.especialidad!.descripcion.isNotEmpty)
+                ? user.especialidad!.descripcion
+                : 'Sin descripción',
+            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+          ),
         ],
       ),
     );
@@ -144,13 +150,13 @@ class ListUser extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            'EPS: ${user.suguroSocial}',
+            'EPS: ${user.suguroSocial ?? 'Sin EPS'}',
             style: const TextStyle(fontSize: 14),
           ),
         ),
         Expanded(
           child: Text(
-            'ARL: ${user.arl}',
+            'ARL: ${user.arl ?? 'Sin ARL'}',
             style: const TextStyle(fontSize: 14),
           ),
         ),

@@ -1,42 +1,44 @@
 import 'package:frontend/models/specialty/specialty.dart';
 
 class User {
-  final int id;
+  final int? id;
   final String correo;
   final String contrasena;
-  final String rol;
+  final String? rol; // nullable
   final String nombre;
   final String telefono;
   final String direccion;
-  final Specialty especialidad;
-  final String suguroSocial;
-  final String arl;
+  final Specialty? especialidad; // nullable
+  final String? suguroSocial; // nullable
+  final String? arl; // nullable
 
   User({
-    required this.id,
+    this.id, // opcional
     required this.correo,
     required this.contrasena,
-    required this.rol,
+    this.rol, // opcional
     required this.nombre,
     required this.telefono,
     required this.direccion,
-    required this.especialidad,
-    required this.suguroSocial,
-    required this.arl,
+    this.especialidad,
+    this.suguroSocial,
+    this.arl,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'] ?? 0,
+      id: json['id'], // puede ser null
       correo: json['correo'] ?? '',
       contrasena: json['contrasena'] ?? '',
-      rol: json['rol'] ?? '',
+      rol: json['rol'], // puede ser null
       nombre: json['nombre'] ?? '',
       telefono: json['telefono'] ?? '',
       direccion: json['direccion'] ?? '',
-      especialidad: Specialty.fromJson(json['especialidad'] ?? {}),
-      suguroSocial: json['suguroSocial'] ?? '',
-      arl: json['arl'] ?? '',
+      especialidad: json['especialidad'] == null
+          ? null
+          : Specialty.fromJson(json['especialidad']),
+      suguroSocial: json['suguroSocial'],
+      arl: json['arl'],
     );
   }
 
@@ -49,7 +51,7 @@ class User {
       'nombre': nombre,
       'telefono': telefono,
       'direccion': direccion,
-      'especialidad': especialidad.toJson(),
+      'especialidad': especialidad?.toJson(),
       'suguroSocial': suguroSocial,
       'arl': arl,
     };
