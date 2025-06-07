@@ -59,5 +59,19 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping("/")
+    public ResponseEntity<?> obtenerTodosLosUsuarios() {
+        return ResponseEntity.ok(usuarioService.listarTodos());
+    }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizarUsuario(@PathVariable Long id, @Valid @RequestBody Usuario usuario) {
+        usuario.setId(id);
+        Usuario actualizado = usuarioService.actualizar(usuario);
+        if (actualizado != null) {
+            return ResponseEntity.ok("Usuario actualizado con ID: " + actualizado.getId());
+        } else {
+            return ResponseEntity.status(404).body("Usuario no encontrado");
+        }
+    }
 }

@@ -53,4 +53,16 @@ public class UsuarioService {
         return false;
     }
 
+    public Usuario actualizar(Usuario usuario) {
+        if (usuarioRepository.existsById(usuario.getId())) {
+            // Encriptar la contraseña antes de actualizar
+            String contrasenaEncriptada = passwordEncoder.encode(usuario.getContrasena());
+            usuario.setContrasena(contrasenaEncriptada);
+            return usuarioRepository.save(usuario);
+        }
+        return null;
+    }
+
+
+
 }

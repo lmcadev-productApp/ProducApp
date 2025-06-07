@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-Color getRoleColor(String rol) {
+Color getRoleColor(String? rol) {
   switch (rol) {
-    case 'Administrador':
+    case 'ADMINISTRADOR':
       return Colors.red[400]!;
-    case 'Supervisor':
+    case 'SUPERVISOR':
       return Colors.orange[400]!;
-    case 'Operador':
+    case 'OPERARIO':
       return Colors.green[400]!;
     default:
       return Colors.grey[400]!;

@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/users/user.dart';
 import 'package:frontend/utils/role_color.dart';
 
-// Widget que muestra una lista de usuarios
 class ListUser extends StatelessWidget {
-  final List<User> users; // Lista de usuarios
-  final Function(User)? onTap; // Qué hacer cuando tocan un usuario
-  final Function(User)?
-      onLongPress; // Qué hacer cuando mantienen presionado un usuario
+  final List<User> users;
+  final Function(User)? onTap;
+  final Function(User)? onLongPress;
 
   const ListUser({
     Key? key,
@@ -18,133 +16,161 @@ class ListUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Crear una lista con separadores
     return ListView.separated(
+      padding: const EdgeInsets.symmetric(vertical: 16),
       itemCount: users.length,
-      separatorBuilder: (context, index) =>
-          SizedBox(height: 8), // Espacio entre tarjetas
+      separatorBuilder: (context, index) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
-        User user = users[index];
-
-        // Crear tarjeta para cada usuario
-        return Container(
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[200]!),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                blurRadius: 3,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: InkWell(
-            onTap: onTap != null ? () => onTap!(user) : null,
-            onLongPress: onLongPress != null ? () => onLongPress!(user) : null,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 1. NOMBRE Y ROL DEL USUARIO
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        user.nombre,
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: getRoleColor(user.rol),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        user.rol,
-                        style: TextStyle(color: Colors.white, fontSize: 12),
-                      ),
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: 12),
-
-                // 2. INFORMACIÓN DE CONTACTO
-                _buildContactRow(user.correo),
-                _buildContactRow(user.telefono),
-                _buildContactRow(user.direccion),
-
-                SizedBox(height: 10),
-
-                // 3. ESPECIALIDAD
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Especialidad: ${user.especialidad.nombre}',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      if (user.especialidad.descripcion.isNotEmpty)
-                        Text(
-                          user.especialidad.descripcion,
-                          style:
-                              TextStyle(fontSize: 16, color: Colors.grey[600]),
-                        ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 10),
-
-                // 4. EPS Y ARL
-                Row(
-                  children: [
-                    Expanded(
-                        child: Text('EPS: ${user.suguroSocial}',
-                            style: TextStyle(fontSize: 14))),
-                    Expanded(
-                        child: Text('ARL: ${user.arl}',
-                            style: TextStyle(fontSize: 14))),
-                  ],
-                ),
-
-                SizedBox(height: 6),
-
-                // 5. ID DEL USUARIO
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    'ID: ${user.id}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
+        final user = users[index];
+        return _buildUserCard(user);
       },
     );
   }
 
-  // Widget simple para mostrar información de contacto
-  Widget _buildContactRow(String text) {
+  // Construye la tarjeta de cada usuario
+  Widget _buildUserCard(User user) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[200]!),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 3,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: InkWell(
+        onTap: onTap != null ? () => onTap!(user) : null,
+        onLongPress: onLongPress != null ? () => onLongPress!(user) : null,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildNameAndRole(user),
+            const SizedBox(height: 12),
+            _buildContactInfo(user),
+            const SizedBox(height: 10),
+            _buildSpecialtySection(user),
+            const SizedBox(height: 10),
+            _buildInsuranceRow(user),
+            const SizedBox(height: 6),
+            _buildUserId(user),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Nombre del usuario y su rol
+  Widget _buildNameAndRole(User user) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            user.nombre,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(
+            color: getRoleColor(user.rol),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text(
+            user.rol ?? 'Sin rol',
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Información de contacto (correo, teléfono, dirección)
+  Widget _buildContactInfo(User user) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildContactText(user.correo),
+        _buildContactText(user.telefono),
+        _buildContactText(user.direccion),
+      ],
+    );
+  }
+
+  // Cada línea de contacto
+  Widget _buildContactText(String text) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsets.symmetric(vertical: 2),
       child: Text(
         text,
         style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+      ),
+    );
+  }
+
+  // Sección de especialidad con fondo gris
+  Widget _buildSpecialtySection(User user) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //user.especialidad != null → ¿El usuario tiene una especialidad asignada?
+          // user.especialidad!.descripcion.isNotEmpty → ¿La descripción no está vacía?
+          // ? user.especialidad!.descripcion → Si ambas condiciones se cumplen, se muestra la descripción.
+          // : 'Sin descripción' → Si alguna falla, se muestra "Sin descripción".
+          Text(
+            'Especialidad: ${user.especialidad?.nombre ?? "No asignada"}',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Text(
+            (user.especialidad != null &&
+                    user.especialidad!.descripcion.isNotEmpty)
+                ? user.especialidad!.descripcion
+                : 'Sin descripción',
+            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Fila con EPS y ARL
+  Widget _buildInsuranceRow(User user) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            'EPS: ${user.suguroSocial ?? 'Sin EPS'}',
+            style: const TextStyle(fontSize: 14),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            'ARL: ${user.arl ?? 'Sin ARL'}',
+            style: const TextStyle(fontSize: 14),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ID del usuario alineado a la derecha
+  Widget _buildUserId(User user) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Text(
+        'ID: ${user.id}',
+        style: const TextStyle(fontSize: 12, color: Colors.grey),
       ),
     );
   }

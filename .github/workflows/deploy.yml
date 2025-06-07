@@ -2,8 +2,7 @@ name: Deploy to VPS
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   deploy:
@@ -15,7 +14,6 @@ jobs:
 
       - name: Copy files to VPS
         uses: appleboy/scp-action@v0.1.4
-
         with:
           host: ${{ secrets.VPS_HOST }}
           username: yulianna
@@ -31,10 +29,13 @@ jobs:
           username: yulianna
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
+            set -e                        # falla en el primer comando con error
             cd /home/yulianna/ProducApp
 
-            # Crear archivo .env con valores desde secretos
-            cat <<EOF > .env
+            # ──────────────────────────────────────────────
+            # 1️⃣  Generar/actualizar archivo .env con secretos
+            # ──────────────────────────────────────────────
+            cat > .env <<EOF
             API_URL=${{ secrets.API_URL }}
             USER_ROOT_DATABASE=${{ secrets.USER_ROOT }}
             PASSWORD_ROOT_DATABASE=${{ secrets.PASS_ROOT }}
@@ -48,32 +49,23 @@ jobs:
             SERVER_PORT=8081
             EOF
 
-            # Verificar si el contenedor frontend está corriendo y pararlo
-            if [ "$(docker ps -q -f name=producapp-frontend)" ]; then
-            echo "Deteniendo contenedor producapp-frontend..."
-            docker stop producapp-frontend
-            fi
-            
-            # Verificar si el contenedor backend está corriendo y pararlo
-            if [ "$(docker ps -q -f name=producapp-backend)" ]; then
-            echo "Deteniendo contenedor producapp-backend..."
-            docker stop producapp-backend
-            fi
-            
-            # Verificar si el contenedor base de datos está corriendo y pararlo
-            if [ "$(docker ps -q -f name=producapp-db)" ]; then
-            echo "Deteniendo contenedor producapp-db..."
-            docker stop producapp-db
-            fi
-            
-            # Opcional: también puedes usar docker-compose down para bajar todo junto en vez de parar contenedores uno por uno
-            # docker-compose down
-            
-            # Actualizar imágenes (si las usas)
-            docker-compose pull || true
-            
-            # Construir las imágenes de nuevo
-            docker-compose build || true
-            
-            # Levantar todos los servicios en segundo plano
+            # ──────────────────────────────────────────────
+            # 2️⃣  Detener y ELIMINAR contenedores existentes
+            # ──────────────────────────────────────────────
+            for c in producapp-frontend producapp-backend producapp-db; do
+              if [ "$(docker ps -a -q -f name=$c)" ]; then
+                echo "Deteniendo y eliminando contenedor $c…"
+                docker rm -f "$c"
+              fi
+            done
+
+            # ──────────────────────────────────────────────
+            # 3️⃣  (Opcional) actualizar imágenes
+            # ──────────────────────────────────────────────
+            docker-compose pull || true    # ignora error si no hay imagen remota
+
+            # ──────────────────────────────────────────────
+            # 4️⃣  Reconstruir y levantar servicios
+            # ──────────────────────────────────────────────
+            docker-compose build --no-cache
             docker-compose up -d

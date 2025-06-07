@@ -14,27 +14,6 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
-  void mostrarLoading(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const LoadingDialog(),
-    );
-
-    //Cierre forzado por si se queda colgado el servidor
-    Future.delayed(Duration(seconds: 5), () {
-      if (!mounted) return; // Asegura que el widget sigue vivo
-      final nav = Navigator.of(context, rootNavigator: true);
-      if (nav.canPop()) {
-        nav.pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Sin respuesta del servidor')),
-        );
-      }
-    });
-  }
-
   @override
   void dispose() {
     _emailController.dispose();
@@ -110,7 +89,17 @@ class _LoginFormState extends State<LoginForm> {
                 return;
               }
 
-              mostrarLoading(context);
+              // Mostrar el diálogo de carga
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return const LoadingDialog(
+                    mensaje: "Estamos validando tus datos",
+                    size: 50,
+                  );
+                },
+              );
 
               final loginRequest = LoginRequest(
                 correo: emailFlutter,
@@ -118,30 +107,38 @@ class _LoginFormState extends State<LoginForm> {
               );
               final authService = AuthService();
 
-              final response = await authService.login(loginRequest);
+              try {
+                final response = await authService.login(loginRequest);
 
-              if (!mounted)
-                return; // <-- Evita usar context si widget desmontado
+                if (!mounted) return;
 
-              // Cerrar el loading
-              Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Cerrar el diálogo
 
-              if (response != null) {
-                await SharedPreferencesHelper.saveToken(response.token);
-                await SharedPreferencesHelper.saveRol(response.rol);
-                print(
-                    'Login exitoso, token guardado: ${response.token} y rol guardado: ${response.rol}');
-                final savedRol = await SharedPreferencesHelper.getRol();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomePage(userRole: savedRol!),
+                if (response != null) {
+                  await SharedPreferencesHelper.saveToken(response.token);
+                  await SharedPreferencesHelper.saveRol(response.rol);
+                  final savedRol = await SharedPreferencesHelper.getRol();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomePage(userRole: savedRol!),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Correo o contraseña incorrectos.')),
+                  );
+                }
+              } catch (e) {
+                if (mounted)
+                  Navigator.of(context).pop(); // Cerrar el diálogo si hay error
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                        'Error de conexión. Verifica el servidor o tu red.'),
                   ),
                 );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Correo o contraseña incorrectos.')),
-                );
+                print('Error de conexión: $e');
               }
             },
             style: ElevatedButton.styleFrom(
