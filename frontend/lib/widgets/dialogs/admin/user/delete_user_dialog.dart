@@ -4,14 +4,13 @@ import 'package:frontend/services/users/user_service.dart';
 import 'package:frontend/widgets/dialogs/dialog_general.dart'; // Ajusta el import según tu proyecto
 
 void alPresionarEliminar(
-    BuildContext context, User user, VoidCallback refrescarLista) async {
+    BuildContext context, User user, VoidCallback onUsuarioEliminado) async {
   final idAEliminar = await mostrarDialogoEliminar(context, user);
   if (idAEliminar != null) {
     try {
       await UserService().deleteUser(idAEliminar);
       print('Usuario eliminado: $idAEliminar');
-      Navigator.of(context).pop();
-      refrescarLista(); // refresca la lista después de eliminar
+      onUsuarioEliminado(); // refresca la lista después de eliminar
     } catch (e) {
       String mensajeError = 'Error al eliminar usuario.';
       if (e.toString().contains('409') ||
