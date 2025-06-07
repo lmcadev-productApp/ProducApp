@@ -52,20 +52,12 @@ class BaseScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-<<<<<<< HEAD
-        backgroundColor: headerColor,
-        elevation: 0,
-        // Fuerza el tema de iconos a blanco
-        iconTheme: const IconThemeData(color: Colors.white),
-        actionsIconTheme: const IconThemeData(color: Colors.white),
-=======
 
         // Color del AppBar: usa colorHeader personalizado o azul por defecto
         backgroundColor: colorHeader ?? const Color(0xFF4A90E2),
         elevation: 0, // Sin sombra en el AppBar
 
         // Botón de logout condicional en el lado derecho
->>>>>>> feature-admin-ui-user-management
         actions: mostrarLogout
             ? [
                 IconButton(
@@ -85,8 +77,6 @@ class BaseScreen extends StatelessWidget {
     );
   }
 }
-<<<<<<< HEAD
-=======
 
 /*
 EJEMPLOS DE USO:
@@ -144,4 +134,3 @@ BaseScreen(
   contenido: MiFormulario(),
 ),
 */
->>>>>>> feature-admin-ui-user-management
