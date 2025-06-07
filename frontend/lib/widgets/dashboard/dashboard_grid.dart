@@ -44,6 +44,8 @@ class DashboardGrid extends StatelessWidget {
       color: backgroundColor,
       padding: padding,
       child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: spacing,
@@ -94,6 +96,13 @@ class _DashboardCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         child: Container(
           padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.black.withOpacity(0.3),
+              width: 0.8,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -103,16 +112,18 @@ class _DashboardCard extends StatelessWidget {
                 color: item.iconColor ?? const Color(0xFF4A90E2),
               ),
               const SizedBox(height: 12),
-              Text(
-                item.title,
-                style: TextStyle(
-                  fontSize: fontSize,
-                  fontWeight: FontWeight.w600,
-                  color: textColor,
+              Flexible(
+                child: Text(
+                  item.title,
+                  style: TextStyle(
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.w600,
+                    color: textColor,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),

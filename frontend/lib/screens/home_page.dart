@@ -4,7 +4,7 @@ import 'package:frontend/screens/admin/orders/orders_page.dart';
 import 'package:frontend/screens/admin/stage/stages_page.dart';
 import 'package:frontend/screens/test_navbar_page.dart';
 import 'package:frontend/screens/admin/users/users_page.dart';
-import 'package:frontend/screens/admin/dashboard/dashboard_page.dart';
+import 'package:frontend/screens/dashboard/dashboard_page.dart';
 
 class HomePage extends StatefulWidget {
   final String userRole;
@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
     switch (widget.userRole) {
       case 'ADMINISTRADOR':
         _pages = [
-          AdminDashboard(),
+          Dashboard(),
           AdminUserStateManagement(),
           AdminStages(),
           AdminOrders(),
@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
 
       case 'SUPERVISOR':
         _pages = [
-          WidgetGenerico(),
+          Dashboard(),
           WidgetGenerico(),
           WidgetGenerico(),
           WidgetGenerico(),
@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
 
       case 'OPERARIO':
         _pages = [
-          WidgetGenerico(),
+          Dashboard(),
           WidgetGenerico(),
           WidgetGenerico(),
           WidgetGenerico(),
@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
 
       case 'USUARIO':
         _pages = [
-          WidgetGenerico(),
+          Dashboard(),
           WidgetGenerico(),
           WidgetGenerico(),
           WidgetGenerico(),
