@@ -19,13 +19,19 @@ class AdminUserStateManagement extends StatefulWidget {
 
 class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
   final UserService userService = UserService();
-  List<User> usuarios = []; // Aquí se guardaran los usuarios cargados
-  List<User> usuariosFiltrados = [];
+  List<User> usuarios = []; // Lista original
+  List<User> usuariosFiltrados = []; // Lista filtrada para mostrar
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     cargarUsuarios();
+
+    // Listener para filtrar cuando cambie el texto en el SearchInput
+    searchController.addListener(() {
+      filtrarUsuarios(searchController.text);
+    });
   }
 
   void cargarUsuarios() async {
@@ -36,8 +42,39 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
         usuariosFiltrados = lista;
       });
     } catch (e) {
-      // Manejo de error simple
       print('Error cargando usuarios: $e');
+    }
+  }
+
+  void filtrarUsuarios(String query) {
+    if (query.isEmpty) {
+      setState(() {
+        usuariosFiltrados = usuarios;
+      });
+    } else {
+      final filtrados = usuarios.where((user) {
+        return user.correo.toLowerCase().contains(query.toLowerCase()) ||
+            user.contrasena.toLowerCase().contains(query.toLowerCase()) ||
+            (user.rol != null &&
+                user.rol!.toLowerCase().contains(query.toLowerCase())) ||
+            user.nombre.toLowerCase().contains(query.toLowerCase()) ||
+            user.telefono.toLowerCase().contains(query.toLowerCase()) ||
+            user.direccion.toLowerCase().contains(query.toLowerCase()) ||
+            (user.especialidad != null &&
+                user.especialidad!
+                    .toString()
+                    .toLowerCase()
+                    .contains(query.toLowerCase())) ||
+            (user.suguroSocial != null &&
+                user.suguroSocial!
+                    .toLowerCase()
+                    .contains(query.toLowerCase())) ||
+            (user.arl != null &&
+                user.arl!.toLowerCase().contains(query.toLowerCase()));
+      }).toList();
+      setState(() {
+        usuariosFiltrados = filtrados;
+      });
     }
   }
 
@@ -50,10 +87,9 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
           icono: Icons.edit,
           titulo: 'Editar Rol',
           alPresionar: () {
-            // Navegar a editar usuario
             mostrarEditarRolUsuario(context, user, () {
               cargarUsuarios();
-            }); // donde 'usuario' es la instancia de Us
+            });
             print('Editar usuario: ${user.nombre}');
           },
         ),
@@ -61,10 +97,9 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
           icono: Icons.edit,
           titulo: 'Editar',
           alPresionar: () {
-            // Navegar a editar usuario
             mostrarEditarUsuario(context, user, () {
               cargarUsuarios();
-            }); // donde 'usuario' es la instancia de Us
+            });
             print('Editar usuario: ${user.nombre}');
           },
         ),
@@ -82,36 +117,44 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    Widget contenidoPantalla = Column(
-      children: [
-        SearchInput(hintText: 'Buscar Usuario...', espacioInferior: true),
-        CustomButton(
-          texto: 'Agregar Usuario',
-          onPressed: () {
-            mostrarAgregarUsuarioVisual(context, () {
-              cargarUsuarios();
-            });
-            print('Botón Agregar Usuario Presionado');
-          },
-        ),
-        Expanded(
-          child: ListUser(
-            users: usuarios,
-            onTap: (user) {
-              print('Usuario seleccionado: ${user.nombre}');
-            },
-            onLongPress: (user) {
-              mostrarOpcionesUsuario(context, user);
-            },
-          ),
-        ),
-      ],
-    );
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return BaseScreen(
       titulo: 'Gestión de Usuarios',
-      contenido: contenidoPantalla,
+      contenido: Column(
+        children: [
+          SearchInput(
+            hintText: 'Buscar Usuario...',
+            espacioInferior: true,
+            controller: searchController,
+          ),
+          CustomButton(
+            texto: 'Agregar Usuario',
+            onPressed: () {
+              mostrarAgregarUsuarioVisual(context, () {
+                cargarUsuarios();
+              });
+              print('Botón Agregar Usuario Presionado');
+            },
+          ),
+          Expanded(
+            child: ListUser(
+              users: usuariosFiltrados,
+              onTap: (user) {
+                print('Usuario seleccionado: ${user.nombre}');
+              },
+              onLongPress: (user) {
+                mostrarOpcionesUsuario(context, user);
+              },
+            ),
+          ),
+        ],
+      ),
       colorHeader: const Color(0xFF4A90E2),
     );
   }
