@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/stages/stage.dart';
 import 'package:frontend/services/stages/stage_service.dart';
+import 'package:frontend/widgets/searches/search_input.dart';
+import 'package:frontend/widgets/section/section_header.dart';
 import 'package:frontend/widgets/stages/stages_form.dart'; // Asegúrate de importar el formulario
 
 class StagesScreen extends StatefulWidget {
@@ -10,6 +12,9 @@ class StagesScreen extends StatefulWidget {
 
 class _StagesScreenState extends State<StagesScreen> {
   final StageService _stageService = StageService();
+  List<Stage> etapas = []; // Lista original
+  List<Stage> etapasFiltradas = []; // Lista filtrada para mostrar
+  TextEditingController searchController = TextEditingController();
   List<Stage> _stages = [];
   bool _isLoading = true;
 
@@ -17,13 +22,18 @@ class _StagesScreenState extends State<StagesScreen> {
   void initState() {
     super.initState();
     _loadStages();
+    searchController.addListener(() {
+      _filterStages(searchController.text);
+    });
   }
 
   void _loadStages() async {
     try {
       final stages = await _stageService.getAllStages();
       setState(() {
-        _stages = stages;
+        etapas = stages;
+        etapasFiltradas = stages;
+        _filterStages(searchController.text); // vuelve a aplicar filtro
         _isLoading = false;
       });
     } catch (e) {
@@ -32,6 +42,20 @@ class _StagesScreenState extends State<StagesScreen> {
       });
       print('Error: $e');
     }
+  }
+
+  void _filterStages(String query) {
+    final filtered = etapas.where((stage) {
+      final nombre = stage.nombre.toLowerCase();
+      final descripcion = stage.descripcion.toLowerCase();
+      final input = query.toLowerCase();
+
+      return nombre.contains(input) || descripcion.contains(input);
+    }).toList();
+
+    setState(() {
+      etapasFiltradas = filtered;
+    });
   }
 
   void _deleteStage(int id) async {
@@ -54,29 +78,50 @@ class _StagesScreenState extends State<StagesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Etapas')),
-      body: _isLoading
+    return BaseScreen(
+      titulo: 'Gestión de Etapas',
+      contenido: _isLoading
           ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: _stages.length,
-              itemBuilder: (context, index) {
-                final stage = _stages[index];
-                return ListTile(
-                  title: Text(stage.nombre),
-                  subtitle: Text(stage.descripcion),
-                  onTap: () => _navigateToForm(stage: stage), // Editar
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () => _deleteStage(stage.id),
+          : Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  child: SearchInput(
+                    hintText: 'Buscar Etapa...',
+                    espacioInferior: true,
+                    controller: searchController,
                   ),
-                );
-              },
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: etapasFiltradas.length,
+                    itemBuilder: (context, index) {
+                      final stage = etapasFiltradas[index];
+                      return ListTile(
+                        title: Text(stage.nombre),
+                        subtitle: Text(stage.descripcion),
+                        onTap: () => _navigateToForm(stage: stage),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () => _deleteStage(stage.id),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0, right: 16.0),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: FloatingActionButton(
+                      child: Icon(Icons.add),
+                      onPressed: () => _navigateToForm(),
+                    ),
+                  ),
+                ),
+              ],
             ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _navigateToForm(), // Crear
-      ),
     );
   }
 }

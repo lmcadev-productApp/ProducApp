@@ -5,11 +5,16 @@ import 'package:frontend/widgets/dialogs/dialog_general.dart';
 
 void mostrarEditarOrden(
     BuildContext context, Order ordenOriginal, VoidCallback onActualizada) {
-  final descripcionCtrl = TextEditingController(text: ordenOriginal.descripcion);
-  final fechaInicioCtrl =
-      TextEditingController(text: ordenOriginal.fechaInicio != null ? ordenOriginal.fechaInicio!.toIso8601String().split('T').first : '');
-  final fechaFinCtrl =
-      TextEditingController(text: ordenOriginal.fechaFin != null ? ordenOriginal.fechaFin!.toIso8601String().split('T').first : '');
+  final descripcionCtrl =
+      TextEditingController(text: ordenOriginal.descripcion);
+  final fechaInicioCtrl = TextEditingController(
+      text: ordenOriginal.fechaInicio != null
+          ? ordenOriginal.fechaInicio!.toIso8601String().split('T').first
+          : '');
+  final fechaFinCtrl = TextEditingController(
+      text: ordenOriginal.fechaFin != null
+          ? ordenOriginal.fechaFin!.toIso8601String().split('T').first
+          : '');
   final estadoCtrl = TextEditingController(text: ordenOriginal.estado);
 
   bool botonActivo = true;
@@ -48,7 +53,8 @@ void mostrarEditarOrden(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Descripción',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                   SizedBox(height: 8),
                   TextField(
                     controller: descripcionCtrl,
@@ -64,11 +70,26 @@ void mostrarEditarOrden(
                   ),
                   SizedBox(height: 15),
                   Text('Fecha de inicio',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                   SizedBox(height: 8),
                   TextField(
                     controller: fechaInicioCtrl,
-                    keyboardType: TextInputType.datetime,
+                    readOnly: true,
+                    onTap: () async {
+                      final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate:
+                            ordenOriginal.fechaInicio ?? DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2100),
+                      );
+                      if (picked != null) {
+                        fechaInicioCtrl.text =
+                            picked.toIso8601String().split('T').first;
+                        validarBoton(setState);
+                      }
+                    },
                     decoration: InputDecoration(
                       hintText: 'YYYY-MM-DD',
                       filled: true,
@@ -81,11 +102,26 @@ void mostrarEditarOrden(
                   ),
                   SizedBox(height: 15),
                   Text('Fecha fin',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                   SizedBox(height: 8),
                   TextField(
-                    controller: fechaFinCtrl,
-                    keyboardType: TextInputType.datetime,
+                    controller: fechaInicioCtrl,
+                    readOnly: true,
+                    onTap: () async {
+                      final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate:
+                            ordenOriginal.fechaInicio ?? DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2100),
+                      );
+                      if (picked != null) {
+                        fechaInicioCtrl.text =
+                            picked.toIso8601String().split('T').first;
+                        validarBoton(setState);
+                      }
+                    },
                     decoration: InputDecoration(
                       hintText: 'YYYY-MM-DD',
                       filled: true,
@@ -98,7 +134,8 @@ void mostrarEditarOrden(
                   ),
                   SizedBox(height: 15),
                   Text('Estado',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                   SizedBox(height: 8),
                   TextField(
                     controller: estadoCtrl,
@@ -126,13 +163,15 @@ void mostrarEditarOrden(
                         fechaInicio: DateTime.parse(fechaInicioCtrl.text),
                         fechaFin: DateTime.parse(fechaFinCtrl.text),
                         estado: estadoCtrl.text,
-                        usuario: ordenOriginal.usuario, // Se mantiene el mismo usuario
-                        etapas: ordenOriginal.etapas,   // También las etapas actuales
+                        usuario: ordenOriginal
+                            .usuario, // Se mantiene el mismo usuario
+                        etapas:
+                            ordenOriginal.etapas, // También las etapas actuales
                       );
 
                       final orderService = OrderService();
-                      final mensaje =
-                          await orderService.updateOrden(ordenOriginal.id, ordenEditada);
+                      final mensaje = await orderService.updateOrden(
+                          ordenOriginal.id, ordenEditada);
 
                       print('Orden actualizada: $mensaje');
                       Navigator.of(context).pop();

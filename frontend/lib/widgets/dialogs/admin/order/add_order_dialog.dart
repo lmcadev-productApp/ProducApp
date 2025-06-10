@@ -5,7 +5,6 @@ import 'package:frontend/services/users/user_service.dart';
 import 'package:frontend/widgets/dialogs/dialog_general.dart';
 import 'package:frontend/utils/shared_preferences_helper.dart';
 
-
 void mostrarAgregarOrderVisual(
     BuildContext context, VoidCallback onOrderCreado) {
   final descripcionCtrl = TextEditingController();
@@ -49,7 +48,7 @@ void mostrarAgregarOrderVisual(
                 children: [
                   Text('Descripción',
                       style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                   SizedBox(height: 8),
                   TextField(
                     controller: descripcionCtrl,
@@ -60,17 +59,30 @@ void mostrarAgregarOrderVisual(
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(6)),
                       contentPadding:
-                      EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                     ),
                   ),
                   SizedBox(height: 15),
                   Text('Fecha de inicio',
                       style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                   SizedBox(height: 8),
                   TextField(
                     controller: fechaInicioCtrl,
-                    keyboardType: TextInputType.datetime,
+                    readOnly: true,
+                    onTap: () async {
+                      final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2100),
+                      );
+                      if (picked != null) {
+                        fechaInicioCtrl.text =
+                            picked.toIso8601String().split('T').first;
+                        validarBoton(setState);
+                      }
+                    },
                     decoration: InputDecoration(
                       hintText: 'YYYY-MM-DD',
                       filled: true,
@@ -78,17 +90,30 @@ void mostrarAgregarOrderVisual(
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(6)),
                       contentPadding:
-                      EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                     ),
                   ),
                   SizedBox(height: 15),
                   Text('Fecha fin',
                       style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                   SizedBox(height: 8),
                   TextField(
                     controller: fechaFinCtrl,
-                    keyboardType: TextInputType.datetime,
+                    readOnly: true,
+                    onTap: () async {
+                      final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2100),
+                      );
+                      if (picked != null) {
+                        fechaFinCtrl.text =
+                            picked.toIso8601String().split('T').first;
+                        validarBoton(setState);
+                      }
+                    },
                     decoration: InputDecoration(
                       hintText: 'YYYY-MM-DD',
                       filled: true,
@@ -96,13 +121,13 @@ void mostrarAgregarOrderVisual(
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(6)),
                       contentPadding:
-                      EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                     ),
                   ),
                   SizedBox(height: 15),
                   Text('Estado',
                       style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                   SizedBox(height: 8),
                   TextField(
                     controller: estadoCtrl,
@@ -113,7 +138,7 @@ void mostrarAgregarOrderVisual(
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(6)),
                       contentPadding:
-                      EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                     ),
                   ),
                 ],
@@ -123,45 +148,43 @@ void mostrarAgregarOrderVisual(
             textoBotonCancelar: 'Cancelar',
             onOk: botonActivo
                 ? () async {
-              try {
+                    try {
+                      // obtiene ID del usuario desde SharedPreferences
+                      final useridStr =
+                          await SharedPreferencesHelper.getUserId();
 
+                      // Verifica que el userId no sea nulo y conviértelo a int
+                      if (useridStr == null) {
+                        throw Exception('No se pudo obtener el ID de usuario.');
+                      }
+                      final userid = int.parse(useridStr);
 
+                      // Obtener el objeto User real usando el userId
+                      final userService = UserService();
+                      final user = await userService.getUserById(userid);
 
-                // obtiene ID del usuario desde SharedPreferences
-                final useridStr = await SharedPreferencesHelper.getUserId();
+                      final nuevoOrder = Order(
+                        id: 0,
+                        descripcion: descripcionCtrl.text,
+                        fechaInicio: DateTime.parse(fechaInicioCtrl.text),
+                        fechaFin: DateTime.parse(fechaFinCtrl.text),
+                        estado: estadoCtrl.text,
+                        usuario: user, // Ahora se pasa el objeto User real
+                        etapas: [], // A reemplazar por etapas reales si es necesario
+                      );
 
-                // Verifica que el userId no sea nulo y conviértelo a int
-                if (useridStr == null) {
-                  throw Exception('No se pudo obtener el ID de usuario.');
-                }
-                final userid = int.parse(useridStr);
+                      final orderService = OrderService();
+                      final mensaje =
+                          await orderService.createOrder(nuevoOrder);
 
-                // Obtener el objeto User real usando el userId
-                final userService = UserService();
-                final user = await userService.getUserById(userid);
-
-                final nuevoOrder = Order(
-                  id: 0, 
-                  descripcion: descripcionCtrl.text,
-                  fechaInicio: DateTime.parse(fechaInicioCtrl.text),
-                  fechaFin: DateTime.parse(fechaFinCtrl.text),
-                  estado: estadoCtrl.text,
-                  usuario: user, // Ahora se pasa el objeto User real
-                  etapas: [], // A reemplazar por etapas reales si es necesario
-                );
-
-                final orderService = OrderService();
-                final mensaje =
-                await orderService.createOrder(nuevoOrder);
-
-                print('Respuesta backend: $mensaje');
-                Navigator.of(context).pop();
-                onOrderCreado();
-              } catch (e) {
-                print('Error al crear nueva orden: $e');
-                // Mostrar diálogo de error si es necesario
-              }
-            }
+                      print('Respuesta backend: $mensaje');
+                      Navigator.of(context).pop();
+                      onOrderCreado();
+                    } catch (e) {
+                      print('Error al crear nueva orden: $e');
+                      // Mostrar diálogo de error si es necesario
+                    }
+                  }
                 : null,
           );
         },
