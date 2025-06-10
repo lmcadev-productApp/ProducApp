@@ -1,13 +1,20 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io' show Platform;
 
 const String _envBaseUrl = String.fromEnvironment('API_URL');
 
-// El código seleccionado define una variable baseUrl que se utiliza para determinar
-// la URL base de la API en función del entorno de ejecución y la plataforma.
-// Este enfoque permite que la aplicación se adapte automáticamente según el
-// entorno en el que se ejecute, como Android o un sistema operativo de escritorio.
-final String baseUrl = _envBaseUrl.isNotEmpty
-    ? _envBaseUrl
-    : (Platform.isAndroid
-    ? 'http://10.0.2.2:8081/api'
-    : 'http://localhost:8081/api');
+final String baseUrl =
+    _envBaseUrl.isNotEmpty ? _envBaseUrl : _getDefaultBaseUrl();
+
+String _getDefaultBaseUrl() {
+  if (kIsWeb) {
+    // Código para Flutter Web
+    return 'http://localhost:8081/api';
+  } else {
+    if (Platform.isAndroid) {
+      return 'http://10.0.2.2:8081/api'; // Para emulador Android
+    } else {
+      return 'http://localhost:8081/api';
+    }
+  }
+}
