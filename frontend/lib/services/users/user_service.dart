@@ -24,6 +24,24 @@ class UserService {
     }
   }
 
+  /// GET Obtener un usuario por ID
+  Future<User> getUserById(int id) async {
+    final token = await SharedPreferencesHelper.getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/usuarios/$id'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return User.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Error al obtener el usuario');
+    }
+  }
+
   /// POST Crear un nuevo usuario
   Future<String> createUser(User user) async {
     final token = await SharedPreferencesHelper.getToken();
@@ -82,4 +100,30 @@ class UserService {
       throw Exception('Error al eliminar el usuario');
     }
   }
+
+  /// Buscar usuario por correo
+  Future<String?> buscarUserIdPorCorreo(String correo) async {
+    final url = Uri.parse('$baseUrl/usuarios'); // Asegúrate que este endpoint existe
+    try {
+      final response = await http.get(url, headers: {
+        'Authorization': 'Bearer ${await SharedPreferencesHelper.getToken()}',
+        'Content-Type': 'application/json',
+      });
+
+      if (response.statusCode == 200) {
+        final List<dynamic> usuarios = jsonDecode(response.body);
+        final usuario = usuarios.firstWhere(
+                (u) => u['correo'].toString().toLowerCase() == correo.toLowerCase(),
+            orElse: () => null);
+        return usuario?['id']?.toString();
+      } else {
+        print('Error al obtener usuarios: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error buscando usuario por correo: $e');
+      return null;
+    }
+  }
+
 }

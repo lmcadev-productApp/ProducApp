@@ -5,6 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:frontend/utils/constants.dart';
 import 'package:frontend/models/login/login_request.dart';
 import 'package:frontend/models/login/login_response.dart';
+import 'package:frontend/services/users/user_service.dart';
+
+import '../../utils/shared_preferences_helper.dart';
 
 class AuthService {
   Future<LoginResponse?> login(LoginRequest request) async {
@@ -24,6 +27,14 @@ class AuthService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+
+        // Obtener ID del usuario buscando por su correo
+        final userService = UserService();
+        final userId = await userService.buscarUserIdPorCorreo(request.correo);
+        if (userId != null) {
+          await SharedPreferencesHelper.saveUserId(userId);
+        }
+
         return LoginResponse.fromJson(data);
       } else if (response.statusCode == 401) {
         // Credenciales inválidas: devolver null

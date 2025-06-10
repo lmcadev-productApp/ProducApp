@@ -39,7 +39,7 @@ class _EstadoDashboard extends State<Dashboard> {
   void _navegarAOrdenes() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AdminOrders()),
+      MaterialPageRoute(builder: (context) => AdminOrderStateManagement()),
     );
   }
 

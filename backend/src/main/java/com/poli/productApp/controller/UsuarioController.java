@@ -37,7 +37,9 @@ public class UsuarioController {
     }
 
 
-  
+
+
+
 
     // Eliminar usuario
     @DeleteMapping("/{id}")
@@ -70,6 +72,17 @@ public class UsuarioController {
         Usuario actualizado = usuarioService.actualizar(usuario);
         if (actualizado != null) {
             return ResponseEntity.ok("Usuario actualizado con ID: " + actualizado.getId());
+        } else {
+            return ResponseEntity.status(404).body("Usuario no encontrado");
+        }
+    }
+
+
+    @GetMapping("/{correo}")
+    public ResponseEntity<?> obtenerUsuarioPorCorreo(@PathVariable String correo) {
+        Usuario usuario = usuarioService.buscarPorCorreo(correo);
+        if (usuario != null) {
+            return ResponseEntity.ok(usuario);
         } else {
             return ResponseEntity.status(404).body("Usuario no encontrado");
         }

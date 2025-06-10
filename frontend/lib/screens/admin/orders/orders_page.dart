@@ -1,27 +1,134 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/orders/order.dart';
+import 'package:frontend/services/orders/Order_Service.dart';
+import 'package:frontend/widgets/buttons/customizable_modal_options.dart';
+import 'package:frontend/widgets/dialogs/admin/order/delete_order_dialog.dart';
+import 'package:frontend/widgets/dialogs/admin/order/edit_order_dialog.dart';
 import 'package:frontend/widgets/section/section_header.dart';
+import 'package:frontend/widgets/buttons/custom-button.dart';
+import 'package:frontend/widgets/lists/admin/order/order_list.dart';
+import 'package:frontend/widgets/searches/search_input.dart';
+import 'package:frontend/widgets/dialogs/admin/order/add_order_dialog.dart';
 
-class AdminOrders extends StatefulWidget {
+class AdminOrderStateManagement extends StatefulWidget {
   @override
-  _AdminOrdersState createState() => _AdminOrdersState();
+  _AdminOrderStateManagementState createState() =>
+      _AdminOrderStateManagementState();
 }
 
-class _AdminOrdersState extends State<AdminOrders> {
+class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
+  final OrderService orderService = OrderService();
+  List<Order> ordenes = [];
+  List<Order> ordenesFiltradas = [];
+  TextEditingController searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    cargarOrdenes();
+
+    searchController.addListener(() {
+      filtrarOrdenes(searchController.text);
+    });
+  }
+
+  void cargarOrdenes() async {
+    try {
+      List<Order> lista = await orderService.getOrders();
+      setState(() {
+        ordenes = lista;
+        ordenesFiltradas = lista;
+      });
+    } catch (e) {
+      print('Error cargando órdenes: $e');
+    }
+  }
+
+  void filtrarOrdenes(String query) {
+    if (query.isEmpty) {
+      setState(() {
+        ordenesFiltradas = ordenes;
+      });
+    } else {
+      final filtradas = ordenes.where((order) {
+        return order.id.toString().contains(query) ||
+            order.descripcion.toLowerCase().contains(query.toLowerCase()) ||
+            order.usuario.nombre.toLowerCase().contains(query.toLowerCase());
+      }).toList();
+      setState(() {
+        ordenesFiltradas = filtradas;
+      });
+    }
+  }
+
+
+  void mostrarOpcionesOrden(BuildContext context, dynamic order) {
+    ModalOptionsCustomizable.mostrar(
+      context: context,
+      titulo: 'Orden: ${order.id}',
+      acciones: [
+        AccionModal(
+          icono: Icons.edit,
+          titulo: 'Editar',
+          alPresionar: () {
+            mostrarEditarOrden(context, order, () {
+              cargarOrdenes();
+            });
+          },
+        ),
+        AccionModal(
+          icono: Icons.delete,
+          titulo: 'Eliminar',
+          alPresionar: () {
+            mostrarDialogoEliminar(context, order);
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Contenido de la pantalla
-    Widget contenidoPantalla = const Center(
-      child: Text(
-        '¡Hola, ProducApp!',
-        style: TextStyle(fontSize: 20),
-      ),
-    );
-
-    // Widget reutilizable
     return BaseScreen(
-      titulo: 'Ordenes',
-      contenido: contenidoPantalla,
+      titulo: 'Gestión de Órdenes',
+      contenido: Column(
+        children: [
+          SearchInput(
+            hintText: 'Buscar Orden...',
+            espacioInferior: true,
+            controller: searchController,
+          ),
+          CustomButton(
+            texto: 'Agregar Orden',
+            onPressed: () {
+              mostrarAgregarOrderVisual(context, () {
+                cargarOrdenes();
+              });
+            },
+          ),
+          Expanded(
+            child: ListOrder(
+              orders: ordenesFiltradas,
+              onTap: (order) {
+                print('Orden seleccionada: ${order.usuario.nombre}');
+              },
+              onLongPress: (order) {
+                mostrarOpcionesOrden(context, order);
+              },
+            ),
+          ),
+        ],
+      ),
       colorHeader: const Color(0xFF4A90E2),
     );
   }
+
+
+
 }
