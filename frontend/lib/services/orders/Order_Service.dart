@@ -10,7 +10,7 @@ class OrderService {
     final token = await SharedPreferencesHelper.getToken();
     print("Entron a la consulta GET");
     final response = await http.get(
-      Uri.parse('$baseUrl/ordenes/'),
+      Uri.parse('$baseUrl/ordenes'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',

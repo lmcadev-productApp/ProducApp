@@ -19,4 +19,6 @@ public interface OrdenTrabajoRepository extends JpaRepository<OrdenTrabajo, Long
 
 
     List<OrdenTrabajo> findByFechaInicioBetween(Date fechaInicio, Date fechaFin);
+
+
 }

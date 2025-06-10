@@ -49,8 +49,9 @@ public class AuthController {
                     .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
             String rol = usuario.getRol().name(); // Retorna el rol del usuario
+            String id = usuario.getId().toString(); // Retorna el ID del usuario
 
-            return ResponseEntity.ok(new AuthResponse(token, rol));
+            return ResponseEntity.ok(new AuthResponse(token, rol, id));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Correo o contraseña incorrectos.");
         }
