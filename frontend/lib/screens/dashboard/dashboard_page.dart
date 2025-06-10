@@ -3,6 +3,7 @@ import 'package:frontend/screens/admin/analytics/analytics_page.dart';
 import 'package:frontend/screens/admin/orders/orders_page.dart';
 import 'package:frontend/screens/admin/stage/stages_page.dart';
 import 'package:frontend/screens/admin/users/users_page.dart';
+import 'package:frontend/screens/stages/stage_screen.dart';
 import 'package:frontend/utils/shared_preferences_helper.dart';
 import 'package:frontend/screens/login/login_page.dart';
 import 'package:frontend/widgets/dashboard/dashboard_grid.dart';
@@ -46,7 +47,7 @@ class _EstadoDashboard extends State<Dashboard> {
   void _navegarAEtapas() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AdminStages()),
+      MaterialPageRoute(builder: (context) => StagesScreen()),
     );
   }
 

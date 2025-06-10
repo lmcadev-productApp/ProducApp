@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/stages/stage.dart';
-import '../../services/stage_service.dart';
+import 'package:frontend/models/stages/stage.dart';
+import 'package:frontend/services/stages/stage_service.dart';
 
 class StageFormScreen extends StatefulWidget {
   final Stage? stage;
@@ -63,13 +63,13 @@ class _StageFormScreenState extends State<StageFormScreen> {
                 controller: _nombreController,
                 decoration: InputDecoration(labelText: 'Nombre'),
                 validator: (value) =>
-                value!.isEmpty ? 'Ingrese un nombre' : null,
+                    value!.isEmpty ? 'Ingrese un nombre' : null,
               ),
               TextFormField(
                 controller: _descripcionController,
                 decoration: InputDecoration(labelText: 'Descripción'),
                 validator: (value) =>
-                value!.isEmpty ? 'Ingrese una descripción' : null,
+                    value!.isEmpty ? 'Ingrese una descripción' : null,
               ),
               SizedBox(height: 20),
               ElevatedButton(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/screens/admin/analytics/analytics_page.dart';
 import 'package:frontend/screens/admin/orders/orders_page.dart';
 import 'package:frontend/screens/admin/stage/stages_page.dart';
+import 'package:frontend/screens/stages/stage_screen.dart';
 import 'package:frontend/screens/test_navbar_page.dart';
 import 'package:frontend/screens/admin/users/users_page.dart';
 import 'package:frontend/screens/dashboard/dashboard_page.dart';
@@ -30,7 +31,7 @@ class _HomePageState extends State<HomePage> {
         _pages = [
           Dashboard(),
           AdminUserStateManagement(),
-          AdminStages(),
+          StagesScreen(),
           AdminOrders(),
           AdminAnalytics(),
         ];

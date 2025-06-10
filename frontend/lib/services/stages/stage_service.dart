@@ -1,12 +1,17 @@
 import 'dart:convert';
+import 'package:frontend/utils/shared_preferences_helper.dart';
 import 'package:http/http.dart' as http;
-import '../models/stages/stage.dart';
+import 'package:frontend/models/stages/stage.dart';
 
 class StageService {
-  final String baseUrl = 'http://localhost:8080/api/etapas';
+  final String baseUrl = 'http://localhost:8081/api/etapas';
 
   Future<List<Stage>> getAllStages() async {
-    final response = await http.get(Uri.parse(baseUrl));
+    final token = await SharedPreferencesHelper.getToken();
+    final response = await http.get(Uri.parse(baseUrl), headers: {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    });
 
     if (response.statusCode == 200) {
       final List<dynamic> body = json.decode(response.body);
@@ -17,9 +22,13 @@ class StageService {
   }
 
   Future<Stage> createStage(Stage stage) async {
+    final token = await SharedPreferencesHelper.getToken();
     final response = await http.post(
       Uri.parse(baseUrl),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
       body: json.encode(stage.toJson()),
     );
 
