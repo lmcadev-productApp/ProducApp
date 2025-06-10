@@ -23,21 +23,30 @@ class StageService {
 
   Future<Stage> createStage(Stage stage) async {
     final token = await SharedPreferencesHelper.getToken();
+
+    final bodyData = json.encode(stage.toJson());
+    print('Enviando etapa: $bodyData');
+
     final response = await http.post(
       Uri.parse(baseUrl),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
-      body: json.encode(stage.toJson()),
+      body: bodyData,
     );
 
-    if (response.statusCode == 200) {
+    print('Código de respuesta: ${response.statusCode}');
+    print('Cuerpo de respuesta: ${response.body}');
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return Stage.fromJson(json.decode(response.body));
     } else {
-      throw Exception('Error al crear etapa');
+      throw Exception('Error al crear etapa: ${response.statusCode} - ${response.body}');
     }
   }
+
+
 
   Future<Stage> updateStage(int id, Stage stage) async {
     final response = await http.put(

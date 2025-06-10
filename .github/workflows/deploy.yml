@@ -52,18 +52,15 @@ jobs:
             docker-compose down --remove-orphans || true
 
             echo "📦 Limpiando contenedores huérfanos específicos si existen..."
-            for c in producapp-frontend producapp-backend producapp-db; do
+            for c in producapp-backend sql-db; do
               if docker ps -a --format '{{.Names}}' | grep -q "^$c$"; then
                 echo "⛔ Eliminando contenedor huérfano: $c"
                 docker rm -f "$c" || true
               fi
             done
 
-            echo "🔄 Actualizando imágenes (si están configuradas)..."
-            docker-compose pull || true
+            echo "⚙️ Reconstruyendo solo backend y base de datos sin caché..."
+            docker-compose build --no-cache backend mysql
 
-            echo "⚙️ Reconstruyendo imágenes sin caché..."
-            docker-compose build --no-cache
-
-            echo "🚀 Levantando contenedores en segundo plano..."
-            docker-compose up -d --remove-orphans
+            echo "🚀 Levantando backend y base de datos en segundo plano..."
+            docker-compose up -d backend mysql

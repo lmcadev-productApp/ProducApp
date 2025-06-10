@@ -37,21 +37,21 @@ services:
     networks:
       - producapp-net
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: docker/Dockerfile
-      args:
-        API_URL: ${API_URL}
-    container_name: producapp-frontend
-    depends_on:
-      - backend
-    environment:
-      API_URL: ${API_URL}
-    ports:
-      - "8082:80"
-    networks:
-      - producapp-net
+#  frontend:
+#    build:
+#      context: ./frontend
+#      dockerfile: docker/Dockerfile
+#      args:
+#        API_URL: ${API_URL}
+#    container_name: producapp-frontend
+#    depends_on:
+#      - backend
+#    environment:
+#      API_URL: ${API_URL}
+#    ports:
+#      - "8082:80"
+#    networks:
+#      - producapp-net
 
 volumes:
   mysql_data:
