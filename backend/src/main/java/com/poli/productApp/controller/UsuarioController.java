@@ -51,6 +51,7 @@ public class UsuarioController {
         }
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerUsuarioPorId(@PathVariable Long id) {
         Usuario usuario = usuarioService.buscarPorId(id);
@@ -61,8 +62,9 @@ public class UsuarioController {
         }
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<?> obtenerTodosLosUsuarios() {
+
         return ResponseEntity.ok(usuarioService.listarTodos());
     }
 
@@ -78,13 +80,13 @@ public class UsuarioController {
     }
 
 
-    @GetMapping("/{correo}")
-    public ResponseEntity<?> obtenerUsuarioPorCorreo(@PathVariable String correo) {
-        Usuario usuario = usuarioService.buscarPorCorreo(correo);
-        if (usuario != null) {
-            return ResponseEntity.ok(usuario);
-        } else {
-            return ResponseEntity.status(404).body("Usuario no encontrado");
-        }
-    }
+//    @GetMapping("/{correo}")
+//    public ResponseEntity<?> obtenerUsuarioPorCorreo(@PathVariable String correo) {
+//        Usuario usuario = usuarioService.buscarPorCorreo(correo);
+//        if (usuario != null) {
+//            return ResponseEntity.ok(usuario);
+//        } else {
+//            return ResponseEntity.status(404).body("Usuario no encontrado");
+//        }
+//    }
 }
