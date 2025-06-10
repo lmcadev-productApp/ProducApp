@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: 📥 Checkout repository
         uses: actions/checkout@v3
 
-      - name: Copy files to VPS
+      - name: 📤 Copy files to VPS
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -22,19 +22,18 @@ jobs:
           target: "/home/yulianna/ProducApp"
           rm: true
 
-      - name: Run deploy commands on VPS
+      - name: 🚀 Run deploy commands on VPS
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.VPS_HOST }}
           username: yulianna
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            set -e                        # falla en el primer comando con error
+            set -e
+
             cd /home/yulianna/ProducApp
 
-            # ──────────────────────────────────────────────
-            # 1️⃣  Generar/actualizar archivo .env con secretos
-            # ──────────────────────────────────────────────
+            echo "📄 Generando archivo .env..."
             cat > .env <<EOF
             API_URL=${{ secrets.API_URL }}
             USER_ROOT_DATABASE=${{ secrets.USER_ROOT }}
@@ -49,23 +48,22 @@ jobs:
             SERVER_PORT=8081
             EOF
 
-            # ──────────────────────────────────────────────
-            # 2️⃣  Detener y ELIMINAR contenedores existentes
-            # ──────────────────────────────────────────────
+            echo "🧹 Deteniendo y eliminando contenedores anteriores..."
+            docker-compose down --remove-orphans || true
+
+            echo "📦 Limpiando contenedores huérfanos específicos si existen..."
             for c in producapp-frontend producapp-backend producapp-db; do
-              if [ "$(docker ps -a -q -f name=$c)" ]; then
-                echo "Deteniendo y eliminando contenedor $c…"
-                docker rm -f "$c"
+              if docker ps -a --format '{{.Names}}' | grep -q "^$c$"; then
+                echo "⛔ Eliminando contenedor huérfano: $c"
+                docker rm -f "$c" || true
               fi
             done
 
-            # ──────────────────────────────────────────────
-            # 3️⃣  (Opcional) actualizar imágenes
-            # ──────────────────────────────────────────────
-            docker-compose pull || true    # ignora error si no hay imagen remota
+            echo "🔄 Actualizando imágenes (si están configuradas)..."
+            docker-compose pull || true
 
-            # ──────────────────────────────────────────────
-            # 4️⃣  Reconstruir y levantar servicios
-            # ──────────────────────────────────────────────
+            echo "⚙️ Reconstruyendo imágenes sin caché..."
             docker-compose build --no-cache
-            docker-compose up -d
+
+            echo "🚀 Levantando contenedores en segundo plano..."
+            docker-compose up -d --remove-orphans
