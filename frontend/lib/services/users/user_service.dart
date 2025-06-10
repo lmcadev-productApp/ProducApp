@@ -9,7 +9,7 @@ class UserService {
   Future<List<User>> getUsers() async {
     final token = await SharedPreferencesHelper.getToken();
     final response = await http.get(
-      Uri.parse('$baseUrl/usuarios/'),
+      Uri.parse('$baseUrl/usuarios'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -103,7 +103,8 @@ class UserService {
 
   /// Buscar usuario por correo
   Future<String?> buscarUserIdPorCorreo(String correo) async {
-    final url = Uri.parse('$baseUrl/usuarios'); // Asegúrate que este endpoint existe
+    final url =
+        Uri.parse('$baseUrl/usuarios'); // Asegúrate que este endpoint existe
     try {
       final response = await http.get(url, headers: {
         'Authorization': 'Bearer ${await SharedPreferencesHelper.getToken()}',
@@ -113,7 +114,7 @@ class UserService {
       if (response.statusCode == 200) {
         final List<dynamic> usuarios = jsonDecode(response.body);
         final usuario = usuarios.firstWhere(
-                (u) => u['correo'].toString().toLowerCase() == correo.toLowerCase(),
+            (u) => u['correo'].toString().toLowerCase() == correo.toLowerCase(),
             orElse: () => null);
         return usuario?['id']?.toString();
       } else {
@@ -125,5 +126,4 @@ class UserService {
       return null;
     }
   }
-
 }

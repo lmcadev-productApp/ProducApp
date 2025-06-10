@@ -117,6 +117,7 @@ class _LoginFormState extends State<LoginForm> {
                 if (response != null) {
                   await SharedPreferencesHelper.saveToken(response.token);
                   await SharedPreferencesHelper.saveRol(response.rol);
+                  await SharedPreferencesHelper.saveUserId(response.id);
                   final savedRol = await SharedPreferencesHelper.getRol();
                   Navigator.pushReplacement(
                     context,
