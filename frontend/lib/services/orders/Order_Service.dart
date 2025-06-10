@@ -8,7 +8,7 @@ class OrderService {
   /// GET Obtener toda las ordenes de trabajo
   Future<List<Order>> getOrders() async {
     final token = await SharedPreferencesHelper.getToken();
-
+    print("Entron a la consulta GET");
     final response = await http.get(
       Uri.parse('$baseUrl/ordenes/'),
       headers: {
@@ -17,7 +17,7 @@ class OrderService {
       },
     );
 
-    final token = await SharedPreferencesHelper.getToken();
+
     print('Token usado: $token');
 
     print('STATUS: ${response.statusCode}');

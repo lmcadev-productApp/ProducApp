@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
           Dashboard(),
           AdminUserStateManagement(),
           AdminStages(),
-          AdminOrders(),
+          AdminOrderStateManagement(),
           AdminAnalytics(),
         ];
         _navItems = const [
