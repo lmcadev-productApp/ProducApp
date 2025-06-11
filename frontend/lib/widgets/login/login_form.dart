@@ -27,22 +27,16 @@ class _LoginFormState extends State<LoginForm> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // Logo
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            color: Color(0xFF3498DB),
-            borderRadius: BorderRadius.circular(12),
+        SizedBox(
+          width: 350,
+          height: 250,
+          child: Image.asset(
+            'assets/images/Logo.png',
+            fit: BoxFit
+                .contain, // O usa BoxFit.cover si quieres que llene el espacio
           ),
-          child: Icon(Icons.factory, color: Colors.white, size: 40),
         ),
         SizedBox(height: 20),
-
-        Text(
-          'ProducApp',
-          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 50),
 
         TextField(
           controller: _emailController,
