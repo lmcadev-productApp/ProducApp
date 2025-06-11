@@ -15,7 +15,6 @@ class _StagesScreenState extends State<StagesScreen> {
   List<Stage> etapas = []; // Lista original
   List<Stage> etapasFiltradas = []; // Lista filtrada para mostrar
   TextEditingController searchController = TextEditingController();
-  List<Stage> _stages = [];
   bool _isLoading = true;
 
   @override
@@ -59,8 +58,25 @@ class _StagesScreenState extends State<StagesScreen> {
   }
 
   void _deleteStage(int id) async {
-    await _stageService.deleteStage(id);
-    _loadStages();
+    try {
+      await _stageService.deleteStage(id);
+      _loadStages();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Etapa eliminada'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      print('Error al eliminar etapa: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al eliminar etapa'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   void _navigateToForm({Stage? stage}) async {
@@ -73,6 +89,13 @@ class _StagesScreenState extends State<StagesScreen> {
 
     if (result == true) {
       _loadStages();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(stage == null ? 'Etapa creada' : 'Etapa actualizada'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
 
@@ -104,7 +127,7 @@ class _StagesScreenState extends State<StagesScreen> {
                         onTap: () => _navigateToForm(stage: stage),
                         trailing: IconButton(
                           icon: Icon(Icons.delete),
-                          onPressed: () => _deleteStage(stage.id),
+                          onPressed: () => _deleteStage(stage.id!),
                         ),
                       );
                     },

@@ -17,7 +17,6 @@ class OrderService {
       },
     );
 
-
     print('Token usado: $token');
 
     print('STATUS: ${response.statusCode}');
@@ -30,7 +29,6 @@ class OrderService {
       throw Exception('Error al obtener ordenes de trabajo');
     }
   }
-
 
   /// POST Crear una nueva orden de trabajo
   Future<String> createOrder(Order order) async {
@@ -57,8 +55,17 @@ class OrderService {
 
   /// PUT Actualizar una orden de trabajo
   Future<String> updateOrden(int id, Order order) async {
-    final jsonBody = json.encode(order.toJson());
     final token = await SharedPreferencesHelper.getToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Token no encontrado. Por favor, inicia sesión.');
+    }
+
+    final jsonBody = json.encode(order.toJson());
+
+    print('Actualizando orden con ID $id');
+    print('Token usado: $token');
+    print('JSON enviado: $jsonBody');
 
     final response = await http.put(
       Uri.parse('$baseUrl/ordenes/$id'),
@@ -69,10 +76,16 @@ class OrderService {
       body: jsonBody,
     );
 
-    if (response.statusCode == 200) {
-      return response.body;
+    print('STATUS: ${response.statusCode}');
+    print('RESPONSE: ${response.body}');
+
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      return response.body.isNotEmpty
+          ? response.body
+          : 'Orden actualizada exitosamente';
     } else {
-      throw Exception('Error al actualizar la orden de trabajo');
+      final errorMessage = 'Error ${response.statusCode}: ${response.body}';
+      throw Exception('Error al actualizar la orden de trabajo. $errorMessage');
     }
   }
 

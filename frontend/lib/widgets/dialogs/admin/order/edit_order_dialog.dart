@@ -8,42 +8,31 @@ void mostrarEditarOrden(
   final descripcionCtrl =
       TextEditingController(text: ordenOriginal.descripcion);
   final fechaInicioCtrl = TextEditingController(
-      text: ordenOriginal.fechaInicio != null
-          ? ordenOriginal.fechaInicio!.toIso8601String().split('T').first
-          : '');
+    text: ordenOriginal.fechaInicio != null
+        ? ordenOriginal.fechaInicio!.toIso8601String().split('T').first
+        : '',
+  );
   final fechaFinCtrl = TextEditingController(
-      text: ordenOriginal.fechaFin != null
-          ? ordenOriginal.fechaFin!.toIso8601String().split('T').first
-          : '');
-  final estadoCtrl = TextEditingController(text: ordenOriginal.estado);
-
-  bool botonActivo = true;
-  bool listenersAgregados = false;
-
-  void validarBoton(StateSetter setState) {
-    final activo = descripcionCtrl.text.isNotEmpty &&
-        estadoCtrl.text.isNotEmpty &&
-        fechaInicioCtrl.text.isNotEmpty &&
-        fechaFinCtrl.text.isNotEmpty;
-
-    if (activo != botonActivo) {
-      setState(() {
-        botonActivo = activo;
-      });
-    }
-  }
+    text: ordenOriginal.fechaFin != null
+        ? ordenOriginal.fechaFin!.toIso8601String().split('T').first
+        : '',
+  );
 
   showDialog(
     context: context,
     builder: (context) {
       return StatefulBuilder(
         builder: (context, setState) {
-          if (!listenersAgregados) {
-            descripcionCtrl.addListener(() => validarBoton(setState));
-            estadoCtrl.addListener(() => validarBoton(setState));
-            fechaInicioCtrl.addListener(() => validarBoton(setState));
-            fechaFinCtrl.addListener(() => validarBoton(setState));
-            listenersAgregados = true;
+          bool botonActivo = descripcionCtrl.text.isNotEmpty &&
+              fechaInicioCtrl.text.isNotEmpty &&
+              fechaFinCtrl.text.isNotEmpty;
+
+          void validarBoton() {
+            setState(() {
+              botonActivo = descripcionCtrl.text.isNotEmpty &&
+                  fechaInicioCtrl.text.isNotEmpty &&
+                  fechaFinCtrl.text.isNotEmpty;
+            });
           }
 
           return DialogoGeneral(
@@ -58,12 +47,14 @@ void mostrarEditarOrden(
                   SizedBox(height: 8),
                   TextField(
                     controller: descripcionCtrl,
+                    onChanged: (_) => validarBoton(),
                     decoration: InputDecoration(
                       hintText: 'Ingrese la descripción de la orden',
                       filled: true,
                       fillColor: Colors.grey[50],
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6)),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                     ),
@@ -77,7 +68,7 @@ void mostrarEditarOrden(
                     controller: fechaInicioCtrl,
                     readOnly: true,
                     onTap: () async {
-                      final DateTime? picked = await showDatePicker(
+                      final picked = await showDatePicker(
                         context: context,
                         initialDate:
                             ordenOriginal.fechaInicio ?? DateTime.now(),
@@ -87,7 +78,7 @@ void mostrarEditarOrden(
                       if (picked != null) {
                         fechaInicioCtrl.text =
                             picked.toIso8601String().split('T').first;
-                        validarBoton(setState);
+                        validarBoton();
                       }
                     },
                     decoration: InputDecoration(
@@ -95,7 +86,8 @@ void mostrarEditarOrden(
                       filled: true,
                       fillColor: Colors.grey[50],
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6)),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                     ),
@@ -106,20 +98,19 @@ void mostrarEditarOrden(
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                   SizedBox(height: 8),
                   TextField(
-                    controller: fechaInicioCtrl,
+                    controller: fechaFinCtrl,
                     readOnly: true,
                     onTap: () async {
-                      final DateTime? picked = await showDatePicker(
+                      final picked = await showDatePicker(
                         context: context,
-                        initialDate:
-                            ordenOriginal.fechaInicio ?? DateTime.now(),
+                        initialDate: ordenOriginal.fechaFin ?? DateTime.now(),
                         firstDate: DateTime(2000),
                         lastDate: DateTime(2100),
                       );
                       if (picked != null) {
-                        fechaInicioCtrl.text =
+                        fechaFinCtrl.text =
                             picked.toIso8601String().split('T').first;
-                        validarBoton(setState);
+                        validarBoton();
                       }
                     },
                     decoration: InputDecoration(
@@ -127,24 +118,8 @@ void mostrarEditarOrden(
                       filled: true,
                       fillColor: Colors.grey[50],
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  Text('Estado',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  SizedBox(height: 8),
-                  TextField(
-                    controller: estadoCtrl,
-                    decoration: InputDecoration(
-                      hintText: 'Ingrese el estado',
-                      filled: true,
-                      fillColor: Colors.grey[50],
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6)),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                     ),
@@ -158,20 +133,20 @@ void mostrarEditarOrden(
                 ? () async {
                     try {
                       final ordenEditada = Order(
-                        id: ordenOriginal.id, // Se mantiene el mismo ID
+                        id: ordenOriginal.id,
                         descripcion: descripcionCtrl.text,
                         fechaInicio: DateTime.parse(fechaInicioCtrl.text),
                         fechaFin: DateTime.parse(fechaFinCtrl.text),
-                        estado: estadoCtrl.text,
-                        usuario: ordenOriginal
-                            .usuario, // Se mantiene el mismo usuario
-                        etapas:
-                            ordenOriginal.etapas, // También las etapas actuales
+                        estado: ordenOriginal.estado,
+                        usuario: ordenOriginal.usuario,
+                        etapas: ordenOriginal.etapas,
                       );
 
                       final orderService = OrderService();
                       final mensaje = await orderService.updateOrden(
-                          ordenOriginal.id, ordenEditada);
+                        ordenOriginal.id!,
+                        ordenEditada,
+                      );
 
                       print('Orden actualizada: $mensaje');
                       Navigator.of(context).pop();
@@ -189,6 +164,5 @@ void mostrarEditarOrden(
     descripcionCtrl.dispose();
     fechaInicioCtrl.dispose();
     fechaFinCtrl.dispose();
-    estadoCtrl.dispose();
   });
 }

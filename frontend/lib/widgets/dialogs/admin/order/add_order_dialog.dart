@@ -10,35 +10,31 @@ void mostrarAgregarOrderVisual(
   final descripcionCtrl = TextEditingController();
   final fechaInicioCtrl = TextEditingController();
   final fechaFinCtrl = TextEditingController();
-  final estadoCtrl = TextEditingController();
 
   bool botonActivo = false;
-  bool listenersAgregados = false;
 
-  void validarBoton(StateSetter setState) {
-    final activo = descripcionCtrl.text.isNotEmpty &&
-        estadoCtrl.text.isNotEmpty &&
-        fechaInicioCtrl.text.isNotEmpty &&
-        fechaFinCtrl.text.isNotEmpty;
-    if (activo != botonActivo) {
-      setState(() {
-        botonActivo = activo;
-      });
-    }
-  }
+  late void Function(StateSetter) validarBoton;
 
   showDialog(
     context: context,
     builder: (context) {
       return StatefulBuilder(
         builder: (context, setState) {
-          if (!listenersAgregados) {
-            descripcionCtrl.addListener(() => validarBoton(setState));
-            estadoCtrl.addListener(() => validarBoton(setState));
-            fechaInicioCtrl.addListener(() => validarBoton(setState));
-            fechaFinCtrl.addListener(() => validarBoton(setState));
-            listenersAgregados = true;
-          }
+          validarBoton = (StateSetter setStateInterno) {
+            final activo = descripcionCtrl.text.isNotEmpty &&
+                fechaInicioCtrl.text.isNotEmpty &&
+                fechaFinCtrl.text.isNotEmpty;
+            if (activo != botonActivo) {
+              setStateInterno(() {
+                botonActivo = activo;
+              });
+            }
+          };
+
+          // Agregamos los listeners SOLO una vez al construir
+          descripcionCtrl.addListener(() => validarBoton(setState));
+          fechaInicioCtrl.addListener(() => validarBoton(setState));
+          fechaFinCtrl.addListener(() => validarBoton(setState));
 
           return DialogoGeneral(
             titulo: 'Agregar una nueva orden',
@@ -129,16 +125,16 @@ void mostrarAgregarOrderVisual(
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                   SizedBox(height: 8),
-                  TextField(
-                    controller: estadoCtrl,
-                    decoration: InputDecoration(
-                      hintText: 'Ingrese el estado',
-                      filled: true,
-                      fillColor: Colors.grey[50],
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(color: Colors.grey.shade400),
+                    ),
+                    child: Text(
+                      'PENDIENTE',
+                      style: TextStyle(fontSize: 16, color: Colors.grey[800]),
                     ),
                   ),
                 ],
@@ -149,28 +145,24 @@ void mostrarAgregarOrderVisual(
             onOk: botonActivo
                 ? () async {
                     try {
-                      // obtiene ID del usuario desde SharedPreferences
                       final useridStr =
                           await SharedPreferencesHelper.getUserId();
 
-                      // Verifica que el userId no sea nulo y conviértelo a int
                       if (useridStr == null) {
                         throw Exception('No se pudo obtener el ID de usuario.');
                       }
                       final userid = int.parse(useridStr);
 
-                      // Obtener el objeto User real usando el userId
                       final userService = UserService();
                       final user = await userService.getUserById(userid);
 
                       final nuevoOrder = Order(
-                        id: 0,
                         descripcion: descripcionCtrl.text,
                         fechaInicio: DateTime.parse(fechaInicioCtrl.text),
                         fechaFin: DateTime.parse(fechaFinCtrl.text),
-                        estado: estadoCtrl.text,
-                        usuario: user, // Ahora se pasa el objeto User real
-                        etapas: [], // A reemplazar por etapas reales si es necesario
+                        estado: 'PENDIENTE',
+                        usuario: user,
+                        etapas: [],
                       );
 
                       final orderService = OrderService();
@@ -182,7 +174,6 @@ void mostrarAgregarOrderVisual(
                       onOrderCreado();
                     } catch (e) {
                       print('Error al crear nueva orden: $e');
-                      // Mostrar diálogo de error si es necesario
                     }
                   }
                 : null,
@@ -194,6 +185,5 @@ void mostrarAgregarOrderVisual(
     descripcionCtrl.dispose();
     fechaInicioCtrl.dispose();
     fechaFinCtrl.dispose();
-    estadoCtrl.dispose();
   });
 }

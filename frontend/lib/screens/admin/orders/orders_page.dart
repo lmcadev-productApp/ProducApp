@@ -61,7 +61,6 @@ class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
     }
   }
 
-
   void mostrarOpcionesOrden(BuildContext context, dynamic order) {
     ModalOptionsCustomizable.mostrar(
       context: context,
@@ -128,7 +127,4 @@ class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
       colorHeader: const Color(0xFF4A90E2),
     );
   }
-
-
-
 }

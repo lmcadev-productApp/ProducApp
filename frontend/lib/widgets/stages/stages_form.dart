@@ -28,20 +28,22 @@ class _StageFormScreenState extends State<StageFormScreen> {
 
   void _saveStage() async {
     if (_formKey.currentState!.validate()) {
+      // Crear Stage SIN id, incluso en actualización
       final newStage = Stage(
-        id: widget.stage?.id ?? 0,
         nombre: _nombreController.text,
         descripcion: _descripcionController.text,
       );
 
       try {
         if (widget.stage == null) {
+          // Crear nuevo (POST)
           await _stageService.createStage(newStage);
         } else {
-          await _stageService.updateStage(widget.stage!.id, newStage);
+          // Actualizar (PUT/PATCH), usando id aparte
+          await _stageService.updateStage(widget.stage!.id!, newStage);
         }
 
-        Navigator.pop(context, true); // return true to indicate success
+        Navigator.pop(context, true); // Éxito
       } catch (e) {
         print('Error guardando etapa: $e');
       }

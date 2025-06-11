@@ -2,7 +2,7 @@ import 'package:frontend/models/users/user.dart';
 import 'package:frontend/models/stages/stage_order.dart';
 
 class Order {
-  final int id;
+  final int? id;
   final String descripcion;
   final DateTime? fechaInicio;
   final DateTime? fechaFin;
@@ -11,7 +11,7 @@ class Order {
   final List<StageOrder> etapas;
 
   Order({
-    required this.id,
+    this.id,
     required this.descripcion,
     this.fechaInicio,
     this.fechaFin,
@@ -22,7 +22,7 @@ class Order {
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
-      id: json['id'] ?? 0,
+      id: json['id'], // puede ser null
       descripcion: json['descripcion'] ?? '',
       fechaInicio: json['fechaInicio'] != null
           ? DateTime.parse(json['fechaInicio'])
@@ -36,8 +36,6 @@ class Order {
           .toList(),
     );
   }
-
-
 
   Map<String, dynamic> toJson() {
     return {
