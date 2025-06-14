@@ -46,4 +46,20 @@ public class OrdenTrabajoController {
         service.eliminar(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/estado")
+public ResponseEntity<List<OrdenTrabajo>> obtenerPorEstado(@RequestParam String estado) {
+    try {
+        // Convierte el String a Enum
+        var estadoEnum = com.poli.productApp.model.ENUMS.Estado.valueOf(
+    estado.trim().toUpperCase().replace(" ", "_")
+);
+        // Busca las órdenes por estadoen el servicio
+        List<OrdenTrabajo> ordenes = service.buscarPorEstado(estadoEnum);
+        return ResponseEntity.ok(ordenes);
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.badRequest().build(); // Estado inválido
+    }
+}
+
 }

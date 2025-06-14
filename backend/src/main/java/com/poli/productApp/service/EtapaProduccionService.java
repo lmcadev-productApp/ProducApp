@@ -9,11 +9,15 @@ import com.poli.productApp.repository.OrdenTrabajoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import com.poli.productApp.repository.EtapaProduccionRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class EtapaProduccionService {
 
     @Autowired
     private EtapaProduccionRepository etapaProduccionRepository;
+
+    @Autowired
     private OrdenTrabajoRepository ordenTrabajoRepository;
 
     @Transactional

@@ -1,5 +1,6 @@
 package com.poli.productApp.service;
 
+import com.poli.productApp.model.ENUMS.Estado;
 import com.poli.productApp.model.ordenTrabajo.OrdenTrabajo;
 import com.poli.productApp.repository.OrdenTrabajoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,4 +42,9 @@ public class OrdenTrabajoService {
     public void eliminar(Long id) {
         repository.deleteById(id);
     }
+
+    public List<OrdenTrabajo> buscarPorEstado(Estado estado) {
+        return repository.findByEstado(estado);
+    }
+
 }

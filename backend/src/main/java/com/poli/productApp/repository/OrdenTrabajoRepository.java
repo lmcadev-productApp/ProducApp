@@ -1,6 +1,7 @@
 package com.poli.productApp.repository;
 
 import com.poli.productApp.model.ordenTrabajo.OrdenTrabajo;
+import com.poli.productApp.model.ENUMS.Estado;
 
 import java.sql.Date;
 import java.util.List;
@@ -16,7 +17,7 @@ public interface OrdenTrabajoRepository extends JpaRepository<OrdenTrabajo, Long
     List<OrdenTrabajo> findByUsuarioId(Long usuarioId);
 
 
-    List<OrdenTrabajo> findByEstado(com.poli.productApp.model.ENUMS.Estado estado);
+    List<OrdenTrabajo> findByEstado(Estado estado);
 
 
     List<OrdenTrabajo> findByFechaInicioBetween(Date fechaInicio, Date fechaFin);
