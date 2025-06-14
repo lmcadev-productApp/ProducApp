@@ -2,15 +2,19 @@ package com.poli.productApp.model.etapa;
 
 import java.sql.Date;
 
+import com.poli.productApp.model.ENUMS.Estado;
 import com.poli.productApp.model.ordenTrabajo.OrdenTrabajo;
 import com.poli.productApp.model.usuario.Usuario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "etapa_produccion")
 @Data
+@Setter @Getter
 public class EtapaProduccion {
 
     @Id
@@ -19,7 +23,7 @@ public class EtapaProduccion {
 
     @NotNull(message = "Estado no puede ser nulo")
     @Column(nullable = false)
-    private String estado;
+    private Estado estado;
 
     @NotNull(message = "Ingrese la fecha de inicio")
     @Column(nullable = false)

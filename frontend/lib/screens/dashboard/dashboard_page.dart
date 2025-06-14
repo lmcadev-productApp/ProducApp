@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/admin/analytics/analytics_page.dart';
-import 'package:frontend/screens/admin/orders/orders_page.dart';
+import 'package:frontend/screens/admin/orders/orders_mainPage.dart';
 import 'package:frontend/screens/admin/stage/stages_page.dart';
 import 'package:frontend/screens/admin/users/users_page.dart';
 import 'package:frontend/screens/stages/stage_screen.dart';
@@ -8,6 +8,7 @@ import 'package:frontend/utils/shared_preferences_helper.dart';
 import 'package:frontend/screens/login/login_page.dart';
 import 'package:frontend/widgets/dashboard/dashboard_grid.dart';
 import 'package:frontend/widgets/section/section_header.dart';
+
 
 class Dashboard extends StatefulWidget {
   @override
@@ -40,7 +41,7 @@ class _EstadoDashboard extends State<Dashboard> {
   void _navegarAOrdenes() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AdminOrderStateManagement()),
+      MaterialPageRoute(builder: (context) => orders_mainPage()),
     );
   }
 
@@ -100,7 +101,7 @@ class _EstadoDashboard extends State<Dashboard> {
       ),
       DashboardItem(
         icon: Icons.settings,
-        title: 'Asignación de Usuarios',
+        title: 'Asignación de Personal',
         onTap: _navegarAAsinarcionUsuarios,
         iconColor: const Color(0xFF4A90E2),
       ),

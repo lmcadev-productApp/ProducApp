@@ -18,5 +18,7 @@ public interface EtapaProduccionRepository extends JpaRepository<EtapaProduccion
 
     // Buscar por estado (como "en progreso", "completada", etc.)
     List<EtapaProduccion> findByEstado(String estado);
+
+    
 }
 

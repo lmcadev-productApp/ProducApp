@@ -73,4 +73,23 @@ class StageService {
       throw Exception('Error al eliminar etapa');
     }
   }
+
+  Future<void> assignStagesToOrder(int orderId, List<int> stageIds) async {
+    final token = await SharedPreferencesHelper.getToken();
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/ordenes/$orderId/etapas'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(stageIds), // Enviamos lista de IDs como JSON
+    );
+
+    if (response.statusCode != 200) {
+      print('Error: ${response.statusCode} - ${response.body}');
+      throw Exception('Error al asignar etapas a la orden');
+    }
+  }
+
 }

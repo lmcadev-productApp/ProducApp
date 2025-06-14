@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
 @Repository
 public interface OrdenTrabajoRepository extends JpaRepository<OrdenTrabajo, Long> {
@@ -20,5 +21,5 @@ public interface OrdenTrabajoRepository extends JpaRepository<OrdenTrabajo, Long
 
     List<OrdenTrabajo> findByFechaInicioBetween(Date fechaInicio, Date fechaFin);
 
-
+    Optional<OrdenTrabajo> findById(Long id);
 }

@@ -1,6 +1,7 @@
 package com.poli.productApp.controller;
 
 import com.poli.productApp.model.etapa.EtapaProduccion;
+import com.poli.productApp.model.ENUMS.Estado;
 import com.poli.productApp.model.etapa.Etapa;
 import com.poli.productApp.model.ordenTrabajo.OrdenTrabajo;
 import com.poli.productApp.model.usuario.Usuario;
@@ -52,7 +53,7 @@ public class EtapaProduccionController {
         ep.setOrdenTrabajo(ordenOpt.get());
         ep.setEtapa(etapaOpt.get());
         ep.setUsuario(usuarioOpt.get());
-        ep.setEstado(estado);
+        ep.setEstado(Estado.valueOf(estado));
         ep.setFechaInicio(fechaInicio);
         ep.setFechaFin(fechaFin);
 

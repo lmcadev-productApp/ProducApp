@@ -1,17 +1,16 @@
 package com.poli.productApp.model.etapa;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.poli.productApp.model.ordenTrabajo.OrdenTrabajo;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "etapa")
 @Data
+@Getter @Setter
 public class Etapa {
 
     @Id
@@ -24,5 +23,10 @@ public class Etapa {
 
     @Column(nullable = true)
     private String descripcion;
-    
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "orden_trabajo_id", nullable = false)
+    private OrdenTrabajo ordenTrabajo;
+
+
 }
