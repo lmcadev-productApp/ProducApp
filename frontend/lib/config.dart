@@ -9,5 +9,5 @@ const String _envBaseUrl = String.fromEnvironment('API_URL');
 final String baseUrl = _envBaseUrl.isNotEmpty
     ? _envBaseUrl
     : (Platform.isAndroid
-    ? 'http://10.0.2.2:8081/api'
-    : 'http://localhost:8081/api');
+    ? 'http://productapp.lmcadev.com:8081/api'
+    : 'http://productapp.lmcadev.com:8081/api');

@@ -44,10 +44,6 @@ public class EtapaProduccion {
     @JsonBackReference
     private OrdenTrabajo ordenTrabajo;
 
-    // Relación con el tipo de etapa (como "Diseño", "Corte", etc.)
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "etapa_id", nullable = false)
-    private Etapa etapa;
 
     // Relación con el empleado asignado a esta etapa
     @ManyToOne(optional = false)

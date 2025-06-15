@@ -9,6 +9,8 @@ import 'package:frontend/widgets/buttons/custom-button.dart';
 import 'package:frontend/widgets/lists/admin/order/order_list.dart';
 import 'package:frontend/widgets/searches/search_input.dart';
 import 'package:frontend/widgets/dialogs/admin/order/add_order_dialog.dart';
+import 'package:frontend/widgets/dialogs/admin/order/assign_stages_dialog.dart'; // o donde lo tengas
+
 
 class AdminOrdersPhaseStateManagement extends StatefulWidget {
   @override
@@ -95,7 +97,7 @@ class _AdminOrdersPhaseStateManagement extends State<AdminOrdersPhaseStateManage
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-      titulo: 'Asignar estapas a Ordenes',
+      titulo: 'Asignar etapas a Ordenes',
       contenido: Column(
         children: [
           SearchInput(
@@ -107,8 +109,10 @@ class _AdminOrdersPhaseStateManagement extends State<AdminOrdersPhaseStateManage
           Expanded(
             child: ListOrder(
               orders: ordenesFiltradas,
-              onTap: (order) {
+              onTap: (order) async{
+
                 print('Orden seleccionada: ${order.usuario.nombre}');
+                await mostrarFormularioAsignarEtapas(context, order);
               },
               onLongPress: (order) {
                 mostrarOpcionesOrden(context, order);

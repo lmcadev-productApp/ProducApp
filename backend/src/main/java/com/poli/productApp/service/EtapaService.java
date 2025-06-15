@@ -61,30 +61,7 @@ public class EtapaService {
         etapaRepository.deleteById(id);
     }
 
-    @Transactional
-public void asignarEtapasAOden(Long ordenId, List<Long> etapaIds) {
-    OrdenTrabajo orden = ordenTrabajoRepository.findById(ordenId)
-            .orElseThrow(() -> new EntityNotFoundException("Orden no encontrada"));
-
-    List<Etapa> etapas = etapaRepository.findAllById(etapaIds);
-
-    List<EtapaProduccion> etapasProduccion = new ArrayList<>();
-
-    for (Etapa etapa : etapas) {
-        EtapaProduccion ep = new EtapaProduccion();
-        ep.setEtapa(etapa);
-        ep.setOrdenTrabajo(orden);
-        ep.setEstado(Estado.PENDIENTE); // o el estado inicial que uses
-        ep.setFechaInicio(new java.sql.Date(System.currentTimeMillis())); // o null si aún no comienza
-        ep.setFechaFin(null); // por ejemplo
-
-        // Puedes asignar usuario si aplica: ep.setUsuario(...);
-
-        etapasProduccion.add(ep);
-    }
-
-    etapaProduccionRepository.saveAll(etapasProduccion);
-}
+  
 
 
 

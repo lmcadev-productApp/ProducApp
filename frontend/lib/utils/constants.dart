@@ -9,12 +9,12 @@ final String baseUrl =
 String _getDefaultBaseUrl() {
   if (kIsWeb) {
     // Código para Flutter Web
-    return 'http://localhost:8081/api';
+    return 'http://productapp.lmcadev.com:8081/api';
   } else {
     if (Platform.isAndroid) {
-      return 'http://10.0.2.2:8081/api'; // Para emulador Android
+      return 'http://productapp.lmcadev.com:8081/api'; // Para emulador Android
     } else {
-      return 'http://localhost:8081/api';
+      return 'http://productapp.lmcadev.com:8081/api';
     }
   }
 }

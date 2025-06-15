@@ -81,7 +81,7 @@ class StageService {
     final token = await SharedPreferencesHelper.getToken();
 
     final response = await http.post(
-      Uri.parse('$baseUrl/ordenes/$orderId/etapas'),
+      Uri.parse('$baseUrl/estapas-produccion/'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
