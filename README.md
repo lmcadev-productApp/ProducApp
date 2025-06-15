@@ -89,7 +89,7 @@ producapp/
 │ ├── test/
 │ ├── web/
 │ ├── windows/
-│ ├── .env
+│ ├── ..env
 │ ├── .metadata/
 │ ├── analysis_options.yaml
 │ ├── pubspec.lock
