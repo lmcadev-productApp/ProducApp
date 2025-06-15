@@ -21,26 +21,24 @@ public class EtapaProduccionService {
     private OrdenTrabajoRepository ordenTrabajoRepository;
 
     @Transactional
-    public EtapaProduccion completarEtapa(Long id) {
-        java.util.List<EtapaProduccion> etapas = etapaProduccionRepository.findByOrdenTrabajoId(id);
-        if (etapas.isEmpty()) {
-            throw new EntityNotFoundException("Etapa no encontrada");
-        }
-        EtapaProduccion etapa = etapas.get(0);
+public EtapaProduccion completarEtapa(Long etapaProduccionId) {
+    EtapaProduccion etapa = etapaProduccionRepository.findById(etapaProduccionId)
+        .orElseThrow(() -> new EntityNotFoundException("EtapaProduccion no encontrada"));
 
-        etapa.setEstado(Estado.COMPLETADO);
-        etapaProduccionRepository.save(etapa);
+    etapa.setEstado(Estado.COMPLETADO);
+    etapaProduccionRepository.save(etapa);
 
-        // Verificar si todas las etapas de la orden están completadas
-        OrdenTrabajo orden = etapa.getOrdenTrabajo();
-        boolean todasCompletas = orden.getEtapas().stream()
-                .allMatch(e -> e.getEstado() == Estado.COMPLETADO);
+    // Verificar si todas las etapas de esa orden están completadas
+    OrdenTrabajo orden = etapa.getOrdenTrabajo();
+    boolean todasCompletas = orden.getEtapasProduccion().stream()
+        .allMatch(e -> e.getEstado() == Estado.COMPLETADO);
 
-        if (todasCompletas) {
-            orden.setEstado(Estado.COMPLETADO);
-            ordenTrabajoRepository.save(orden);
-        }
-
-        return etapa;
+    if (todasCompletas) {
+        orden.setEstado(Estado.COMPLETADO);
+        ordenTrabajoRepository.save(orden);
     }
+
+    return etapa;
+}
+
 }

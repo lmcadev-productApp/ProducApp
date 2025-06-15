@@ -19,6 +19,25 @@ public interface EtapaProduccionRepository extends JpaRepository<EtapaProduccion
     // Buscar por estado (como "en progreso", "completada", etc.)
     List<EtapaProduccion> findByEstado(com.poli.productApp.model.ENUMS.Estado estado); 
 
+    // Buscar por nombre de etapa
+    List<EtapaProduccion> findByEtapaNombre(String nombreEtapa);
+
+    // Buscar por fecha de inicio y fin
+    List<EtapaProduccion> findByFechaInicioBetween(java.sql.Date fechaInicio, java.sql.Date fechaFin);
+
+    // Buscar por fecha de fin y estado
+    List<EtapaProduccion> findByFechaFinBetweenAndEstado(java.sql.Date fechaInicio, java.sql.Date fechaFin, com.poli.productApp.model.ENUMS.Estado estado); 
+    // Buscar por nombre de etapa y estado
+    List<EtapaProduccion> findByEtapaNombreAndEstado(String nombreEtapa, com.poli.productApp.model.ENUMS.Estado estado);        
+    // Buscar por nombre de etapa y empleado
+    List<EtapaProduccion> findByEtapaNombreAndUsuarioId(String nombreEtapa, Long empleadoId);
+    // Buscar por orden de trabajo y estado
+    List<EtapaProduccion> findByOrdenTrabajoIdAndEstado(Long ordenTrabajoId, com.poli.productApp.model.ENUMS.Estado estado);
+    // Buscar por empleado y estado
+    List<EtapaProduccion> findByUsuarioIdAndEstado(Long empleadoId, com.poli.productApp.model.ENUMS.Estado estado);
+
+
+
 
     
 }

@@ -1,7 +1,11 @@
 package com.poli.productApp.model.etapa;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.poli.productApp.model.ENUMS.Estado;
 import com.poli.productApp.model.ordenTrabajo.OrdenTrabajo;
 import com.poli.productApp.model.usuario.Usuario;
@@ -14,7 +18,8 @@ import lombok.Setter;
 @Entity
 @Table(name = "etapa_produccion")
 @Data
-@Setter @Getter
+@Setter
+@Getter
 public class EtapaProduccion {
 
     @Id
@@ -36,6 +41,7 @@ public class EtapaProduccion {
     // Relación con la orden de trabajo
     @ManyToOne(optional = false)
     @JoinColumn(name = "orden_trabajo_id", nullable = false)
+    @JsonBackReference
     private OrdenTrabajo ordenTrabajo;
 
     // Relación con el tipo de etapa (como "Diseño", "Corte", etc.)
@@ -47,4 +53,7 @@ public class EtapaProduccion {
     @ManyToOne(optional = false)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
+
+
+
 }

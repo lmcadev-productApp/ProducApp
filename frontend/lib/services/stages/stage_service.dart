@@ -12,6 +12,9 @@ class StageService {
       'Content-Type': 'application/json',
     });
 
+    print('STATUS: ${response.statusCode}');
+    print('BODY: ${response.body}');
+
     if (response.statusCode == 200) {
       final List<dynamic> body = json.decode(response.body);
       return body.map((json) => Stage.fromJson(json)).toList();

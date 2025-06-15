@@ -1,5 +1,6 @@
 package com.poli.productApp.model.etapa;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.poli.productApp.model.ordenTrabajo.OrdenTrabajo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -10,7 +11,8 @@ import lombok.Setter;
 @Entity
 @Table(name = "etapa")
 @Data
-@Getter @Setter
+@Getter
+@Setter
 public class Etapa {
 
     @Id
@@ -24,9 +26,6 @@ public class Etapa {
     @Column(nullable = true)
     private String descripcion;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "orden_trabajo_id", nullable = false)
-    private OrdenTrabajo ordenTrabajo;
 
 
 }
