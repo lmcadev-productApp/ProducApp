@@ -35,7 +35,7 @@ class DashboardGrid extends StatelessWidget {
     this.textColor = Colors.black87,
     this.iconSize = 48,
     this.fontSize = 16,
-    this.padding = const EdgeInsets.all(16),
+    this.padding = const EdgeInsets.all(16), required Container Function(dynamic context, dynamic item) itemBuilder,
   }) : super(key: key);
 
   @override
