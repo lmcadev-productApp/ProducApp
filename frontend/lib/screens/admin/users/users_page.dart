@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/stages/stage.dart';
 import 'package:frontend/models/users/user.dart';
 import 'package:frontend/services/users/user_service.dart';
 import 'package:frontend/widgets/buttons/customizable_modal_options.dart';
@@ -34,7 +35,7 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
     });
   }
 
-  void cargarUsuarios() async {
+  void cargarUsuarios({Stage? stage}) async {
     try {
       List<User> lista = await userService.getUsers();
       setState(() {
@@ -124,32 +125,31 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseScreen(
+    return BaseScreen<User>(
       titulo: 'Gestión de Usuarios',
-      contenido: Column(
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          mostrarAgregarUsuarioVisual(context, () {
+            cargarUsuarios();
+          });
+        },
+        child: const Icon(Icons.add),
+      ),
+      contenidoPersonalizado: Column(
         children: [
           SearchInput(
             hintText: 'Buscar Usuario...',
             espacioInferior: true,
             controller: searchController,
           ),
-          CustomButton(
-            texto: 'Agregar Usuario',
-            onPressed: () {
-              mostrarAgregarUsuarioVisual(context, () {
-                cargarUsuarios();
-              });
-              print('Botón Agregar Usuario Presionado');
-            },
-          ),
           Expanded(
             child: ListUser(
               users: usuariosFiltrados,
-              onTap: (user) {
-                print('Usuario seleccionado: ${user.nombre}');
-              },
-              onLongPress: (user) {
-                mostrarOpcionesUsuario(context, user);
+              onEdit: (usuario) {
+                mostrarEditarUsuario(context, usuario, () {
+                  cargarUsuarios();
+                });
               },
             ),
           ),

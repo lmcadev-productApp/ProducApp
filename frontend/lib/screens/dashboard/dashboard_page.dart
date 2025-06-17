@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/helper/shared_preferences_helper.dart';
 import 'package:frontend/screens/admin/analytics/analytics_page.dart';
 import 'package:frontend/screens/admin/orders/orders_page.dart';
-import 'package:frontend/screens/admin/stage/stages_page.dart';
 import 'package:frontend/screens/admin/users/users_page.dart';
 import 'package:frontend/screens/stages/stage_screen.dart';
-import 'package:frontend/utils/shared_preferences_helper.dart';
 import 'package:frontend/screens/login/login_page.dart';
+import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/widgets/dashboard/dashboard_grid.dart';
 import 'package:frontend/widgets/section/section_header.dart';
+
 
 class Dashboard extends StatefulWidget {
   @override
@@ -30,40 +31,8 @@ class _EstadoDashboard extends State<Dashboard> {
     });
   }
 
-  void _navegarAUsuarios() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => AdminUserStateManagement()),
-    );
-  }
-
-  void _navegarAOrdenes() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => AdminOrderStateManagement()),
-    );
-  }
-
-  void _navegarAEtapas() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => StagesScreen()),
-    );
-  }
-
-  void _navegarAReportes() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => AdminAnalytics()),
-    );
-  }
-
-  void _navegarAAsinarcionUsuarios() {
-    print('Navegando a la Asinación de Usuarios');
-  }
-
-  void _navegarAAyuda() {
-    print('Navegando a Ayuda');
+  void _navegarA(BuildContext context, Widget pagina) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => pagina));
   }
 
   String capitalizar(String texto) {
@@ -77,60 +46,54 @@ class _EstadoDashboard extends State<Dashboard> {
       DashboardItem(
         icon: Icons.people,
         title: 'Usuarios',
-        onTap: _navegarAUsuarios,
-        iconColor: const Color(0xFF4A90E2),
+        onTap: () => _navegarA(context, AdminUserStateManagement()),
+        iconColor: AppColors.azulLogoPrincipal,
       ),
       DashboardItem(
         icon: Icons.assignment,
         title: 'Órdenes',
-        onTap: _navegarAOrdenes,
-        iconColor: const Color(0xFF4A90E2),
+        onTap: () => _navegarA(context, AdminOrderStateManagement()),
+        iconColor: AppColors.azulLogoPrincipal,
       ),
       DashboardItem(
         icon: Icons.timeline,
         title: 'Etapas',
-        onTap: _navegarAEtapas,
-        iconColor: const Color(0xFF4A90E2),
+        onTap: () => _navegarA(context, StagesScreen()),
+        iconColor: AppColors.azulLogoPrincipal,
       ),
       DashboardItem(
         icon: Icons.assessment,
         title: 'Reportes',
-        onTap: _navegarAReportes,
-        iconColor: const Color(0xFF4A90E2),
+        onTap: () => _navegarA(context, AdminAnalytics()),
+        iconColor: AppColors.azulLogoPrincipal,
       ),
       DashboardItem(
         icon: Icons.settings,
         title: 'Asignación de Usuarios',
-        onTap: _navegarAAsinarcionUsuarios,
-        iconColor: const Color(0xFF4A90E2),
+        onTap: () => debugPrint('Navegando a la Asignación de Usuarios'),
+        iconColor: AppColors.azulLogoPrincipal,
       ),
       DashboardItem(
-        icon: Icons.help,
+        icon: Icons.help_outline,
         title: 'Ayuda',
-        onTap: _navegarAAyuda,
-        iconColor: const Color(0xFF4A90E2),
+        onTap: () => debugPrint('Navegando a Ayuda'),
+        iconColor: AppColors.azulLogoPrincipal,
       ),
     ];
 
-    // Filtrado de elementos según el rol
-    List<DashboardItem> elementosFiltrados = [];
-
+    List<DashboardItem> elementosFiltrados;
     switch (_rol.toUpperCase()) {
       case 'ADMINISTRADOR':
         elementosFiltrados = todosLosElementos;
         break;
       case 'SUPERVISOR':
-        elementosFiltrados = todosLosElementos
-            .where((item) => item.title != 'Usuarios' && item.title != 'Etapas')
-            .toList();
+        elementosFiltrados = todosLosElementos.where((item) => item.title != 'Usuarios' && item.title != 'Etapas').toList();
         break;
       case 'OPERARIO':
-        elementosFiltrados =
-            todosLosElementos.where((item) => item.title == 'Ayuda').toList();
+        elementosFiltrados = todosLosElementos.where((item) => item.title == 'Ayuda').toList();
         break;
       default:
         elementosFiltrados = [];
-        break;
     }
 
     return BaseScreen(
@@ -142,20 +105,70 @@ class _EstadoDashboard extends State<Dashboard> {
         await SharedPreferencesHelper.clearRol();
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
+          MaterialPageRoute(builder: (_) => const LoginPage()),
         );
       },
-      contenido: DashboardGrid(
-        items: elementosFiltrados,
-        backgroundColor: Colors.transparent,
-        cardColor: const Color.fromARGB(255, 255, 255, 255),
-        textColor: Colors.black87,
-        iconSize: 48,
-        fontSize: 16,
-        spacing: 16,
-        padding: const EdgeInsets.all(16),
+      contenidoPersonalizado: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              '¿Qué deseas gestionar hoy?',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: AppColors.azulLogoPrincipal,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: DashboardGrid(
+                items: elementosFiltrados,
+                backgroundColor: Colors.white,
+                cardColor: Colors.white,
+                textColor: AppColors.azulIntermedio,
+                iconSize: 52,
+                fontSize: 16,
+                spacing: 20,
+                padding: const EdgeInsets.all(8),
+                itemBuilder: (context, item) => Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.azulIntermedio,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: AppColors.azulIntermedio,
+                        blurRadius: 8,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: item.onTap,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(item.icon, size: 52, color: item.iconColor),
+                        const SizedBox(height: 12),
+                        Text(
+                          item.title,
+                          style: const TextStyle(
+                            color: AppColors.azulIntermedio,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-      colorHeader: const Color(0xFF4A90E2),
+      colorHeader: AppColors.azulIntermedio,
     );
   }
 }

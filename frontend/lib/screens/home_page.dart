@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/admin/analytics/analytics_page.dart';
 import 'package:frontend/screens/admin/orders/orders_page.dart';
-import 'package:frontend/screens/admin/stage/stages_page.dart';
 import 'package:frontend/screens/stages/stage_screen.dart';
 import 'package:frontend/screens/test_navbar_page.dart';
 import 'package:frontend/screens/admin/users/users_page.dart';

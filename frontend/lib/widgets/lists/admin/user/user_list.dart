@@ -4,14 +4,14 @@ import 'package:frontend/utils/role_color.dart';
 
 class ListUser extends StatelessWidget {
   final List<User> users;
-  final Function(User)? onTap;
   final Function(User)? onLongPress;
+  final Function(User)? onEdit;
 
   const ListUser({
     Key? key,
     required this.users,
-    required this.onTap,
     this.onLongPress,
+    this.onEdit,
   }) : super(key: key);
 
   @override
@@ -43,26 +43,33 @@ class ListUser extends StatelessWidget {
           ),
         ],
       ),
-      child: InkWell(
-        onTap: onTap != null ? () => onTap!(user) : null,
-        onLongPress: onLongPress != null ? () => onLongPress!(user) : null,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildNameAndRole(user),
-            const SizedBox(height: 12),
-            _buildContactInfo(user),
-            const SizedBox(height: 10),
-            _buildSpecialtySection(user),
-            const SizedBox(height: 10),
-            _buildInsuranceRow(user),
-            const SizedBox(height: 6),
-            _buildUserId(user),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildNameAndRole(user),
+          Align(
+            alignment: Alignment.topRight,
+            child: IconButton(
+              icon: const Icon(Icons.edit, color: Colors.green),
+              tooltip: 'Editar',
+              onPressed: () {
+                onEdit?.call(user);
+              },
+            ),
+          ),
+          const SizedBox(height: 12),
+          _buildContactInfo(user),
+          const SizedBox(height: 10),
+          _buildSpecialtySection(user),
+          const SizedBox(height: 10),
+          _buildInsuranceRow(user),
+          const SizedBox(height: 6),
+          _buildUserId(user),
+        ],
       ),
     );
   }
+
 
   // Nombre del usuario y su rol
   Widget _buildNameAndRole(User user) {

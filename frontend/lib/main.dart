@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:frontend/helper/shared_preferences_helper.dart';
 import 'package:frontend/screens/login/login_page.dart';
 import 'package:frontend/screens/home_page.dart';
-import 'package:frontend/utils/shared_preferences_helper.dart';
 import 'package:frontend/widgets/dialogs/loading_general.dart';
 
 void main() {

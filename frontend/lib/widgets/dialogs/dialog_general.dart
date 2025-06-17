@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/utils/AppColors.dart';
 
 /// Widget de diálogo reutilizable para ventanas emergentes
 /// Proporciona una estructura consistente con header coloreable,
@@ -31,7 +32,7 @@ class DialogoGeneral extends StatelessWidget {
         'Cancelar', // Texto por defecto del botón cancelar
     this.onOk, // Opcional: función del botón OK
     this.onCancelar, // Opcional: función del botón cancelar
-    this.color = const Color(0xFF4A90E2), // Color azul por defecto
+    this.color = AppColors.azulIntermedio, // Color azul por defecto
     this.mostrarBotonCancelar = true, // Por defecto muestra botón cancelar
     this.mostrarBotonCerrar = true, // Por defecto muestra X en header
     this.ancho, // Opcional: ancho personalizado
@@ -43,7 +44,7 @@ class DialogoGeneral extends StatelessWidget {
     final maxAlto = alto ?? MediaQuery.of(context).size.height * 0.8;
 
     return Dialog(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.azulClaroFondo,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -68,7 +69,7 @@ class DialogoGeneral extends StatelessWidget {
   /// Construye el header del diálogo con título y botón cerrar
   Widget _construirHeader(BuildContext context) {
     return Container(
-      width: double.infinity, // Ocupa todo el ancho
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       decoration: BoxDecoration(
         color: color, // Color personalizable

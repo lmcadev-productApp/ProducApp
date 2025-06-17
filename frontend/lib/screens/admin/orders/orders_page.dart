@@ -96,20 +96,23 @@ class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
   Widget build(BuildContext context) {
     return BaseScreen(
       titulo: 'Gestión de Órdenes',
-      contenido: Column(
+      contenidoPersonalizado: Column(
         children: [
           SearchInput(
             hintText: 'Buscar Orden...',
             espacioInferior: true,
             controller: searchController,
           ),
-          CustomButton(
-            texto: 'Agregar Orden',
-            onPressed: () {
-              mostrarAgregarOrderVisual(context, () {
-                cargarOrdenes();
-              });
-            },
+          Center(
+            child: PrimaryButton(
+              text: 'Agregar Orden',
+              onPressed: () {
+                mostrarAgregarOrderVisual(context, () {
+                  cargarOrdenes();
+                });
+              },
+              fontSize: 20,
+            ),
           ),
           Expanded(
             child: ListOrder(

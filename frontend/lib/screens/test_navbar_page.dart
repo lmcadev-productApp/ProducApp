@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/helper/shared_preferences_helper.dart';
 import 'package:frontend/screens/login/login_page.dart';
-import 'package:frontend/utils/shared_preferences_helper.dart';
 import 'package:frontend/widgets/section/section_header.dart';
 
 class WidgetGenerico extends StatefulWidget {
@@ -45,7 +45,7 @@ class _WidgetGenericoState extends State<WidgetGenerico> {
           MaterialPageRoute(builder: (context) => const LoginPage()),
         );
       },
-      contenido: Center(
+      contenidoPersonalizado: Center(
         child: Text(
           '¡Hola, ProducApp!',
           style: const TextStyle(fontSize: 24),

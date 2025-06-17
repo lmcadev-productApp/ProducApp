@@ -20,7 +20,7 @@ class _AdminAnalyticsState extends State<AdminAnalytics> {
     // Widget reutilizable
     return BaseScreen(
       titulo: 'Analiticas',
-      contenido: contenidoPantalla,
+      contenidoPersonalizado: contenidoPantalla,
       colorHeader: const Color(0xFF4A90E2),
     );
   }

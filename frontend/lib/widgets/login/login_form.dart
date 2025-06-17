@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/utils/shared_preferences_helper.dart';
+import 'package:frontend/helper/shared_preferences_helper.dart';
 import 'recover_password_dialog.dart';
 import 'package:frontend/screens/home_page.dart';
 import 'package:frontend/models/login/login_request.dart';

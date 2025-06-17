@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/helper/formulario_usuario_helper.dart' show buildFormularioUsuario;
+import 'package:frontend/helper/input_form_field.dart' show inputFormField;
 import 'package:frontend/models/users/user.dart';
 import 'package:frontend/services/users/user_service.dart';
+import 'package:frontend/utils/app_text_styles.dart';
 import 'package:frontend/widgets/dialogs/dialog_general.dart';
 
 void mostrarAgregarUsuarioVisual(
@@ -41,109 +44,18 @@ void mostrarAgregarUsuarioVisual(
           return DialogoGeneral(
             titulo: 'Agregar un nuevo usuario',
             contenido: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Nombre Completo',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  SizedBox(height: 8),
-                  TextField(
-                    controller: nombreCtrl,
-                    decoration: InputDecoration(
-                      hintText: 'Ingrese el nombre',
-                      filled: true,
-                      fillColor: Colors.grey[50],
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  Text('Correo Electrónico',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  SizedBox(height: 8),
-                  TextField(
-                    controller: correoCtrl,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      hintText: 'Ingrese el correo',
-                      filled: true,
-                      fillColor: Colors.grey[50],
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  Text('Contraseña Temporal',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  SizedBox(height: 8),
-                  TextField(
-                    controller: passwordCtrl,
-                    obscureText: !passwordVisible,
-                    decoration: InputDecoration(
-                      hintText: 'Ingrese la contraseña',
-                      filled: true,
-                      fillColor: Colors.grey[50],
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          passwordVisible
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            passwordVisible = !passwordVisible;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  Text('Teléfono',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  SizedBox(height: 8),
-                  TextField(
-                    controller: telefonoCtrl,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      hintText: 'Ingrese el teléfono',
-                      filled: true,
-                      fillColor: Colors.grey[50],
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  Text('Dirección',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  SizedBox(height: 8),
-                  TextField(
-                    controller: direccionCtrl,
-                    decoration: InputDecoration(
-                      hintText: 'Ingrese la dirección',
-                      filled: true,
-                      fillColor: Colors.grey[50],
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    ),
-                  ),
-                ],
+              child: buildFormularioUsuario(
+                nombreCtrl: nombreCtrl,
+                correoCtrl: correoCtrl,
+                passwordCtrl: passwordCtrl,
+                telefonoCtrl: telefonoCtrl,
+                direccionCtrl: direccionCtrl,
+                isPasswordVisible: passwordVisible,
+                onTogglePassword: () {
+                  setState(() {
+                    passwordVisible = !passwordVisible;
+                  });
+                },
               ),
             ),
             textoBotonOk: 'Guardar',

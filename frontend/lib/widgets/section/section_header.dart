@@ -1,136 +1,132 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/utils/AppColors.dart';
+import 'package:frontend/utils/app_text_styles.dart';
 
-/// Widget base reutilizable para crear pantallas con estructura consistente este el widget principal para todas las ptanllas
-/// Proporciona un AppBar personalizable y un área de contenido con padding
-class BaseScreen extends StatelessWidget {
-  // Propiedades del widget
-  final String titulo; // Título que se muestra en el AppBar
-  final Widget contenido; // Widget principal que se renderiza en el body
-  final Color? colorHeader; // Color personalizable del AppBar (opcional)
-  final bool mostrarBack; // Controla si se muestra el botón de regreso
-  final bool mostrarLogout; // Controla si se muestra el botón de cerrar sesión
-  final VoidCallback? onBack; // Callback personalizado para el botón de regreso
-  final VoidCallback? onLogout; // Callback para el botón de cerrar sesión
 
-  /// Constructor del widget BaseScreen
-  /// [titulo] y
-  /// [contenido] son requeridos
-  /// Las demás propiedades tienen valores por defecto
+class BaseScreen<T> extends StatelessWidget {
+  final String titulo;
+  final List<T>? items;
+  final String Function(T)? tituloItem;
+  final String Function(T)? subtituloItem;
+  final void Function(T)? onEdit;
+  final void Function(T)? onEditRole;
+  final void Function(T, BuildContext context)? onDelete;
+  final Widget? contenidoPersonalizado;
+  final Color? colorHeader;
+  final bool mostrarBack;
+  final bool mostrarLogout;
+  final VoidCallback? onBack;
+  final VoidCallback? onLogout;
+  final Widget? floatingActionButton;
+  final Widget? topContent;
+
   const BaseScreen({
-    Key? key,
-    required this.titulo, // Obligatorio: título del AppBar
-    required this.contenido, // Obligatorio: contenido principal
-    this.colorHeader, // Opcional: color del header
-    this.mostrarBack = false, // Por defecto no muestra botón de regreso
-    this.mostrarLogout = false, // Por defecto no muestra botón de logout
-    this.onBack, // Opcional: acción personalizada de regreso
-    this.onLogout, // Opcional: acción de cerrar sesión
-  }) : super(key: key);
+    super.key,
+    required this.titulo,
+    this.items,
+    this.tituloItem,
+    this.subtituloItem,
+    this.onEdit,
+    this.onEditRole,
+    this.onDelete,
+    this.contenidoPersonalizado,
+    this.colorHeader,
+    this.mostrarBack = false,
+    this.mostrarLogout = false,
+    this.onBack,
+    this.onLogout,
+    this.floatingActionButton,
+    this.topContent,
+  });
+
+  void _handleEdit(BuildContext context, T item) {
+    onEdit?.call(item);
+
+  }
+
+  void _handleDelete(BuildContext context, T item) {
+    onDelete?.call(item, context);
+
+  }
+
+  void _handleEditRole(BuildContext context, T item) {
+    onEditRole?.call(item);
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    final headerColor = colorHeader ?? const Color(0xFF4A90E2);
-
     return Scaffold(
-      // Configuración del AppBar
       appBar: AppBar(
-        // Botón de regreso condicional
         leading: mostrarBack
             ? IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                // Si se proporciona onBack personalizado lo usa, sino usa Navigator.pop
-                onPressed: onBack ?? () => Navigator.pop(context),
-              )
-            : null, // No muestra botón si mostrarBack es false
-
-        // Configuración del título
-        title: Text(
-          titulo,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-
-        // Color del AppBar: usa colorHeader personalizado o azul por defecto
-        backgroundColor: colorHeader ?? const Color(0xFF4A90E2),
-        elevation: 0, // Sin sombra en el AppBar
-
-        // Botón de logout condicional en el lado derecho
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.blanco, size: 32),
+          onPressed: onBack ?? () => Navigator.pop(context),
+        )
+            : null,
+        title: Text(titulo, style: AppTextStyles.tituloHeader),
+        backgroundColor: colorHeader ?? AppColors.azulIntermedio,
+        iconTheme: const IconThemeData(color: AppColors.blanco),
+        elevation: 0,
         actions: mostrarLogout
             ? [
-                IconButton(
-                  icon: const Icon(Icons.logout, color: Colors.white),
-                  onPressed:
-                      onLogout, // Ejecuta la función de logout proporcionada
-                ),
-              ]
-            : null, // No muestra acciones si mostrarLogout es false
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.white),
+            onPressed: onLogout,
+          ),
+        ]
+            : null,
       ),
-
-      // Cuerpo de la pantalla con padding consistente
       body: Padding(
-        padding: const EdgeInsets.all(16), // Padding de 16px en todos los lados
-        child: contenido, // Renderiza el widget contenido proporcionado
+        padding: const EdgeInsets.all(16.0),
+        child: contenidoPersonalizado ?? Column(
+          children: [
+            if (topContent != null) topContent!,
+            if (items == null || tituloItem == null || subtituloItem == null || onEdit == null || onDelete == null)
+              const SizedBox.shrink()
+            else Expanded(
+              child: items!.isEmpty
+                  ? const Center(child: Text('No hay elementos disponibles'))
+                  : ListView.builder(
+                itemCount: items!.length,
+                itemBuilder: (context, index) {
+                  final item = items![index];
+                  return Card(
+                    elevation: 3,
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: ListTile(
+                      title: Text(tituloItem!(item), style: const TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle: Text(subtituloItem!(item)),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (onEditRole != null)
+                            IconButton(
+                              icon: const Icon(Icons.admin_panel_settings, color: Colors.orange),
+                              tooltip: 'Editar Rol',
+                              onPressed: () => _handleEditRole(context, item),
+                            ),
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: AppColors.verdeCheck),
+                            tooltip: 'Editar',
+                            onPressed: () => _handleEdit(context, item),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            tooltip: 'Eliminar',
+                            onPressed: () => _handleDelete(context, item),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
+      floatingActionButton: floatingActionButton,
     );
   }
 }
-
-/*
-EJEMPLOS DE USO:
-
-// 1. Pantalla básica con solo título
-BaseScreen(
-  titulo: 'Mi Pantalla',
-  contenido: Text('Contenido aquí'),
-),
-
-// 2. Solo con flecha de regreso
-BaseScreen(
-  titulo: 'Detalles',
-  mostrarBack: true,
-  contenido: MiContenido(),
-),
-
-// 3. Solo con botón de cerrar sesión
-BaseScreen(
-  titulo: 'Inicio',
-  mostrarLogout: true,
-  onLogout: () {
-    // Lógica personalizada de cerrar sesión
-    print('Cerrando sesión...');
-  },
-  contenido: MiContenido(),
-),
-
-// 4. Con ambos botones
-BaseScreen(
-  titulo: 'Perfil',
-  mostrarBack: true,
-  mostrarLogout: true,
-  onLogout: () => cerrarSesion(),
-  contenido: MiContenido(),
-),
-
-// 5. Con color personalizado del header
-BaseScreen(
-  titulo: 'Configuración',
-  colorHeader: Colors.green,
-  mostrarBack: true,
-  contenido: MiContenido(),
-),
-
-// 6. Con callback personalizado de regreso
-BaseScreen(
-  titulo: 'Formulario',
-  mostrarBack: true,
-  onBack: () {
-    // Lógica personalizada antes de regresar
-    // Por ejemplo, mostrar diálogo de confirmación
-    showDialog(context: context, builder: (_) => AlertDialog(...));
-  },
-  contenido: MiFormulario(),
-),
-*/

@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:async'; // Para TimeoutException
+import 'package:frontend/helper/shared_preferences_helper.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/utils/constants.dart';
 import 'package:frontend/models/login/login_request.dart';
 import 'package:frontend/models/login/login_response.dart';
 import 'package:frontend/services/users/user_service.dart';
 
-import '../../utils/shared_preferences_helper.dart';
 
 class AuthService {
   Future<LoginResponse?> login(LoginRequest request) async {
