@@ -27,10 +27,10 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'], // puede ser null
+      id: json['id'],
       correo: json['correo'] ?? '',
       contrasena: json['contrasena'] ?? '',
-      rol: json['rol'], // puede ser null
+      rol: json['rol'],
       nombre: json['nombre'] ?? '',
       telefono: json['telefono'] ?? '',
       direccion: json['direccion'] ?? '',
@@ -55,5 +55,31 @@ class User {
       'suguroSocial': suguroSocial,
       'arl': arl,
     };
+  }
+
+  User copyWith({
+    int? id,
+    String? correo,
+    String? contrasena,
+    String? rol,
+    String? nombre,
+    String? telefono,
+    String? direccion,
+    Specialty? especialidad,
+    String? suguroSocial,
+    String? arl,
+  }) {
+    return User(
+      id: id ?? this.id,
+      correo: correo ?? this.correo,
+      contrasena: contrasena ?? this.contrasena,
+      rol: rol ?? this.rol,
+      nombre: nombre ?? this.nombre,
+      telefono: telefono ?? this.telefono,
+      direccion: direccion ?? this.direccion,
+      especialidad: especialidad ?? this.especialidad,
+      suguroSocial: suguroSocial ?? this.suguroSocial,
+      arl: arl ?? this.arl,
+    );
   }
 }

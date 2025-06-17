@@ -5,10 +5,8 @@ import 'package:frontend/widgets/buttons/customizable_modal_options.dart';
 import 'package:frontend/widgets/dialogs/admin/order/delete_order_dialog.dart';
 import 'package:frontend/widgets/dialogs/admin/order/edit_order_dialog.dart';
 import 'package:frontend/widgets/section/section_header.dart';
-import 'package:frontend/widgets/buttons/custom-button.dart';
 import 'package:frontend/widgets/lists/admin/order/order_list.dart';
 import 'package:frontend/widgets/searches/search_input.dart';
-import 'package:frontend/widgets/dialogs/admin/order/add_order_dialog.dart';
 import 'package:frontend/widgets/dialogs/admin/order/assign_stages_dialog.dart'; // o donde lo tengas
 
 
@@ -98,7 +96,7 @@ class _AdminOrdersPhaseStateManagement extends State<AdminOrdersPhaseStateManage
   Widget build(BuildContext context) {
     return BaseScreen(
       titulo: 'Asignar etapas a Ordenes',
-      contenido: Column(
+      contenidoPersonalizado: Column(
         children: [
           SearchInput(
             hintText: 'Buscar Orden...',

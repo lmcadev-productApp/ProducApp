@@ -6,7 +6,6 @@ import 'package:frontend/widgets/buttons/customizable_modal_options.dart';
 import 'package:frontend/widgets/dialogs/admin/user/delete_user_dialog.dart';
 import 'package:frontend/widgets/dialogs/admin/user/edit_user_role_dialog.dart';
 import 'package:frontend/widgets/section/section_header.dart';
-import 'package:frontend/widgets/buttons/custom-button.dart';
 import 'package:frontend/widgets/lists/admin/user/user_list.dart';
 import 'package:frontend/widgets/searches/search_input.dart';
 import 'package:frontend/widgets/dialogs/admin/user/add_user_dialog.dart';
@@ -138,16 +137,30 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
       ),
       contenidoPersonalizado: Column(
         children: [
-          SearchInput(
-            hintText: 'Buscar Usuario...',
-            espacioInferior: true,
-            controller: searchController,
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: SearchInput(
+              hintText: 'Buscar Usuario...',
+              espacioInferior: true,
+              controller: searchController,
+            ),
           ),
+          const SizedBox(height: 8),
           Expanded(
             child: ListUser(
               users: usuariosFiltrados,
+              onEditRole: (usuario) {
+                mostrarEditarRolUsuario(context, usuario, () {
+                  cargarUsuarios();
+                });
+              },
               onEdit: (usuario) {
                 mostrarEditarUsuario(context, usuario, () {
+                  cargarUsuarios();
+                });
+              },
+              onDelete: (usuario) {
+                alPresionarEliminar(context, usuario, () {
                   cargarUsuarios();
                 });
               },
@@ -155,6 +168,8 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
           ),
         ],
       ),
+
+
       colorHeader: const Color(0xFF4A90E2),
     );
   }

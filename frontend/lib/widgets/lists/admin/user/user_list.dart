@@ -6,18 +6,22 @@ class ListUser extends StatelessWidget {
   final List<User> users;
   final Function(User)? onLongPress;
   final Function(User)? onEdit;
+  final Function(User)? onEditRole;
+  final Function(User)? onDelete;
 
   const ListUser({
     Key? key,
     required this.users,
     this.onLongPress,
     this.onEdit,
+    this.onEditRole,
+    this.onDelete,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       itemCount: users.length,
       separatorBuilder: (context, index) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
@@ -25,6 +29,10 @@ class ListUser extends StatelessWidget {
         return _buildUserCard(user);
       },
     );
+
+
+
+
   }
 
   // Construye la tarjeta de cada usuario
@@ -49,14 +57,31 @@ class ListUser extends StatelessWidget {
           _buildNameAndRole(user),
           Align(
             alignment: Alignment.topRight,
-            child: IconButton(
-              icon: const Icon(Icons.edit, color: Colors.green),
-              tooltip: 'Editar',
-              onPressed: () {
-                onEdit?.call(user);
-              },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (onEditRole != null)
+                  IconButton(
+                    icon: const Icon(Icons.admin_panel_settings, color: Colors.blue),
+                    tooltip: 'Editar Rol',
+                    onPressed: () => onEditRole?.call(user),
+                  ),
+                if (onEdit != null)
+                  IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.green),
+                    tooltip: 'Editar',
+                    onPressed: () => onEdit?.call(user),
+                  ),
+                if (onDelete != null)
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    tooltip: 'Eliminar',
+                    onPressed: () => onDelete?.call(user),
+                  ),
+              ],
             ),
           ),
+
           const SizedBox(height: 12),
           _buildContactInfo(user),
           const SizedBox(height: 10),

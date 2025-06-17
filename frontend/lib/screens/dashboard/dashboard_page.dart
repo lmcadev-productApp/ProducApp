@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/helper/shared_preferences_helper.dart';
 import 'package:frontend/screens/admin/analytics/analytics_page.dart';
 import 'package:frontend/screens/admin/orders/orders_mainPage.dart';
-import 'package:frontend/screens/admin/stage/stages_page.dart';
 import 'package:frontend/screens/admin/users/users_page.dart';
 import 'package:frontend/screens/stages/stage_screen.dart';
-import 'package:frontend/utils/shared_preferences_helper.dart';
 import 'package:frontend/screens/login/login_page.dart';
+import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/widgets/dashboard/dashboard_grid.dart';
 import 'package:frontend/widgets/section/section_header.dart';
 
@@ -79,37 +79,37 @@ class _EstadoDashboard extends State<Dashboard> {
         icon: Icons.people,
         title: 'Usuarios',
         onTap: _navegarAUsuarios,
-        iconColor: const Color(0xFF4A90E2),
+        iconColor: AppColors.azulLogoPrincipal,
       ),
       DashboardItem(
         icon: Icons.assignment,
         title: 'Órdenes',
         onTap: _navegarAOrdenes,
-        iconColor: const Color(0xFF4A90E2),
+        iconColor: AppColors.azulLogoPrincipal,
       ),
       DashboardItem(
         icon: Icons.timeline,
         title: 'Etapas',
         onTap: _navegarAEtapas,
-        iconColor: const Color(0xFF4A90E2),
+        iconColor: AppColors.azulLogoPrincipal,
       ),
       DashboardItem(
         icon: Icons.assessment,
         title: 'Reportes',
         onTap: _navegarAReportes,
-        iconColor: const Color(0xFF4A90E2),
+        iconColor: AppColors.azulLogoPrincipal,
       ),
       DashboardItem(
         icon: Icons.settings,
         title: 'Asignación de Personal',
         onTap: _navegarAAsinarcionUsuarios,
-        iconColor: const Color(0xFF4A90E2),
+        iconColor: AppColors.azulLogoPrincipal,
       ),
       DashboardItem(
         icon: Icons.help,
         title: 'Ayuda',
         onTap: _navegarAAyuda,
-        iconColor: const Color(0xFF4A90E2),
+        iconColor: AppColors.azulLogoPrincipal,
       ),
     ];
 
@@ -146,7 +146,7 @@ class _EstadoDashboard extends State<Dashboard> {
           MaterialPageRoute(builder: (context) => LoginPage()),
         );
       },
-      contenido: DashboardGrid(
+      contenidoPersonalizado: DashboardGrid(
         items: elementosFiltrados,
         backgroundColor: Colors.transparent,
         cardColor: const Color.fromARGB(255, 255, 255, 255),
