@@ -4,7 +4,9 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.poli.productApp.model.ENUMS.Estado;
+import com.poli.productApp.model.etapa.Etapa;
 import com.poli.productApp.model.etapa.EtapaProduccion;
 import com.poli.productApp.model.usuario.Usuario;
 
@@ -22,11 +24,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "OrdenTrabajo")
 @Data
+@Getter @Setter
 public class OrdenTrabajo {
 
     @Id
@@ -51,7 +55,8 @@ public class OrdenTrabajo {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    @OneToMany(mappedBy = "ordenTrabajo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<EtapaProduccion> etapas = new ArrayList<>();
+
+    @OneToMany(mappedBy = "ordenTrabajo", cascade = CascadeType.ALL)
+    private List<EtapaProduccion> etapasProduccion;
 
 }

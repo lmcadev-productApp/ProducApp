@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/admin/analytics/analytics_page.dart';
-import 'package:frontend/screens/admin/orders/orders_mainPage.dart';
+import 'package:frontend/screens/admin/orders/orders_page.dart';
 import 'package:frontend/screens/admin/stage/stages_page.dart';
 import 'package:frontend/screens/admin/users/users_page.dart';
 import 'package:frontend/screens/stages/stage_screen.dart';
@@ -8,14 +8,14 @@ import 'package:frontend/utils/shared_preferences_helper.dart';
 import 'package:frontend/screens/login/login_page.dart';
 import 'package:frontend/widgets/dashboard/dashboard_grid.dart';
 import 'package:frontend/widgets/section/section_header.dart';
+import 'package:frontend/screens/admin/orders/orders_Phases_StateManagement.dart';
 
-
-class Dashboard extends StatefulWidget {
+class orders_mainPage extends StatefulWidget {
   @override
-  _EstadoDashboard createState() => _EstadoDashboard();
+  _orders_mainPage createState() => _orders_mainPage();
 }
 
-class _EstadoDashboard extends State<Dashboard> {
+class _orders_mainPage extends State<orders_mainPage> {
   String _rol = '';
 
   @override
@@ -27,45 +27,24 @@ class _EstadoDashboard extends State<Dashboard> {
   Future<void> _cargarRolDesdePreferencias() async {
     String? rol = await SharedPreferencesHelper.getRol();
     setState(() {
-      _rol = rol ?? 'USUARIO';
+      _rol = rol ?? 'ADMINISTRADOR'; // Valor por defecto si no se encuentra el rol
     });
   }
 
-  void _navegarAUsuarios() {
+  void _navegarAAdministrarOrdenes() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AdminUserStateManagement()),
+      MaterialPageRoute(builder: (context) => AdminOrderStateManagement()),
     );
   }
 
-  void _navegarAOrdenes() {
+  void _navegarAAsignarOrdenes() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => orders_mainPage()),
+      MaterialPageRoute(builder: (context) => AdminOrdersPhaseStateManagement()),
     );
   }
 
-  void _navegarAEtapas() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => StagesScreen()),
-    );
-  }
-
-  void _navegarAReportes() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => AdminAnalytics()),
-    );
-  }
-
-  void _navegarAAsinarcionUsuarios() {
-    print('Navegando a la Asinación de Usuarios');
-  }
-
-  void _navegarAAyuda() {
-    print('Navegando a Ayuda');
-  }
 
   String capitalizar(String texto) {
     if (texto.isEmpty) return texto;
@@ -77,40 +56,17 @@ class _EstadoDashboard extends State<Dashboard> {
     final List<DashboardItem> todosLosElementos = [
       DashboardItem(
         icon: Icons.people,
-        title: 'Usuarios',
-        onTap: _navegarAUsuarios,
+        title: 'Administrar Ordenes',
+        onTap: _navegarAAdministrarOrdenes,
         iconColor: const Color(0xFF4A90E2),
       ),
       DashboardItem(
         icon: Icons.assignment,
-        title: 'Órdenes',
-        onTap: _navegarAOrdenes,
+        title: 'Asignar Ordenes a Usuarios',
+        onTap: _navegarAAsignarOrdenes,
         iconColor: const Color(0xFF4A90E2),
       ),
-      DashboardItem(
-        icon: Icons.timeline,
-        title: 'Etapas',
-        onTap: _navegarAEtapas,
-        iconColor: const Color(0xFF4A90E2),
-      ),
-      DashboardItem(
-        icon: Icons.assessment,
-        title: 'Reportes',
-        onTap: _navegarAReportes,
-        iconColor: const Color(0xFF4A90E2),
-      ),
-      DashboardItem(
-        icon: Icons.settings,
-        title: 'Asignación de Personal',
-        onTap: _navegarAAsinarcionUsuarios,
-        iconColor: const Color(0xFF4A90E2),
-      ),
-      DashboardItem(
-        icon: Icons.help,
-        title: 'Ayuda',
-        onTap: _navegarAAyuda,
-        iconColor: const Color(0xFF4A90E2),
-      ),
+
     ];
 
     // Filtrado de elementos según el rol

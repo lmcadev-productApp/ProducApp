@@ -9,7 +9,11 @@
 .buildlog/
 .history
 .svn/
+.android/
+.frontend/build/
 .swiftpm/
+.idea/
+.vscode/
 migrate_working_dir/
 
 # IntelliJ related

@@ -1,23 +1,32 @@
 package com.poli.productApp.service;
 
+
 import java.util.List;
+
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import com.poli.productApp.model.etapa.Etapa;
+
 import com.poli.productApp.repository.EtapaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import com.poli.productApp.repository.OrdenTrabajoRepository;
+import com.poli.productApp.repository.EtapaProduccionRepository;
+
 
 @Service
 public class EtapaService {
-
     private final EtapaRepository etapaRepository;
 
-    public EtapaService(EtapaRepository etapaRepository) {
+
+    public EtapaService(EtapaRepository etapaRepository, OrdenTrabajoRepository ordenTrabajoRepository, EtapaProduccionRepository etapaProduccionRepository) {
         this.etapaRepository = etapaRepository;
+
     }
+    
 
     @Transactional
     public Etapa guardar(Etapa etapa) {
@@ -48,4 +57,11 @@ public class EtapaService {
         }
         etapaRepository.deleteById(id);
     }
+
+  
+
+
+
+
+
 }

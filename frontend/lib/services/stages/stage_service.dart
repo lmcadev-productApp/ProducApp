@@ -12,6 +12,9 @@ class StageService {
       'Content-Type': 'application/json',
     });
 
+    print('STATUS: ${response.statusCode}');
+    print('BODY: ${response.body}');
+
     if (response.statusCode == 200) {
       final List<dynamic> body = json.decode(response.body);
       return body.map((json) => Stage.fromJson(json)).toList();
@@ -73,4 +76,23 @@ class StageService {
       throw Exception('Error al eliminar etapa');
     }
   }
+
+  Future<void> assignStagesToOrder(int orderId, List<int> stageIds) async {
+    final token = await SharedPreferencesHelper.getToken();
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/estapas-produccion/'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(stageIds), // Enviamos lista de IDs como JSON
+    );
+
+    if (response.statusCode != 200) {
+      print('Error: ${response.statusCode} - ${response.body}');
+      throw Exception('Error al asignar etapas a la orden');
+    }
+  }
+
 }
