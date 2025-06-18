@@ -1,10 +1,10 @@
 class Specialty {
-  final int id;
+  final int? id;
   final String nombre;
   final String descripcion;
 
   Specialty({
-    required this.id,
+    this.id,
     required this.nombre,
     required this.descripcion,
   });

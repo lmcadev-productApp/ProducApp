@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/helper/formulario_usuario_helper.dart' show buildFormularioUsuario;
+import 'package:frontend/helper/formulario_usuario_helper.dart'
+    show buildFormularioUsuario;
 import 'package:frontend/helper/input_form_field.dart' show inputFormField;
 import 'package:frontend/models/users/user.dart';
 import 'package:frontend/services/users/user_service.dart';
@@ -66,6 +67,7 @@ void mostrarAgregarUsuarioVisual(
                       correo: correoCtrl.text,
                       contrasena: passwordCtrl.text,
                       nombre: nombreCtrl.text,
+                      rol: 'OPERARIO',
                       telefono: telefonoCtrl.text,
                       direccion: direccionCtrl.text,
                       especialidad: null,

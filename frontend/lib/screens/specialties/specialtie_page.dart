@@ -85,7 +85,7 @@ class _SpecialtyScreenState extends State<SpecialtyScreen> {
         confirmarEliminacion(
           context: context,
           onDelete: () async {
-            await _specialtyService.deleteSpecialty(specialty.id);
+            await _specialtyService.deleteSpecialty(specialty.id!);
             _loadSpecialties();
           },
           mensajeConfirmacion: '¿Deseas eliminar esta especialidad?',
