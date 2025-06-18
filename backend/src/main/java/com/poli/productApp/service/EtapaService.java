@@ -22,7 +22,7 @@ public class EtapaService {
     private final EtapaRepository etapaRepository;
 
 
-    public EtapaService(EtapaRepository etapaRepository, OrdenTrabajoRepository ordenTrabajoRepository, EtapaProduccionRepository etapaProduccionRepository) {
+    public EtapaService(EtapaRepository etapaRepository) {
         this.etapaRepository = etapaRepository;
 
     }
