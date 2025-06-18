@@ -126,8 +126,8 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
   Widget build(BuildContext context) {
     return BaseScreen<User>(
       titulo: 'Gestión de Usuarios',
-
       floatingActionButton: FloatingActionButton(
+        heroTag: 'fab_usuarios',
         onPressed: () {
           mostrarAgregarUsuarioVisual(context, () {
             cargarUsuarios();
@@ -168,8 +168,6 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
           ),
         ],
       ),
-
-
       colorHeader: const Color(0xFF4A90E2),
     );
   }

@@ -3,12 +3,12 @@ import 'package:frontend/helper/shared_preferences_helper.dart';
 import 'package:frontend/screens/admin/analytics/analytics_page.dart';
 import 'package:frontend/screens/admin/orders/orders_mainPage.dart';
 import 'package:frontend/screens/admin/users/users_page.dart';
+import 'package:frontend/screens/specialties/specialtie_page.dart';
 import 'package:frontend/screens/stages/stage_screen.dart';
 import 'package:frontend/screens/login/login_page.dart';
 import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/widgets/dashboard/dashboard_grid.dart';
 import 'package:frontend/widgets/section/section_header.dart';
-
 
 class Dashboard extends StatefulWidget {
   @override
@@ -59,8 +59,15 @@ class _EstadoDashboard extends State<Dashboard> {
     );
   }
 
-  void _navegarAAsinarcionUsuarios() {
+  void _navegarAAsignacionUsuarios() {
     print('Navegando a la Asinación de Usuarios');
+  }
+
+  void _navegarAEspecialidades() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SpecialtyScreen()),
+    );
   }
 
   void _navegarAAyuda() {
@@ -94,6 +101,12 @@ class _EstadoDashboard extends State<Dashboard> {
         iconColor: AppColors.azulLogoPrincipal,
       ),
       DashboardItem(
+        icon: Icons.engineering,
+        title: 'Especialidades',
+        onTap: _navegarAEspecialidades,
+        iconColor: AppColors.azulLogoPrincipal,
+      ),
+      DashboardItem(
         icon: Icons.assessment,
         title: 'Reportes',
         onTap: _navegarAReportes,
@@ -102,7 +115,7 @@ class _EstadoDashboard extends State<Dashboard> {
       DashboardItem(
         icon: Icons.settings,
         title: 'Asignación de Personal',
-        onTap: _navegarAAsinarcionUsuarios,
+        onTap: _navegarAAsignacionUsuarios,
         iconColor: AppColors.azulLogoPrincipal,
       ),
       DashboardItem(

@@ -6,7 +6,7 @@ import 'package:frontend/services/stages/stage_service.dart';
 import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/widgets/searches/search_input.dart';
 import 'package:frontend/widgets/section/section_header.dart';
-import 'package:frontend/widgets/stages/stages_form.dart';
+import 'package:frontend/widgets/forms/stages/stages_form.dart';
 
 class StagesScreen extends StatefulWidget {
   const StagesScreen({super.key});
@@ -92,6 +92,7 @@ class _StagesScreenState extends State<StagesScreen> {
         );
       },
       floatingActionButton: FloatingActionButton(
+        heroTag: 'fab_etapas',
         onPressed: () => _navigateToForm(),
         child: const Icon(Icons.add),
       ),

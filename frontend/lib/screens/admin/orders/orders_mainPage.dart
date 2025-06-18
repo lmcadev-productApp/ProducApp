@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/admin/analytics/analytics_page.dart';
 import 'package:frontend/screens/admin/orders/orders_page.dart';
-import 'package:frontend/screens/admin/stage/stages_page.dart';
 import 'package:frontend/screens/admin/users/users_page.dart';
 import 'package:frontend/screens/stages/stage_screen.dart';
-import 'package:frontend/utils/shared_preferences_helper.dart';
+import 'package:frontend/helper/shared_preferences_helper.dart';
 import 'package:frontend/screens/login/login_page.dart';
 import 'package:frontend/widgets/dashboard/dashboard_grid.dart';
 import 'package:frontend/widgets/section/section_header.dart';
@@ -27,7 +26,8 @@ class _orders_mainPage extends State<orders_mainPage> {
   Future<void> _cargarRolDesdePreferencias() async {
     String? rol = await SharedPreferencesHelper.getRol();
     setState(() {
-      _rol = rol ?? 'ADMINISTRADOR'; // Valor por defecto si no se encuentra el rol
+      _rol =
+          rol ?? 'ADMINISTRADOR'; // Valor por defecto si no se encuentra el rol
     });
   }
 
@@ -41,10 +41,10 @@ class _orders_mainPage extends State<orders_mainPage> {
   void _navegarAAsignarOrdenes() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AdminOrdersPhaseStateManagement()),
+      MaterialPageRoute(
+          builder: (context) => AdminOrdersPhaseStateManagement()),
     );
   }
-
 
   String capitalizar(String texto) {
     if (texto.isEmpty) return texto;
@@ -66,7 +66,6 @@ class _orders_mainPage extends State<orders_mainPage> {
         onTap: _navegarAAsignarOrdenes,
         iconColor: const Color(0xFF4A90E2),
       ),
-
     ];
 
     // Filtrado de elementos según el rol
@@ -102,7 +101,7 @@ class _orders_mainPage extends State<orders_mainPage> {
           MaterialPageRoute(builder: (context) => LoginPage()),
         );
       },
-      contenido: DashboardGrid(
+      contenidoPersonalizado: DashboardGrid(
         items: elementosFiltrados,
         backgroundColor: Colors.transparent,
         cardColor: const Color.fromARGB(255, 255, 255, 255),
