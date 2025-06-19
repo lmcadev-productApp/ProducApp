@@ -32,18 +32,21 @@ class _SpecialtyFormScreenState extends State<SpecialtyFormScreen> {
 
   void _saveSpecialty() async {
     if (_formKey.currentState!.validate()) {
+      final isEdit = widget.specialty != null;
+
       final newSpecialty = Specialty(
-        id: widget.specialty?.id ?? 0,
         nombre: _nombreController.text,
         descripcion: _descripcionController.text,
+        id: isEdit ? widget.specialty!.id : null,
       );
 
       try {
-        if (widget.specialty == null) {
-          await _specialtyService.createSpecialty(newSpecialty);
-        } else {
+        if (isEdit) {
+          // Como ya validaste isEdit, puedes usar el id con seguridad
           await _specialtyService.updateSpecialty(
-              widget.specialty!.id, newSpecialty);
+              widget.specialty!.id!, newSpecialty);
+        } else {
+          await _specialtyService.createSpecialty(newSpecialty);
         }
 
         Navigator.pop(context, true);
