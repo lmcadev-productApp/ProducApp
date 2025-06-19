@@ -40,35 +40,53 @@ public class EtapaProduccionController {
     @Autowired
     private EtapaListRepository etapaListRepository;
 
-    @PostMapping("/crear")
+    /**
+ * Endpoint para crear una nueva EtapaProduccion junto con una lista de etapas asociadas.
+ *
+ * @param body Un mapa que contiene los siguientes datos requeridos:
+ *             - "ordenId" (Long): ID de la orden de trabajo asociada.
+ *             - "registradoPor" (Long): ID del usuario que registra la etapa.
+ *             - "etapaIds" (List<Integer>): Lista de IDs de las etapas asociadas.
+ *
+ * @return ResponseEntity con un mensaje de éxito si la creación es exitosa, o un mensaje de error si ocurre algún problema.
+ */
+@PostMapping("/crear")
 public ResponseEntity<?> crearEtapaProduccionConLista(@RequestBody Map<String, Object> body) {
     try {
+        // Extraer y convertir los datos del cuerpo de la solicitud
         Long ordenId = Long.valueOf(body.get("ordenId").toString());
-        Long usuarioId = Long.valueOf(body.get("usuarioId").toString());
-        String estado = body.get("estado").toString();
-        Date fechaInicio = Date.valueOf(body.get("fechaInicio").toString().substring(0, 10));
-        Date fechaFin = Date.valueOf(body.get("fechaFin").toString().substring(0, 10));
+        Long registradoPor = Long.valueOf(body.get("registradoPor").toString());
+        Long usuarioId = null;
+        String estado = "PENDIENTE";
+        Date fechaInicio = null;
+        Date fechaFin = null;
 
+
+        // Obtener la lista de IDs de etapas
         List<Integer> etapaIds = (List<Integer>) body.get("etapaIds");
 
+        // Buscar la orden de trabajo y el usuario en la base de datos
         Optional<OrdenTrabajo> ordenOpt = ordenTrabajoRepository.findById(ordenId);
-        Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+        Optional<Usuario> registradoPorOpt = usuarioRepository.findById(registradoPor);
 
-        if (ordenOpt.isEmpty() || usuarioOpt.isEmpty()) {
+        // Validar que la orden de trabajo y el usuario existan
+        if (ordenOpt.isEmpty() || registradoPorOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("Orden o usuario no encontrados");
         }
 
-        // Crear etapa_produccion sin asignar etapa directamente
+        // Crear una nueva instancia de EtapaProduccion
         EtapaProduccion ep = new EtapaProduccion();
-        ep.setOrdenTrabajo(ordenOpt.get());
-        ep.setUsuario(usuarioOpt.get());
         ep.setEstado(Estado.valueOf(estado));
         ep.setFechaInicio(fechaInicio);
         ep.setFechaFin(fechaFin);
+        ep.setOrdenTrabajo(ordenOpt.get());
+        ep.setUsuario(null);
+        ep.setRegistradoPor(registradoPorOpt.get());
 
+        // Guardar la EtapaProduccion en la base de datos
         EtapaProduccion guardada = etapaProduccionRepository.save(ep);
 
-        // Guardar en tabla etapa_list
+        // Asociar las etapas a la EtapaProduccion y guardarlas en la tabla EtapaList
         for (Integer etapaId : etapaIds) {
             Optional<Etapa> etapaOpt = etapaRepository.findById(etapaId.longValue());
             if (etapaOpt.isEmpty()) continue;
@@ -79,9 +97,11 @@ public ResponseEntity<?> crearEtapaProduccionConLista(@RequestBody Map<String, O
             etapaListRepository.save(lista);
         }
 
+        // Retornar una respuesta de éxito
         return ResponseEntity.ok("EtapaProduccion creada con lista de etapas");
 
     } catch (Exception e) {
+        // Manejar errores y retornar una respuesta de error
         return ResponseEntity.badRequest().body("Error al crear estructura completa: " + e.getMessage());
     }
 }

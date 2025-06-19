@@ -31,11 +31,11 @@ public class EtapaProduccion {
     private Estado estado;
 
     @NotNull(message = "Ingrese la fecha de inicio")
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Date fechaInicio;
 
     @NotNull(message = "Ingrese la fecha de fin")
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Date fechaFin;
 
     // Relación con la orden de trabajo
@@ -47,8 +47,13 @@ public class EtapaProduccion {
 
     // Relación con el empleado asignado a esta etapa
     @ManyToOne(optional = false)
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "usuario_id", nullable = true)
     private Usuario usuario;
+
+    // Relación con el empleado que creo la Etapa de produccion
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "registrado_por", nullable = false)
+    private Usuario registradoPor;
 
 
 

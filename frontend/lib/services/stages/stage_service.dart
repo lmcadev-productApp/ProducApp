@@ -77,21 +77,29 @@ class StageService {
     }
   }
 
-  Future<void> assignStagesToOrder(int orderId, List<int> stageIds) async {
+  Future<void> assignStagesToOrder(int orderId, int userId, List<int> stageIds) async {
     final token = await SharedPreferencesHelper.getToken();
 
+    final Map<String, dynamic> requestBody = {
+      "ordenId": orderId,
+      "registradoPor": userId,
+      "etapaIds": stageIds,
+    };
+
     final response = await http.post(
-      Uri.parse('$baseUrl/estapas-produccion/'),
+      Uri.parse('$baseUrl/etapas-produccion/crear'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
-      body: json.encode(stageIds), // Enviamos lista de IDs como JSON
+      body: json.encode(requestBody),
     );
 
     if (response.statusCode != 200) {
       print('Error: ${response.statusCode} - ${response.body}');
       throw Exception('Error al asignar etapas a la orden');
+    } else {
+      print("Etapas asignadas correctamente");
     }
   }
 

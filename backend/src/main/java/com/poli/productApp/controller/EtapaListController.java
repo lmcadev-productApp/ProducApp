@@ -43,13 +43,19 @@ public class EtapaListController {
 
    
     @PostMapping
-    public ResponseEntity<?> crearRelacion(@RequestParam Long etapaProduccionId,
+    public ResponseEntity<?> crearEtapaProduccion(@RequestParam Long etapaProduccionId,
                                            @RequestParam Long etapaId) {
         Optional<EtapaProduccion> epOpt = etapaProduccionRepository.findById(etapaProduccionId);
         Optional<Etapa> etapaOpt = etapaRepository.findById(etapaId);
 
         if (epOpt.isEmpty() || etapaOpt.isEmpty()) {
-            return ResponseEntity.badRequest().body("EtapaProduccion o Etapa no encontrada");
+            if(epOpt.isEmpty()){
+                return ResponseEntity.badRequest().body("Etapa de Produccion no encontrada");
+            }
+            else {
+                return ResponseEntity.badRequest().body("Etapa no encontrada");
+            }
+
         }
 
         EtapaList nueva = new EtapaList();
@@ -57,6 +63,7 @@ public class EtapaListController {
         nueva.setEtapa(etapaOpt.get());
 
         etapaListRepository.save(nueva);
+        EtapaProduccionRepository.save(epOpt.get());
         return ResponseEntity.ok("Relación etapa-producción creada correctamente");
     }
 }

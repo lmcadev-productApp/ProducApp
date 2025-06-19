@@ -3,11 +3,15 @@ import 'package:frontend/models/orders/order.dart';
 import 'package:frontend/models/stages/stage.dart';
 import 'package:frontend/services/stages/stage_service.dart';
 
+import '../../../../helper/shared_preferences_helper.dart';
+
 Future<void> mostrarFormularioAsignarEtapas(
     BuildContext context, Order order) async {
   final stageService = StageService(); // crea este service si no lo tienes
   final List<Stage> stageAvailable = await stageService.getAllStages(); // trae de la API
   final Set<int> stageSelected = {};
+  final userId = await SharedPreferencesHelper.getUserId();
+
 
   showDialog(
     context: context,
@@ -47,7 +51,7 @@ Future<void> mostrarFormularioAsignarEtapas(
             child: Text('Asignar'),
             onPressed: () async {
               try {
-                await stageService.assignStagesToOrder(order.id!, stageSelected.toList());
+                await stageService.assignStagesToOrder(order.id!, int.parse(userId!), stageSelected.toList());
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Etapas asignadas correctamente')),

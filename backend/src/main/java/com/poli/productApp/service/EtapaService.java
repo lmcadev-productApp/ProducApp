@@ -9,12 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import com.poli.productApp.model.etapa.Etapa;
-
 import com.poli.productApp.repository.EtapaRepository;
-
 import jakarta.persistence.EntityNotFoundException;
-import com.poli.productApp.repository.OrdenTrabajoRepository;
-import com.poli.productApp.repository.EtapaProduccionRepository;
+
 
 
 @Service
