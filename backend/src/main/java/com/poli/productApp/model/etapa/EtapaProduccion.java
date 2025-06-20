@@ -27,14 +27,15 @@ public class EtapaProduccion {
     private Long id;
 
     @NotNull(message = "Estado no puede ser nulo")
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Estado estado;
 
-    @NotNull(message = "Ingrese la fecha de inicio")
+
     @Column(nullable = true)
     private Date fechaInicio;
 
-    @NotNull(message = "Ingrese la fecha de fin")
+
     @Column(nullable = true)
     private Date fechaFin;
 
@@ -44,6 +45,9 @@ public class EtapaProduccion {
     @JsonBackReference
     private OrdenTrabajo ordenTrabajo;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "etapa_id", nullable = false)
+    private Etapa etapa;
 
     // Relación con el empleado asignado a esta etapa
     @ManyToOne(optional = false)
@@ -54,6 +58,8 @@ public class EtapaProduccion {
     @ManyToOne(optional = false)
     @JoinColumn(name = "registrado_por", nullable = false)
     private Usuario registradoPor;
+
+
 
 
 
