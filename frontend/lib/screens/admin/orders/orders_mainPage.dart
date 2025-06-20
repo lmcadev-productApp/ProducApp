@@ -62,7 +62,7 @@ class _orders_mainPage extends State<orders_mainPage> {
       ),
       DashboardItem(
         icon: Icons.assignment,
-        title: 'Asignar Ordenes a Usuarios',
+        title: 'Asignar Etapas a Ordenes',
         onTap: _navegarAAsignarOrdenes,
         iconColor: const Color(0xFF4A90E2),
       ),

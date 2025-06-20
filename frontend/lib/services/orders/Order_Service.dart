@@ -89,6 +89,23 @@ class OrderService {
     }
   }
 
+  /// Obtener todas las ordenes de trabajo por estado
+  Future<List<Order>> getOrdersByEstado(String estado) async {
+    final token = await SharedPreferencesHelper.getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/ordenes/estado?estado=$estado'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((e) => Order.fromJson(e)).toList();
+    } else {
+      throw Exception('Error al obtener órdenes por estado');
+    }
+  }
+
+
   /// DELETE Eliminar un usuario
   Future<String> deleteOrder(int id) async {
     final token = await SharedPreferencesHelper.getToken();
@@ -104,3 +121,7 @@ class OrderService {
     }
   }
 }
+
+
+
+

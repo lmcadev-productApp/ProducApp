@@ -7,7 +7,9 @@ import 'package:frontend/widgets/dialogs/admin/order/edit_order_dialog.dart';
 import 'package:frontend/widgets/section/section_header.dart';
 import 'package:frontend/widgets/lists/admin/order/order_list.dart';
 import 'package:frontend/widgets/searches/search_input.dart';
-import 'package:frontend/widgets/dialogs/admin/order/assign_stages_dialog.dart'; // o donde lo tengas
+import 'package:frontend/widgets/dialogs/admin/order/assign_stages_dialog.dart';
+
+
 
 
 class AdminOrdersPhaseStateManagement extends StatefulWidget {
@@ -34,7 +36,7 @@ class _AdminOrdersPhaseStateManagement extends State<AdminOrdersPhaseStateManage
 
   void cargarOrdenes() async {
     try {
-      List<Order> lista = await orderService.getOrders();
+      List<Order> lista = await orderService.getOrdersByEstado('PENDIENTE');
       setState(() {
         ordenes = lista;
         ordenesFiltradas = lista;
