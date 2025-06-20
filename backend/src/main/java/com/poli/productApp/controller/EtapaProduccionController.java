@@ -10,6 +10,7 @@ import com.poli.productApp.repository.EtapaRepository;
 import com.poli.productApp.repository.OrdenTrabajoRepository;
 import com.poli.productApp.repository.UsuarioRepository;
 
+import com.poli.productApp.service.OrdenTrabajoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,8 @@ public class EtapaProduccionController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private OrdenTrabajoService ordenTrabajoService;
 
 
     /**
@@ -103,11 +106,12 @@ public class EtapaProduccionController {
 
                 ep.setEtapa(etapaOpt.get());
 
-
                 // Guardar la EtapaProduccion
                 EtapaProduccion guardada = etapaProduccionRepository.save(ep);
             }
 
+            //Actualiza estado de orden de trabajo
+            ordenTrabajoService.actualizarEstado(ordenId, Estado.EN_PROCESO);
             return ResponseEntity.ok("EtapaProduccion creada con lista de etapas");
 
         } catch (Exception e) {

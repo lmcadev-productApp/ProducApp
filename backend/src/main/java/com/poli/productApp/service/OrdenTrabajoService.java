@@ -42,6 +42,13 @@ public class OrdenTrabajoService {
         }).orElseThrow(() -> new RuntimeException("Orden no encontrada con ID: " + id));
     }
 
+    public OrdenTrabajo actualizarEstado(Long id, Estado nuevoEstado) {
+        return repository.findById(id).map(orden -> {
+            orden.setEstado(nuevoEstado);
+            return repository.save(orden);
+        }).orElseThrow(() -> new RuntimeException("Orden no encontrada con ID: " + id));
+    }
+
     public void eliminar(Long id) {
         repository.deleteById(id);
     }
