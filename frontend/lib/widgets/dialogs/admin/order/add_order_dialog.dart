@@ -157,7 +157,7 @@ void mostrarAgregarOrderVisual(
                       final userService = UserService();
                       final user = await userService.getUserById(userid);
 
-                      final nuevoOrder = Order(
+                      final nuevoOrder = WorkOrders(
                         descripcion: descripcionCtrl.text,
                         fechaInicio: DateTime.parse(fechaInicioCtrl.text),
                         fechaFin: DateTime.parse(fechaFinCtrl.text),

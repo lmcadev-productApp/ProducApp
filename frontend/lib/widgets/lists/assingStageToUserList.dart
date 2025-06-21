@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/orders/order.dart';
+import 'package:frontend/models/productionStages/productionStages.dart';
 
 class ListOrder extends StatelessWidget {
-  final List<WorkOrders> orders;
-  final Function(WorkOrders)? onTap;
-  final Function(WorkOrders)? onLongPress;
+  final List<ProductionStage> productionStage;
+  final Function(ProductionStage)? onTap;
+  final Function(ProductionStage)? onLongPress;
 
   const ListOrder({
     Key? key,
-    required this.orders,
+    required this.productionStage,
     required this.onTap,
     this.onLongPress,
   }) : super(key: key);
@@ -17,16 +17,16 @@ class ListOrder extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
       padding: const EdgeInsets.symmetric(vertical: 16),
-      itemCount: orders.length,
+      itemCount: productionStage.length,
       separatorBuilder: (context, index) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
-        final order = orders[index];
+        final order = productionStage[index];
         return _buildOrderCard(order);
       },
     );
   }
 
-  Widget _buildOrderCard(WorkOrders order) {
+  Widget _buildOrderCard(ProductionStage order) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -62,12 +62,13 @@ class ListOrder extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(WorkOrders order) {
+  //Nº de orden de trabajo
+  Widget _buildHeader(ProductionStage productionStage) {
     return Row(
       children: [
         Expanded(
           child: Text(
-            order.descripcion,
+    'Orden #: ${productionStage.workOrders.id}',
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
@@ -78,7 +79,7 @@ class ListOrder extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           child: const Text(
-            'Orden',
+            'Etapa',
             style: TextStyle(color: Colors.white, fontSize: 12),
           ),
         ),
@@ -86,18 +87,18 @@ class ListOrder extends StatelessWidget {
     );
   }
 
-  Widget _buildFechas(WorkOrders order) {
+  Widget _buildFechas(ProductionStage productionStage) {
     return Row(
       children: [
         Expanded(
           child: Text(
-            'Inicio: ${order.fechaInicio != null ? _formatearFecha(order.fechaInicio!) : 'N/A'}',
+            'Descripcion #: ${productionStage.workOrders.descripcion}',
             style: TextStyle(fontSize: 14, color: Colors.grey[700]),
           ),
         ),
         Expanded(
           child: Text(
-            'Fin: ${order.fechaFin != null ? _formatearFecha(order.fechaFin!) : 'N/A'}',
+            'Etapa: ${productionStage.etapaId}',
             style: TextStyle(fontSize: 14, color: Colors.grey[700]),
           ),
         ),
@@ -105,25 +106,25 @@ class ListOrder extends StatelessWidget {
     );
   }
 
-  Widget _buildEstado(WorkOrders order) {
+  Widget _buildEstado(ProductionStage order) {
     return Text(
       'Estado: ${order.estado}',
       style: const TextStyle(fontSize: 14),
     );
   }
 
-  Widget _buildUserName(WorkOrders order) {
+  Widget _buildUserName(ProductionStage productionStage) {
     return Text(
-      'Asignado a: ${order.usuario.nombre}',
+      'Estado: ${productionStage.estado}',
       style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
     );
   }
 
-  Widget _buildOrderId(WorkOrders order) {
+  Widget _buildOrderId(ProductionStage productionStage) {
     return Align(
       alignment: Alignment.centerRight,
       child: Text(
-        'ID: ${order.id}',
+        'Etapa: ${productionStage.etapaId.nombre}',
         style: const TextStyle(fontSize: 12, color: Colors.grey),
       ),
     );

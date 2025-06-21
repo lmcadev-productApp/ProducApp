@@ -10,6 +10,9 @@ import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/widgets/dashboard/dashboard_grid.dart';
 import 'package:frontend/widgets/section/section_header.dart';
 
+import '../assingToUser/assingToUser.dart';
+
+
 class Dashboard extends StatefulWidget {
   @override
   _EstadoDashboard createState() => _EstadoDashboard();
@@ -60,7 +63,10 @@ class _EstadoDashboard extends State<Dashboard> {
   }
 
   void _navegarAAsignacionUsuarios() {
-    print('Navegando a la Asinación de Usuarios');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AssingToUser()),
+    );
   }
 
   void _navegarAEspecialidades() {

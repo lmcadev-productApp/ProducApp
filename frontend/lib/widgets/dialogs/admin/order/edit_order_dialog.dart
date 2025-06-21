@@ -4,7 +4,7 @@ import 'package:frontend/services/orders/order_service.dart';
 import 'package:frontend/widgets/dialogs/dialog_general.dart';
 
 void mostrarEditarOrden(
-    BuildContext context, Order ordenOriginal, VoidCallback onActualizada) {
+    BuildContext context, WorkOrders ordenOriginal, VoidCallback onActualizada) {
   final descripcionCtrl =
       TextEditingController(text: ordenOriginal.descripcion);
   final fechaInicioCtrl = TextEditingController(
@@ -132,7 +132,7 @@ void mostrarEditarOrden(
             onOk: botonActivo
                 ? () async {
                     try {
-                      final ordenEditada = Order(
+                      final ordenEditada = WorkOrders(
                         id: ordenOriginal.id,
                         descripcion: descripcionCtrl.text,
                         fechaInicio: DateTime.parse(fechaInicioCtrl.text),

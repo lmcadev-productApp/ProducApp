@@ -6,7 +6,7 @@ import 'package:frontend/utils/constants.dart';
 
 class OrderService {
   /// GET Obtener toda las ordenes de trabajo
-  Future<List<Order>> getOrders() async {
+  Future<List<WorkOrders>> getOrders() async {
     final token = await SharedPreferencesHelper.getToken();
     print("Entron a la consulta GET");
     final response = await http.get(
@@ -24,14 +24,14 @@ class OrderService {
 
     if (response.statusCode == 200) {
       List<dynamic> jsonList = json.decode(response.body);
-      return jsonList.map((json) => Order.fromJson(json)).toList();
+      return jsonList.map((json) => WorkOrders.fromJson(json)).toList();
     } else {
       throw Exception('Error al obtener ordenes de trabajo');
     }
   }
 
   /// POST Crear una nueva orden de trabajo
-  Future<String> createOrder(Order order) async {
+  Future<String> createOrder(WorkOrders order) async {
     final token = await SharedPreferencesHelper.getToken();
 
     final jsonBody = json.encode(order.toJson());
@@ -54,7 +54,7 @@ class OrderService {
   }
 
   /// PUT Actualizar una orden de trabajo
-  Future<String> updateOrden(int id, Order order) async {
+  Future<String> updateOrden(int id, WorkOrders order) async {
     final token = await SharedPreferencesHelper.getToken();
 
     if (token == null || token.isEmpty) {
@@ -90,7 +90,7 @@ class OrderService {
   }
 
   /// Obtener todas las ordenes de trabajo por estado
-  Future<List<Order>> getOrdersByEstado(String estado) async {
+  Future<List<WorkOrders>> getOrdersByEstado(String estado) async {
     final token = await SharedPreferencesHelper.getToken();
     final response = await http.get(
       Uri.parse('$baseUrl/ordenes/estado?estado=$estado'),
@@ -99,7 +99,7 @@ class OrderService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-      return data.map((e) => Order.fromJson(e)).toList();
+      return data.map((e) => WorkOrders.fromJson(e)).toList();
     } else {
       throw Exception('Error al obtener órdenes por estado');
     }

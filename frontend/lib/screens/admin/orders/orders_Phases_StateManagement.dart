@@ -20,8 +20,8 @@ class AdminOrdersPhaseStateManagement extends StatefulWidget {
 
 class _AdminOrdersPhaseStateManagement extends State<AdminOrdersPhaseStateManagement> {
   final OrderService orderService = OrderService();
-  List<Order> ordenes = [];
-  List<Order> ordenesFiltradas = [];
+  List<WorkOrders> ordenes = [];
+  List<WorkOrders> ordenesFiltradas = [];
   TextEditingController searchController = TextEditingController();
 
   @override
@@ -36,7 +36,7 @@ class _AdminOrdersPhaseStateManagement extends State<AdminOrdersPhaseStateManage
 
   void cargarOrdenes() async {
     try {
-      List<Order> lista = await orderService.getOrdersByEstado('PENDIENTE');
+      List<WorkOrders> lista = await orderService.getOrdersByEstado('PENDIENTE');
       setState(() {
         ordenes = lista;
         ordenesFiltradas = lista;

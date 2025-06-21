@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/orders/order.dart';
 import 'package:frontend/services/orders/Order_Service.dart';
+import 'package:frontend/services/productionStages/productionStages_Service.dart';
 import 'package:frontend/widgets/buttons/customizable_modal_options.dart';
 import 'package:frontend/widgets/dialogs/admin/order/delete_order_dialog.dart';
 import 'package:frontend/widgets/dialogs/admin/order/edit_order_dialog.dart';
@@ -10,14 +11,14 @@ import 'package:frontend/widgets/lists/admin/order/order_list.dart';
 import 'package:frontend/widgets/searches/search_input.dart';
 import 'package:frontend/widgets/dialogs/admin/order/add_order_dialog.dart';
 
-class AdminOrderStateManagement extends StatefulWidget {
+class AssingToUser extends StatefulWidget {
   @override
-  _AdminOrderStateManagementState createState() =>
-      _AdminOrderStateManagementState();
+  _AssingToUserState createState() =>
+      _AssingToUserState();
 }
 
-class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
-  final OrderService orderService = OrderService();
+class _AssingToUserState extends State<AssingToUser> {
+  final ProductionStageService productionStages = ProductionStageService();
   List<WorkOrders> ordenes = [];
   List<WorkOrders> ordenesFiltradas = [];
   TextEditingController searchController = TextEditingController();
@@ -25,24 +26,24 @@ class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
   @override
   void initState() {
     super.initState();
-    cargarOrdenes();
+    //cargarOrdenes();
 
     searchController.addListener(() {
       filtrarOrdenes(searchController.text);
     });
   }
 
-  void cargarOrdenes() async {
-    try {
-      List<WorkOrders> lista = await orderService.getOrders();
-      setState(() {
-        ordenes = lista;
-        ordenesFiltradas = lista;
-      });
-    } catch (e) {
-      print('Error cargando órdenes: $e');
-    }
-  }
+  // void cargarOrdenes() async {
+  //   try {
+  //    // List<WorkOrders> lista = await productionStages.getAllOrdersPerStages;
+  //     setState(() {
+  //       ordenes = lista;
+  //       ordenesFiltradas = lista;
+  //     });
+  //   } catch (e) {
+  //     print('Error cargando órdenes: $e');
+  //   }
+  // }
 
   void filtrarOrdenes(String query) {
     if (query.isEmpty) {
@@ -71,7 +72,7 @@ class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
           titulo: 'Editar',
           alPresionar: () {
             mostrarEditarOrden(context, order, () {
-              cargarOrdenes();
+              //cargarOrdenes();
             });
           },
         ),
@@ -95,7 +96,7 @@ class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-      titulo: 'Gestión de Órdenes',
+      titulo: 'Asignacion de etapas a personal',
       contenidoPersonalizado: Column(
         children: [
           SearchInput(
@@ -103,17 +104,7 @@ class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
             espacioInferior: true,
             controller: searchController,
           ),
-          Center(
-            child: PrimaryButton(
-              text: 'Agregar Orden',
-              onPressed: () {
-                mostrarAgregarOrderVisual(context, () {
-                  cargarOrdenes();
-                });
-              },
-              fontSize: 20,
-            ),
-          ),
+
           Expanded(
             child: ListOrder(
               orders: ordenesFiltradas,

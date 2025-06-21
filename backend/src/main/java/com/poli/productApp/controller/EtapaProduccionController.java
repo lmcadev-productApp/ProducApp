@@ -135,4 +135,18 @@ public class EtapaProduccionController {
         List<EtapaProduccion> etapas = etapaProduccionRepository.findByUsuarioId(empleadoId);
         return ResponseEntity.ok(etapas);
     }
+
+    //consulta todas las etapas de produccion filtadas por estado PENDIENTE
+    @GetMapping("/por-estado/{estado}")
+    public ResponseEntity<List<EtapaProduccion>> getEtapasPorEstado(@PathVariable String estado) {
+        try {
+            // Convierte el String a Enum
+            Estado estadoEnum = Estado.valueOf(estado.trim().toUpperCase().replace(" ", "_"));
+            // Busca las etapas por estado en el repositorio
+            List<EtapaProduccion> etapas = etapaProduccionRepository.findByEstado(estadoEnum);
+            return ResponseEntity.ok(etapas);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null); // Estado inválido
+        }
+    }
 }

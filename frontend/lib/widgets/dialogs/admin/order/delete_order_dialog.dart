@@ -5,7 +5,7 @@ import 'package:frontend/services/orders/Order_Service.dart';
 import 'package:frontend/widgets/dialogs/dialog_general.dart'; // Ajusta el import según tu proyecto
 
 void alPresionarEliminar(
-    BuildContext context, Order order, VoidCallback onOrderEliminado) async {
+    BuildContext context, WorkOrders order, VoidCallback onOrderEliminado) async {
   final idAEliminar = await mostrarDialogoEliminar(context, order);
   if (idAEliminar != null) {
     try {
@@ -29,7 +29,7 @@ void alPresionarEliminar(
   }
 }
 
-Future<int?> mostrarDialogoEliminar(BuildContext context, Order order) async {
+Future<int?> mostrarDialogoEliminar(BuildContext context, WorkOrders order) async {
   final resultado = await DialogoHelper.mostrarConfirmacion(
     context,
     titulo: 'Eliminar orden',

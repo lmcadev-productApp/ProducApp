@@ -6,7 +6,7 @@ import 'package:frontend/services/stages/stage_service.dart';
 import '../../../../helper/shared_preferences_helper.dart';
 
 Future<void> mostrarFormularioAsignarEtapas(
-    BuildContext context, Order order) async {
+    BuildContext context, WorkOrders order) async {
   final stageService = StageService(); // crea este service si no lo tienes
   final List<Stage> stageAvailable = await stageService.getAllStages(); // trae de la API
   final Set<int> stageSelected = {};
