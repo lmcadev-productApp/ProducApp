@@ -7,62 +7,54 @@ class PrimaryButton extends StatelessWidget {
   final bool isEnabled;
   final double fontSize;
   final FontWeight fontWeight;
-  final double height;
-  final double borderRadius;
-  final IconData? icon;
+  final double verticalPadding;
+  final double horizontalPadding;
   final Color? backgroundColor;
-  final double? width;
+  final double? width;   // nuevo
+  final double? height;  // nuevo
 
   const PrimaryButton({
-    super.key,
+    Key? key,
     required this.text,
     required this.onPressed,
     this.isEnabled = true,
-    this.fontSize = 18,
-    this.fontWeight = FontWeight.w600,
-    this.height = 56,
-    this.borderRadius = 14,
-    this.icon,
+    this.fontSize = 20,
+    this.fontWeight = FontWeight.w700,
+    this.verticalPadding = 14,
+    this.horizontalPadding = 32,
     this.backgroundColor,
-    this.width,
-  });
+    this.width,   // inicializa
+    this.height,  // inicializa
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final color = isEnabled
-        ? (backgroundColor ?? AppColors.azulIntermedio)
-        : AppColors.grisClaro;
-
     return SizedBox(
       width: width,
       height: height,
       child: ElevatedButton(
         onPressed: isEnabled ? onPressed : null,
         style: ElevatedButton.styleFrom(
-          backgroundColor: color,
-          elevation: 6,
-          shadowColor: Colors.black26,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(borderRadius),
+          backgroundColor: isEnabled
+              ? (backgroundColor ?? AppColors.azulIntermedio)
+              : AppColors.grisClaro,
+          padding: EdgeInsets.symmetric(
+            vertical: verticalPadding,
+            horizontal: horizontalPadding,
           ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 4,
+          shadowColor: Colors.black45,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (icon != null) ...[
-              Icon(icon, color: Colors.white, size: 22),
-              const SizedBox(width: 8),
-            ],
-            Text(
-              text,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: fontSize,
-                fontWeight: fontWeight,
-              ),
-            ),
-          ],
+        child: Text(
+          text,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: fontSize,
+            fontWeight: fontWeight,
+          ),
         ),
       ),
     );

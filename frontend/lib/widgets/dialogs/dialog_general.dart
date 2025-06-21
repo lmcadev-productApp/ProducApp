@@ -13,6 +13,7 @@ class DialogoGeneral extends StatelessWidget {
   final VoidCallback? onOk; // Acción del botón OK
   final VoidCallback? onCancelar; // Acción del botón Cancelar
   final Color color; // Color del theme del diálogo
+  final Widget? botonOkPersonalizado;
 
   // Propiedades adicionales para mayor flexibilidad
   final bool mostrarBotonCancelar; // Controla si mostrar botón cancelar
@@ -29,19 +30,22 @@ class DialogoGeneral extends StatelessWidget {
     required this.contenido, // Obligatorio: contenido a mostrar
     this.textoBotonOk = 'Aceptar', // Texto por defecto del botón OK
     this.textoBotonCancelar =
-        'Cancelar', // Texto por defecto del botón cancelar
+    'Cancelar', // Texto por defecto del botón cancelar
     this.onOk, // Opcional: función del botón OK
     this.onCancelar, // Opcional: función del botón cancelar
     this.color = AppColors.azulIntermedio, // Color azul por defecto
     this.mostrarBotonCancelar = true, // Por defecto muestra botón cancelar
     this.mostrarBotonCerrar = true, // Por defecto muestra X en header
     this.ancho, // Opcional: ancho personalizado
-    this.alto, // Opcional: alto personalizado
+    this.alto, this.botonOkPersonalizado, // Opcional: alto personalizado
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final maxAlto = alto ?? MediaQuery.of(context).size.height * 0.8;
+    final maxAlto = alto ?? MediaQuery
+        .of(context)
+        .size
+        .height * 0.8;
 
     return Dialog(
       backgroundColor: AppColors.azulClaroFondo,
@@ -128,18 +132,23 @@ class DialogoGeneral extends StatelessWidget {
   }
 
   /// Construye la fila de botones de acción
+  /// Construye la fila de botones de acción
   Widget _construirBotones(BuildContext context) {
+    // Si se proporciona un widget personalizado, se usa SOLO ese
+    if (botonOkPersonalizado != null) {
+      return botonOkPersonalizado!;
+    }
+
     return Row(
-      mainAxisAlignment:
-          MainAxisAlignment.end, // Botones alineados a la derecha
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
         // Botón Cancelar - solo si está habilitado
         if (mostrarBotonCancelar) ...[
           ElevatedButton(
             onPressed: onCancelar ?? () => Navigator.pop(context),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey[400], // Color gris para cancelar
-              foregroundColor: Colors.white,
+              backgroundColor: AppColors.azulClaroFondo,
+              foregroundColor: AppColors.grisTextoSecundario,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(6),
               ),
@@ -147,15 +156,15 @@ class DialogoGeneral extends StatelessWidget {
             ),
             child: Text(textoBotonCancelar),
           ),
-          const SizedBox(width: 10), // Separación entre botones
+          const SizedBox(width: 10),
         ],
 
-        // Botón OK/Aceptar
+        // Botón OK/Aceptar estándar
         ElevatedButton(
           onPressed: onOk,
           style: ElevatedButton.styleFrom(
-            backgroundColor: color, // Usa el color del theme
-            foregroundColor: Colors.white,
+            backgroundColor: color,
+            foregroundColor: AppColors.grisTextoSecundario,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(6),
             ),
@@ -167,6 +176,7 @@ class DialogoGeneral extends StatelessWidget {
     );
   }
 }
+
 
 // === CLASE HELPER PARA MOSTRAR DIÁLOGOS FÁCILMENTE ===
 

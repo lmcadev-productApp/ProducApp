@@ -56,22 +56,26 @@ class _SpecialtyScreenState extends State<SpecialtyScreen> {
     setState(() => especialidadesFiltradas = filtered);
   }
 
-  void _navigateToForm({Specialty? specialty}) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SpecialtyFormScreen(specialty: specialty),
+  void _navigateToForm({Specialty? specialty}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.3),  // 👈 Evita el fondo negro
+      builder: (_) => SpecialtyFormScreen(
+        specialty: specialty,
+        onGuardado: () {
+          Navigator.of(context).pop(); // Cierra el modal
+          _loadSpecialties();
+          ; // Refresca las etapas
+          showCustomSnackBar(
+            context,
+            specialty == null ? 'Especialidad creada' : 'Especialidad actualizada',
+          );
+        },
       ),
     );
-
-    if (result == true) {
-      _loadSpecialties();
-      showCustomSnackBar(
-        context,
-        specialty == null ? 'Especialidad creada' : 'Especialidad actualizada',
-      );
-    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +92,8 @@ class _SpecialtyScreenState extends State<SpecialtyScreen> {
             await _specialtyService.deleteSpecialty(specialty.id!);
             _loadSpecialties();
           },
-          mensajeConfirmacion: '¿Deseas eliminar esta especialidad?',
+          titulo: 'Eliminar especialidad',
+          mensaje: '¿Deseas eliminar esta especialidad?',
           mensajeExito: 'Especialidad eliminada',
           mensajeError: 'Error al eliminar especialidad',
         );

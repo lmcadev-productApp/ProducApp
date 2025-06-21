@@ -22,6 +22,7 @@ class _StagesScreenState extends State<StagesScreen> {
   TextEditingController searchController = TextEditingController();
   bool _isLoading = true;
 
+
   @override
   void initState() {
     super.initState();
@@ -56,20 +57,26 @@ class _StagesScreenState extends State<StagesScreen> {
     setState(() => etapasFiltradas = filtered);
   }
 
-  void _navigateToForm({Stage? stage}) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => StageFormScreen(stage: stage),
+  void _navigateToForm({Stage? stage}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.3),  // 👈 Evita el fondo negro
+      builder: (_) => StageFormScreen(
+        stage: stage,
+        onGuardado: () {
+          Navigator.of(context).pop();
+          _loadStages();
+          showCustomSnackBar(
+            context,
+            stage == null ? 'Etapa creada' : 'Etapa actualizada',
+          );
+        },
       ),
     );
-
-    if (result == true) {
-      _loadStages();
-      showCustomSnackBar(
-          context, stage == null ? 'Etapa creada' : 'Etapa actualizada');
-    }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +93,8 @@ class _StagesScreenState extends State<StagesScreen> {
             await _stageService.deleteStage(stage.id!);
             _loadStages();
           },
-          mensajeConfirmacion: '¿Deseas eliminar esta etapa?',
+          titulo: 'Eliminar Etapa',
+          mensaje: '¿Deseas eliminar esta etapa?',
           mensajeExito: 'Etapa eliminada',
           mensajeError: 'Error al eliminar etapa',
         );

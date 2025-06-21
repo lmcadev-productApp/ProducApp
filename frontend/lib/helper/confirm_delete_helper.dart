@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/helper/snackbar_helper.dart';
-import 'package:frontend/utils/AppColors.dart' show AppColors;
-import 'package:flutter/material.dart';
 
-Future<void> confirmarEliminacion<T>({
+
+Future<void> confirmarEliminacion({
   required BuildContext context,
   required Future<void> Function() onDelete,
-  String mensajeConfirmacion = '¿Deseas eliminar este elemento?',
-  String mensajeExito = 'Elemento eliminado',
-  String mensajeError = 'Error al eliminar',
+
+  // ⚙️ Parámetros personalizables
+  String titulo              = 'Eliminar elemento',
+  String mensaje             = '¿Deseas eliminar este elemento?',
+  String textoOk             = 'Eliminar',
+  String textoCancelar       = 'Cancelar',
+  Color  color               = Colors.red,
+
+  String mensajeExito        = 'Elemento eliminado',
+  String mensajeError        = 'Error al eliminar',
 }) async {
-  final confirm = await showDialog<bool>(
+  final bool? confirmado = await showDialog<bool>(
     context: context,
     barrierDismissible: false,
     builder: (ctx) {
@@ -19,22 +25,25 @@ Future<void> confirmarEliminacion<T>({
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Encabezado rojo con título y botón cerrar
+            // Header
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.red.shade700,
+                color: color,
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Eliminar Etapa',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Text(
+                      titulo,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                   InkWell(
@@ -45,13 +54,10 @@ Future<void> confirmarEliminacion<T>({
               ),
             ),
 
-            // Contenido del diálogo
+            // Mensaje
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Text(
-                mensajeConfirmacion,
-                style: const TextStyle(fontSize: 16),
-              ),
+              child: Text(mensaje, style: const TextStyle(fontSize: 16)),
             ),
 
             // Botones
@@ -60,48 +66,28 @@ Future<void> confirmarEliminacion<T>({
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  // Botón Cancelar
                   ElevatedButton(
                     onPressed: () => Navigator.of(ctx).pop(false),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed)) {
-                            return Colors.grey.shade600; // al presionar
-                          }
-                          return Colors.grey.shade300; // por defecto
-                        },
-                      ),
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                      elevation: MaterialStateProperty.all(0),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: Colors.grey.shade300,
+                      foregroundColor: Colors.black,
                     ),
-                    child: const Text('Cancelar'),
+                    child: Text(textoCancelar),
                   ),
                   const SizedBox(width: 8),
-
-                  // Botón Eliminar
                   ElevatedButton(
                     onPressed: () => Navigator.of(ctx).pop(true),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed)) {
-                            return Colors.red.shade700; // al presionar
-                          }
-                          return Colors.white; // por defecto
-                        },
-                      ),
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.red.shade700),
-                      side: MaterialStateProperty.all<BorderSide>(
-                        BorderSide(color: Colors.red.shade700),
-                      ),
-                      elevation: MaterialStateProperty.all(0),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: Colors.white,
+                      foregroundColor: color,
+                      side: BorderSide(color: color),
                     ),
-                    child: const Text('Eliminar'),
+                    child: Text(textoOk),
                   ),
                 ],
               ),
-
             ),
           ],
         ),
@@ -109,13 +95,13 @@ Future<void> confirmarEliminacion<T>({
     },
   );
 
-  if (confirm == true) {
+  if (confirmado == true) {
     try {
       await onDelete();
       showCustomSnackBar(context, mensajeExito);
     } catch (e) {
-      print('Error al eliminar: $e');
-      showCustomSnackBar(context, mensajeError);
+      debugPrint('Error al eliminar: $e');
+      showCustomSnackBar(context, mensajeError, backgroundColor: Colors.red);
     }
   }
 }

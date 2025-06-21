@@ -1,181 +1,165 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/helper/input_form_field.dart' show inputFormField;
 import 'package:frontend/models/users/user.dart';
 import 'package:frontend/services/users/user_service.dart';
+import 'package:frontend/utils/AppColors.dart';
+import 'package:frontend/widgets/buttons/custom-button.dart';
 import 'package:frontend/widgets/dialogs/dialog_general.dart';
 
 void mostrarEditarUsuario(
-    BuildContext context, User usuario, VoidCallback onUsuarioActualizado) {
-  final nombreCtrl = TextEditingController(text: usuario.nombre);
-  final correoCtrl = TextEditingController(text: usuario.correo);
-  final passwordCtrl = TextEditingController(text: usuario.contrasena);
-  final telefonoCtrl = TextEditingController(text: usuario.telefono);
+    BuildContext context,
+    User usuario,
+    VoidCallback onUsuarioActualizado,
+    ) {
+  final nombreCtrl    = TextEditingController(text: usuario.nombre);
+  final correoCtrl    = TextEditingController(text: usuario.correo);
+  final passwordCtrl  = TextEditingController(text: usuario.contrasena);
+  final telefonoCtrl  = TextEditingController(text: usuario.telefono);
   final direccionCtrl = TextEditingController(text: usuario.direccion);
-
-  bool botonActivo = false;
-  bool passwordVisible = false;
 
   showDialog(
     context: context,
-    builder: (context) => StatefulBuilder(
-      builder: (context, setState) {
-        void validarBoton() {
-          setState(() {
-            botonActivo = nombreCtrl.text.isNotEmpty &&
-                correoCtrl.text.isNotEmpty &&
-                passwordCtrl.text.isNotEmpty;
-          });
-        }
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
 
-        nombreCtrl.removeListener(validarBoton);
-        correoCtrl.removeListener(validarBoton);
-        passwordCtrl.removeListener(validarBoton);
+          bool isLoading   = false;
+          bool passwordVis = false;
+          bool botonActivo = false;
 
-        nombreCtrl.addListener(validarBoton);
-        correoCtrl.addListener(validarBoton);
-        passwordCtrl.addListener(validarBoton);
-
-        validarBoton();
-
-        return DialogoGeneral(
-          titulo: 'Editar usuario',
-          contenido: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Nombre',
-                    style:
-                    TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                SizedBox(height: 8),
-                TextField(
-                  controller: nombreCtrl,
-                  decoration: InputDecoration(
-                    hintText: 'Ingrese el nombre',
-                    filled: true,
-                    fillColor: Colors.grey[50],
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6)),
-                    contentPadding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  ),
-                ),
-                SizedBox(height: 15),
-                Text('Correo',
-                    style:
-                    TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                SizedBox(height: 8),
-                TextField(
-                  controller: correoCtrl,
-                  decoration: InputDecoration(
-                    hintText: 'Ingrese el correo',
-                    filled: true,
-                    fillColor: Colors.grey[50],
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6)),
-                    contentPadding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                SizedBox(height: 15),
-                Text('Contraseña',
-                    style:
-                    TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                SizedBox(height: 8),
-                TextField(
-                  controller: passwordCtrl,
-                  obscureText: !passwordVisible,
-                  decoration: InputDecoration(
-                    hintText: 'Ingrese la contraseña',
-                    filled: true,
-                    fillColor: Colors.grey[50],
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6)),
-                    contentPadding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        passwordVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          passwordVisible = !passwordVisible;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                SizedBox(height: 15),
-                Text('Teléfono',
-                    style:
-                    TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                SizedBox(height: 8),
-                TextField(
-                  controller: telefonoCtrl,
-                  decoration: InputDecoration(
-                    hintText: 'Ingrese el teléfono',
-                    filled: true,
-                    fillColor: Colors.grey[50],
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6)),
-                    contentPadding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  ),
-                  keyboardType: TextInputType.phone,
-                ),
-                SizedBox(height: 15),
-                Text('Dirección',
-                    style:
-                    TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                SizedBox(height: 8),
-                TextField(
-                  controller: direccionCtrl,
-                  decoration: InputDecoration(
-                    hintText: 'Ingrese la dirección',
-                    filled: true,
-                    fillColor: Colors.grey[50],
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6)),
-                    contentPadding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          textoBotonOk: 'Guardar',
-          textoBotonCancelar: 'Cancelar',
-          onOk: botonActivo
-              ? () async {
-            final usuarioActualizado = User(
-              id: usuario.id,
-              nombre: nombreCtrl.text,
-              correo: correoCtrl.text,
-              contrasena: passwordCtrl.text,
-              rol: usuario.rol,
-              telefono: telefonoCtrl.text,
-              direccion: direccionCtrl.text,
-              especialidad: usuario.especialidad,
-              suguroSocial: usuario.suguroSocial,
-              arl: usuario.arl,
-            );
-
-            try {
-              final userService = UserService();
-              final mensaje = await userService.updateUser(
-                  usuario.id!, usuarioActualizado);
-              print('Respuesta backend: $mensaje');
-              Navigator.of(context).pop();
-              onUsuarioActualizado();
-            } catch (e) {
-              print('Error al actualizar usuario: $e');
-              print('Rol usuario original: ${usuario.rol}');
-            }
+          void _validar() {
+            setState(() {
+              botonActivo = nombreCtrl.text.trim().isNotEmpty &&
+                  correoCtrl.text.trim().isNotEmpty &&
+                  passwordCtrl.text.trim().isNotEmpty;
+            });
           }
-              : null,
-        );
-      },
-    ),
-  );
+
+          nombreCtrl   ..removeListener(_validar)..addListener(_validar);
+          correoCtrl   ..removeListener(_validar)..addListener(_validar);
+          passwordCtrl ..removeListener(_validar)..addListener(_validar);
+          _validar();
+
+          return DialogoGeneral(
+            titulo: 'Editar usuario',
+            contenido: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  inputFormField(
+                    label: 'Nombre',
+                    hint : 'Ingrese el nombre',
+                    controller: nombreCtrl,
+                  ),
+                  const SizedBox(height: 16),
+
+                  inputFormField(
+                    label: 'Correo',
+                    hint : 'Ingrese el correo',
+                    controller: correoCtrl,
+                    tipoTeclado: TextInputType.emailAddress,
+                  ),
+                  const SizedBox(height: 16),
+
+                  inputFormField(
+                    label: 'Contraseña',
+                    hint : 'Ingrese la contraseña',
+                    controller: passwordCtrl,
+                    isPassword: true,
+                    passwordVisible: passwordVis,
+                    onTogglePassword: () =>
+                        setState(() => passwordVis = !passwordVis),
+                  ),
+                  const SizedBox(height: 16),
+
+                  inputFormField(
+                    label: 'Teléfono',
+                    hint : 'Ingrese el teléfono',
+                    controller: telefonoCtrl,
+                    tipoTeclado: TextInputType.phone,
+                  ),
+                  const SizedBox(height: 16),
+
+                  inputFormField(
+                    label: 'Dirección',
+                    hint : 'Ingrese la dirección',
+                    controller: direccionCtrl,
+                  ),
+                ],
+              ),
+            ),
+
+            botonOkPersonalizado: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : Center(
+              child: Wrap(
+                spacing: 14,
+                children: [
+                  // CANCELAR
+                  PrimaryButton(
+                    text: 'Cancelar',
+                    width: 135,
+                    height: 48,
+                    fontSize: 16,
+                    backgroundColor: AppColors.azulIntermedio,
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+
+                  PrimaryButton(
+                    text: 'Guardar',
+                    width: 135,
+                    height: 48,
+                    fontSize: 16,
+                    isEnabled: botonActivo,
+                    backgroundColor: botonActivo
+                        ? AppColors.azulIntermedio
+                        : AppColors.grisTextoSecundario,
+
+                    onPressed: () {
+                      if (!botonActivo || isLoading) return;
+
+                      () async {
+                        try {
+                          setState(() => isLoading = true);
+
+                          final usuarioActualizado = usuario.copyWith(
+                            nombre    : nombreCtrl.text.trim(),
+                            correo    : correoCtrl.text.trim(),
+                            contrasena: passwordCtrl.text.trim(),
+                            telefono  : telefonoCtrl.text.trim(),
+                            direccion : direccionCtrl.text.trim(),
+                          );
+
+                          await UserService().updateUser(
+                            usuario.id!,
+                            usuarioActualizado,
+                          );
+
+                          if (context.mounted) Navigator.pop(context);
+                          onUsuarioActualizado();
+                        } catch (e) {
+                          if (context.mounted) Navigator.pop(context);
+                          debugPrint('Error al actualizar usuario: $e');
+                        } finally {
+                          if (context.mounted) {
+                            setState(() => isLoading = false);
+                          }
+                        }
+                      }(); // ← se invoca de inmediato
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    },
+  ).then((_) {
+    nombreCtrl.dispose();
+    correoCtrl.dispose();
+    passwordCtrl.dispose();
+    telefonoCtrl.dispose();
+    direccionCtrl.dispose();
+  });
 }

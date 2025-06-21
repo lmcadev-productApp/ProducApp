@@ -114,14 +114,7 @@ class _AdminOrdersPhaseStateManagement extends State<AdminOrdersPhaseStateManage
                 print('Orden seleccionada: ${order.usuario.nombre}');
                 await mostrarFormularioAsignarEtapas(context, order);
               },
-              onEdit: (order) {
-                mostrarEditarOrden(context, order, () {
-                  cargarOrdenes();
-                });
-              },
-              onDelete: (order) {
-                mostrarDialogoEliminar(context, order);
-              },
+              mostrarAsignarEtapas: true,
             ),
           ),
         ],

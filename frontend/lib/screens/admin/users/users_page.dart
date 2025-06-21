@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/helper/confirm_delete_helper.dart' show confirmarEliminacion;
+import 'package:frontend/helper/snackbar_helper.dart' show showCustomSnackBar;
 import 'package:frontend/models/stages/stage.dart';
 import 'package:frontend/models/users/user.dart';
 import 'package:frontend/services/users/user_service.dart';
+import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/widgets/buttons/customizable_modal_options.dart';
 import 'package:frontend/widgets/dialogs/admin/user/delete_user_dialog.dart';
 import 'package:frontend/widgets/dialogs/admin/user/edit_user_role_dialog.dart';
@@ -159,16 +162,25 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
                   cargarUsuarios();
                 });
               },
-              onDelete: (usuario) {
-                alPresionarEliminar(context, usuario, () {
-                  cargarUsuarios();
-                });
+              onDelete: (user) {
+                confirmarEliminacion(
+                  context: context,
+                  titulo: 'Eliminar Usuario',
+                  mensaje: '¿Estás segura de eliminar al usuario "${user.nombre}"?',
+                  mensajeExito: 'Usuario eliminado correctamente 🗑️',
+                  mensajeError: 'Error al eliminar el usuario ❌',
+                  onDelete: () async {
+                    await UserService().deleteUser(user.id!);
+                    cargarUsuarios(); // Refresca la lista
+                  },
+                );
               },
+
             ),
           ),
         ],
       ),
-      colorHeader: const Color(0xFF4A90E2),
+      colorHeader: AppColors.azulIntermedio,
     );
   }
 }

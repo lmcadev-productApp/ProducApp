@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/helper/confirm_delete_helper.dart';
+import 'package:frontend/helper/snackbar_helper.dart';
 import 'package:frontend/models/orders/order.dart';
 import 'package:frontend/services/orders/Order_Service.dart';
+import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/widgets/buttons/customizable_modal_options.dart';
 import 'package:frontend/widgets/dialogs/admin/order/delete_order_dialog.dart';
 import 'package:frontend/widgets/dialogs/admin/order/edit_order_dialog.dart';
 import 'package:frontend/widgets/section/section_header.dart';
-import 'package:frontend/widgets/buttons/custom-button.dart';
 import 'package:frontend/widgets/lists/admin/order/order_list.dart';
 import 'package:frontend/widgets/searches/search_input.dart';
 import 'package:frontend/widgets/dialogs/admin/order/add_order_dialog.dart';
@@ -35,6 +37,10 @@ class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
   void cargarOrdenes() async {
     try {
       List<WorkOrders> lista = await orderService.getOrders();
+      if (lista.any((e) => e == null)) {
+        debugPrint('⚠️ Lista contiene elementos nulos');
+      }
+
       setState(() {
         ordenes = lista;
         ordenesFiltradas = lista;
@@ -43,6 +49,7 @@ class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
       print('Error cargando órdenes: $e');
     }
   }
+
 
   void filtrarOrdenes(String query) {
     if (query.isEmpty) {
@@ -105,32 +112,54 @@ class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
         },
         child: const Icon(Icons.add),
       ),
-      contenidoPersonalizado: Column(
-        children: [
-          SearchInput(
-            hintText: 'Buscar Orden...',
-            espacioInferior: true,
-            controller: searchController,
-          ),
-          Expanded(
-            child: ListOrder(
-              orders: ordenesFiltradas,
-              onTap: (order) {
-                print('Orden seleccionada: ${order.usuario.nombre}');
-              },
-              onEdit: (order) {
-                mostrarEditarOrden(context, order, () {
-                  cargarOrdenes();
-                });
-              },
-              onDelete: (order) {
-                mostrarDialogoEliminar(context, order);
-              },
+      contenidoPersonalizado: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            SearchInput(
+              hintText: 'Buscar Orden...',
+              espacioInferior: true,
+              controller: searchController,
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Expanded( // 👈 Esto permite que ListOrder use scroll sin conflicto
+              child: ListOrder(
+                orders: ordenesFiltradas,
+                onTap: (order) {
+                  print('Orden seleccionada: ${order.usuario.nombre}');
+                },
+                onEdit: (order) {
+                  mostrarEditarOrden(context, order, () {
+                    cargarOrdenes();
+                  });
+                },
+                  onDelete: (order) {
+                    confirmarEliminacion(
+                      context: context,
+                      titulo: 'Eliminar Orden',
+                      mensaje: '¿Estás seguro de que deseas eliminar la orden #${order.id}?',
+                      mensajeExito: 'Orden eliminada correctamente 🗑️',
+                      mensajeError: 'No se pudo eliminar la orden ❌',
+                      onDelete: () async {
+                        await OrderService().deleteOrder(order.id!);
+                        cargarOrdenes();
+                      },
+                    );
+                  },
+
+                  onEdicionExitosa: () {
+                  showCustomSnackBar(context, 'Orden editada correctamente ✏️');
+                },
+                mostrarAsignarEtapas: false,
+              ),
+            ),
+          ],
+        ),
       ),
-      colorHeader: const Color(0xFF4A90E2),
+
+
+
+      colorHeader: AppColors.azulIntermedio,
     );
   }
 }

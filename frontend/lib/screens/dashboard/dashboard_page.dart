@@ -175,7 +175,7 @@ class _EstadoDashboard extends State<Dashboard> {
         spacing: 16,
         padding: const EdgeInsets.all(16),
       ),
-      colorHeader: const Color(0xFF4A90E2),
+      colorHeader: AppColors.azulIntermedio,
     );
   }
 }
