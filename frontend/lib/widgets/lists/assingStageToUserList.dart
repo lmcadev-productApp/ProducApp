@@ -84,9 +84,9 @@ class ListOrder extends StatelessWidget {
             color: Colors.blue[200],
             borderRadius: BorderRadius.circular(20),
           ),
-          child: const Text(
-            'Etapa',
-            style: TextStyle(color: Colors.white, fontSize: 12),
+          child: Text(
+            '${productionStage.etapaId.nombre}',
+            style: const TextStyle(color: Colors.white, fontSize: 12),
           ),
         ),
       ],
@@ -98,13 +98,13 @@ class ListOrder extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            'Descripcion #: ${productionStage.workOrders.descripcion}',
+            'Descripcion: ${productionStage.workOrders.descripcion}',
             style: TextStyle(fontSize: 14, color: Colors.grey[700]),
           ),
         ),
         Expanded(
           child: Text(
-            'Etapa: ${productionStage.etapaId}',
+            'Etapa: ${productionStage.etapaId.descripcion}',
             style: TextStyle(fontSize: 14, color: Colors.grey[700]),
           ),
         ),
@@ -114,7 +114,7 @@ class ListOrder extends StatelessWidget {
 
   Widget _buildEstado(ProductionStage order) {
     return Text(
-      'Estado: ${order.estado}',
+      'Entrega prevista: ${order.workOrders.fechaFin != null ? _formatearFecha(order.workOrders.fechaFin!) : 'No disponible'}',
       style: const TextStyle(fontSize: 14),
     );
   }
