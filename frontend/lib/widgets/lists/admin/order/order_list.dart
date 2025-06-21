@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/orders/order.dart';
+import 'package:frontend/utils/AppColors.dart';
 
 class ListOrder extends StatelessWidget {
   final List<WorkOrders> orders;
   final Function(WorkOrders)? onTap;
   final Function(WorkOrders)? onLongPress;
+  final Function(WorkOrders)? onEdit;
+  final Function(WorkOrders)? onDelete;
 
   const ListOrder({
     Key? key,
     required this.orders,
     required this.onTap,
     this.onLongPress,
+    this.onEdit,
+    this.onDelete
   }) : super(key: key);
 
   @override
@@ -52,10 +57,26 @@ class ListOrder extends StatelessWidget {
             _buildFechas(order),
             const SizedBox(height: 8),
             _buildEstado(order),
-            const SizedBox(height: 6),
-            _buildUserName(order),
             const SizedBox(height: 4),
             _buildOrderId(order),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (onEdit != null)
+                  IconButton(
+                    icon: const Icon(Icons.edit, color: AppColors.verdeCheck),
+                    onPressed: () => onEdit!(order),
+                    tooltip: 'Editar orden',
+                  ),
+                if (onDelete != null)
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () => onDelete!(order),
+                    tooltip: 'Eliminar orden',
+                  ),
+              ],
+            ),
           ],
         ),
       ),
