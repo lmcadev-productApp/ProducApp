@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/screens/admin/analytics/analytics_page.dart';
 import 'package:frontend/screens/admin/orders/orders_page.dart';
-import 'package:frontend/screens/admin/users/users_page.dart';
-import 'package:frontend/screens/stages/stage_screen.dart';
 import 'package:frontend/helper/shared_preferences_helper.dart';
 import 'package:frontend/screens/login/login_page.dart';
+import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/widgets/dashboard/dashboard_grid.dart';
 import 'package:frontend/widgets/section/section_header.dart';
 import 'package:frontend/screens/admin/orders/orders_Phases_StateManagement.dart';
@@ -58,13 +56,13 @@ class _orders_mainPage extends State<orders_mainPage> {
         icon: Icons.people,
         title: 'Administrar Ordenes',
         onTap: _navegarAAdministrarOrdenes,
-        iconColor: const Color(0xFF4A90E2),
+        iconColor: AppColors.azulLogoPrincipal,
       ),
       DashboardItem(
         icon: Icons.assignment,
         title: 'Asignar Etapas a Ordenes',
         onTap: _navegarAAsignarOrdenes,
-        iconColor: const Color(0xFF4A90E2),
+        iconColor: AppColors.azulLogoPrincipal,
       ),
     ];
 
@@ -111,7 +109,7 @@ class _orders_mainPage extends State<orders_mainPage> {
         spacing: 16,
         padding: const EdgeInsets.all(16),
       ),
-      colorHeader: const Color(0xFF4A90E2),
+      colorHeader: AppColors.azulIntermedio,
     );
   }
 }
