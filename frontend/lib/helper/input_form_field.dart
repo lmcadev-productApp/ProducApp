@@ -10,6 +10,7 @@ Widget inputFormField({
   bool passwordVisible = false,
   VoidCallback? onTogglePassword,
   int maxLines = 1,
+  void Function(String)? onChanged,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -21,24 +22,26 @@ Widget inputFormField({
         keyboardType: tipoTeclado,
         obscureText: isPassword && !passwordVisible,
         maxLines: maxLines,
+        onChanged: onChanged,
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: AppTextStyles.inputHint,
           filled: true,
           fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
           ),
           suffixIcon: isPassword
               ? IconButton(
-            icon: Icon(
-              passwordVisible ? Icons.visibility_off : Icons.visibility,
-              color: Colors.grey[700],
-            ),
-            onPressed: onTogglePassword,
-          )
+                  icon: Icon(
+                    passwordVisible ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.grey[700],
+                  ),
+                  onPressed: onTogglePassword,
+                )
               : null,
         ),
       ),
