@@ -118,8 +118,13 @@ class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
               onTap: (order) {
                 print('Orden seleccionada: ${order.usuario.nombre}');
               },
-              onLongPress: (order) {
-                mostrarOpcionesOrden(context, order);
+              onEdit: (order) {
+                mostrarEditarOrden(context, order, () {
+                  cargarOrdenes();
+                });
+              },
+              onDelete: (order) {
+                mostrarDialogoEliminar(context, order);
               },
             ),
           ),
@@ -129,4 +134,5 @@ class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
     );
   }
 }
+
 
