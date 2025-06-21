@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/helper/input_form_field.dart';
 import 'package:frontend/helper/shared_preferences_helper.dart';
 import 'package:frontend/models/orders/order.dart';
 import 'package:frontend/services/orders/order_service.dart';
@@ -43,23 +44,17 @@ void mostrarAgregarOrderVisual(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Descripción',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  SizedBox(height: 8),
-                  TextField(
+                  inputFormField(
+                    label: 'Descripción',
+                    hint: 'Ingrese la descripción de la orden',
                     controller: descripcionCtrl,
-                    decoration: InputDecoration(
-                      hintText: 'Ingrese la descripción de la orden',
-                      filled: true,
-                      fillColor: Colors.grey[50],
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    ),
                   ),
                   SizedBox(height: 15),
+                  inputFormField(
+                    label: 'Descripción',
+                    hint: 'Ingrese la descripción de la orden',
+                    controller: descripcionCtrl,
+                  ),
                   Text('Fecha de inicio',
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),

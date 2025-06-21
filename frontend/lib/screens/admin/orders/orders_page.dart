@@ -96,23 +96,21 @@ class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
   Widget build(BuildContext context) {
     return BaseScreen(
       titulo: 'Gestión de Órdenes',
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'fab_usuarios',
+        onPressed: () {
+          mostrarAgregarOrderVisual(context, () {
+            cargarOrdenes();
+          });
+        },
+        child: const Icon(Icons.add),
+      ),
       contenidoPersonalizado: Column(
         children: [
           SearchInput(
             hintText: 'Buscar Orden...',
             espacioInferior: true,
             controller: searchController,
-          ),
-          Center(
-            child: PrimaryButton(
-              text: 'Agregar Orden',
-              onPressed: () {
-                mostrarAgregarOrderVisual(context, () {
-                  cargarOrdenes();
-                });
-              },
-              fontSize: 20,
-            ),
           ),
           Expanded(
             child: ListOrder(
@@ -131,3 +129,4 @@ class _AdminOrderStateManagementState extends State<AdminOrderStateManagement> {
     );
   }
 }
+
