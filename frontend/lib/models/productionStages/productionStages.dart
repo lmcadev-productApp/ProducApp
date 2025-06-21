@@ -24,18 +24,26 @@ class ProductionStage {
     required this.registradoPorId,
   });
 
+
+
   factory ProductionStage.fromJson(Map<String, dynamic> json) {
+    print('Datos recibidos en ProductionStage.fromJson: $json');
+
     return ProductionStage(
       id: json['id'],
-      estado: json['estado'],
-      fechaInicio: json['fechaInicio'] != null ? DateTime.parse(json['fechaInicio']) : null,
-      fechaFin: json['fechaFin'] != null ? DateTime.parse(json['fechaFin']) : null,
+      estado: json['estado'] ?? 'PENDIENTE', // Valor por defecto si es null
+      fechaInicio: json['fechaInicio'] != null ? DateTime.tryParse(json['fechaInicio']) : null,
+      fechaFin: json['fechaFin'] != null ? DateTime.tryParse(json['fechaFin']) : null,
       workOrders: WorkOrders.fromJson(json['ordenTrabajo']),
-      etapaId: json['etapa']['id'], // Si 'json['etapa']' es nulo, esto causará un error.
+      etapaId: json['etapa'] != null
+          ? Stage.fromJson(json['etapa'])
+          : Stage(id: 0, nombre: 'Sin etapa', descripcion: 'No disponible'),
       user: json['usuario'] != null ? User.fromJson(json['usuario']) : null,
-      registradoPorId: json['registradoPor']['id'],
+      registradoPorId: json['registradoPor']?['id'] ?? 0,
     );
   }
+
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -43,10 +51,11 @@ class ProductionStage {
       'estado': estado,
       'fechaInicio': fechaInicio?.toIso8601String(),
       'fechaFin': fechaFin?.toIso8601String(),
-      'ordenTrabajo': workOrders.toJson(), // 'ordenTrabajo' no está definido, debería ser 'workOrders'.
-      'etapa': {'id': etapaId},
-      'usuario': user?.toJson(), // 'usuario' no está definido, debería ser 'user'.
+      'ordenTrabajo': workOrders.toJson(),
+      'etapa': etapaId.toJson(),
+      'usuario': user?.toJson(),
       'registradoPor': {'id': registradoPorId},
     };
   }
+
 }

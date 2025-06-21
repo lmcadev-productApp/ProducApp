@@ -25,38 +25,6 @@ class ProductionStageService {
     }
   }
 
-  Future<ProductionStage> createProductionStage(ProductionStage stage) async {
-    final token = await SharedPreferencesHelper.getToken();
-    final response = await http.post(
-      Uri.parse('$baseUrl/etapas-produccion'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-      body: json.encode(stage.toJson()),
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return ProductionStage.fromJson(json.decode(response.body));
-    } else {
-      print('Error: ${response.statusCode} - ${response.body}');
-      throw Exception('Error al crear etapa de producción');
-    }
-  }
-
-  Future<void> deleteProductionStage(int id) async {
-    final token = await SharedPreferencesHelper.getToken();
-    final response = await http.delete(
-      Uri.parse('$baseUrl/etapas-produccion/$id'),
-      headers: {
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Error al eliminar etapa de producción');
-    }
-  }
 
   Future<ProductionStage> getProductionStageById(int id) async {
     final token = await SharedPreferencesHelper.getToken();
@@ -74,6 +42,26 @@ class ProductionStageService {
       throw Exception('Etapa de producción no encontrada');
     }
   }
+
+  Future<void> asignarOperario(int etapaId, int usuarioId) async {
+    final token = await SharedPreferencesHelper.getToken();
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/etapas-produccion/asignar-operario/$etapaId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'usuarioId': usuarioId,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Error al asignar operario');
+    }
+  }
+
 
   Future<void> updateProductionStage(ProductionStage stage) async {
     final token = await SharedPreferencesHelper.getToken();

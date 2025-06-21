@@ -5,12 +5,18 @@ class ListOrder extends StatelessWidget {
   final List<ProductionStage> productionStage;
   final Function(ProductionStage)? onTap;
   final Function(ProductionStage)? onLongPress;
+  final bool mostrarAsignarUsuario;
+  final Function(ProductionStage)? onAsignacionExitosa;
+  final VoidCallback? onEdicionExitosa;
 
   const ListOrder({
     Key? key,
     required this.productionStage,
     required this.onTap,
     this.onLongPress,
+    this.mostrarAsignarUsuario = false,
+    this.onAsignacionExitosa,
+    this.onEdicionExitosa,
   }) : super(key: key);
 
   @override

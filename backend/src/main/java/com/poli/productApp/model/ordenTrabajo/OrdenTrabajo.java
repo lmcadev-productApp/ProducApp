@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.poli.productApp.model.ENUMS.Estado;
 import com.poli.productApp.model.etapa.Etapa;
@@ -56,7 +57,8 @@ public class OrdenTrabajo {
     private Usuario usuario;
 
 
-    @OneToMany(mappedBy = "ordenTrabajo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ordenTrabajo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<EtapaProduccion> etapasProduccion;
 
 }

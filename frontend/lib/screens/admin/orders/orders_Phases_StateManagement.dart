@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/orders/order.dart';
+import 'package:frontend/models/productionStages/productionStages.dart';
 import 'package:frontend/services/orders/Order_Service.dart';
 import 'package:frontend/widgets/buttons/customizable_modal_options.dart';
 import 'package:frontend/widgets/dialogs/admin/order/delete_order_dialog.dart';
@@ -8,6 +9,8 @@ import 'package:frontend/widgets/section/section_header.dart';
 import 'package:frontend/widgets/lists/admin/order/order_list.dart';
 import 'package:frontend/widgets/searches/search_input.dart';
 import 'package:frontend/widgets/dialogs/admin/order/assign_stages_dialog.dart';
+
+import '../../../widgets/dialogs/admin/productionStages/assign_user_dialog.dart';
 
 
 
@@ -112,7 +115,7 @@ class _AdminOrdersPhaseStateManagement extends State<AdminOrdersPhaseStateManage
               onTap: (order) async{
 
                 print('Orden seleccionada: ${order.usuario.nombre}');
-                await mostrarFormularioAsignarEtapas(context, order);
+                await mostrarFormularioAsignarEtapasAOperario(context, order as ProductionStage);
               },
               mostrarAsignarEtapas: true,
             ),

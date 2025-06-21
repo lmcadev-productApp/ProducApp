@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.poli.productApp.model.ENUMS.Estado;
 import com.poli.productApp.model.ordenTrabajo.OrdenTrabajo;
@@ -42,7 +43,7 @@ public class EtapaProduccion {
     // Relación con la orden de trabajo
     @ManyToOne(optional = false)
     @JoinColumn(name = "orden_trabajo_id", nullable = false)
-    @JsonBackReference
+    @JsonIgnoreProperties("etapas")
     private OrdenTrabajo ordenTrabajo;
 
     @ManyToOne(optional = false)
