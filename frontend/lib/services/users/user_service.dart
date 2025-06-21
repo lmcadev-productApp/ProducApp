@@ -42,6 +42,22 @@ class UserService {
     }
   }
 
+  ///Obtener el usuario actual autenticado desde SharedPreferences
+  Future<User?> getUsuarioActual() async {
+    final userIdString = await SharedPreferencesHelper.getUserId();
+    if (userIdString == null) return null;
+
+    final userId = int.tryParse(userIdString);
+    if (userId == null) return null;
+
+    try {
+      return await getUserById(userId);
+    } catch (e) {
+      print('Error al obtener el usuario actual: $e');
+      return null;
+    }
+  }
+
   /// POST Crear un nuevo usuario
   Future<String> createUser(User user) async {
     final token = await SharedPreferencesHelper.getToken();
@@ -95,7 +111,7 @@ class UserService {
     );
 
     if (response.statusCode == 200) {
-      return response.body; // Aquí devuelves el mensaje que te envía el backend
+      return response.body;
     } else {
       throw Exception('Error al eliminar el usuario');
     }
@@ -103,8 +119,7 @@ class UserService {
 
   /// Buscar usuario por correo
   Future<String?> buscarUserIdPorCorreo(String correo) async {
-    final url =
-        Uri.parse('$baseUrl/usuarios'); // Asegúrate que este endpoint existe
+    final url = Uri.parse('$baseUrl/usuarios');
     try {
       final response = await http.get(url, headers: {
         'Authorization': 'Bearer ${await SharedPreferencesHelper.getToken()}',
@@ -114,8 +129,9 @@ class UserService {
       if (response.statusCode == 200) {
         final List<dynamic> usuarios = jsonDecode(response.body);
         final usuario = usuarios.firstWhere(
-            (u) => u['correo'].toString().toLowerCase() == correo.toLowerCase(),
-            orElse: () => null);
+          (u) => u['correo'].toString().toLowerCase() == correo.toLowerCase(),
+          orElse: () => null,
+        );
         return usuario?['id']?.toString();
       } else {
         print('Error al obtener usuarios: ${response.statusCode}');

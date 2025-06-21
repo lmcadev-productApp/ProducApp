@@ -3,6 +3,7 @@ import 'package:frontend/helper/shared_preferences_helper.dart';
 import 'package:frontend/screens/admin/analytics/analytics_page.dart';
 import 'package:frontend/screens/admin/orders/orders_mainPage.dart';
 import 'package:frontend/screens/admin/users/users_page.dart';
+import 'package:frontend/screens/porfile/porfile_screen.dart';
 import 'package:frontend/screens/specialties/specialtie_page.dart';
 import 'package:frontend/screens/stages/stage_screen.dart';
 import 'package:frontend/screens/login/login_page.dart';
@@ -11,7 +12,6 @@ import 'package:frontend/widgets/dashboard/dashboard_grid.dart';
 import 'package:frontend/widgets/section/section_header.dart';
 
 import '../assingToUser/assingToUser.dart';
-
 
 class Dashboard extends StatefulWidget {
   @override
@@ -76,6 +76,13 @@ class _EstadoDashboard extends State<Dashboard> {
     );
   }
 
+  void _navegarAlPerfil() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UserProfileScreen()),
+    );
+  }
+
   void _navegarAAyuda() {
     print('Navegando a Ayuda');
   }
@@ -125,6 +132,12 @@ class _EstadoDashboard extends State<Dashboard> {
         iconColor: AppColors.azulLogoPrincipal,
       ),
       DashboardItem(
+        icon: Icons.account_circle,
+        title: 'Perfil',
+        onTap: _navegarAlPerfil,
+        iconColor: AppColors.azulLogoPrincipal,
+      ),
+      DashboardItem(
         icon: Icons.help,
         title: 'Ayuda',
         onTap: _navegarAAyuda,
@@ -145,8 +158,9 @@ class _EstadoDashboard extends State<Dashboard> {
             .toList();
         break;
       case 'OPERARIO':
-        elementosFiltrados =
-            todosLosElementos.where((item) => item.title == 'Ayuda').toList();
+        elementosFiltrados = todosLosElementos
+            .where((item) => item.title == 'Ayuda' || item.title == 'Perfil')
+            .toList();
         break;
       default:
         elementosFiltrados = [];
