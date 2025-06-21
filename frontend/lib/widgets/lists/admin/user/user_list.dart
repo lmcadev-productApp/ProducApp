@@ -4,7 +4,6 @@ import 'package:frontend/utils/role_color.dart';
 
 class ListUser extends StatelessWidget {
   final List<User> users;
-  final Function(User)? onLongPress;
   final Function(User)? onEdit;
   final Function(User)? onEditRole;
   final Function(User)? onDelete;
@@ -12,7 +11,6 @@ class ListUser extends StatelessWidget {
   const ListUser({
     Key? key,
     required this.users,
-    this.onLongPress,
     this.onEdit,
     this.onEditRole,
     this.onDelete,
@@ -29,13 +27,8 @@ class ListUser extends StatelessWidget {
         return _buildUserCard(user);
       },
     );
-
-
-
-
   }
 
-  // Construye la tarjeta de cada usuario
   Widget _buildUserCard(User user) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -55,35 +48,9 @@ class ListUser extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildNameAndRole(user),
-          Align(
-            alignment: Alignment.topRight,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (onEditRole != null)
-                  IconButton(
-                    icon: const Icon(Icons.admin_panel_settings, color: Colors.blue),
-                    tooltip: 'Editar Rol',
-                    onPressed: () => onEditRole?.call(user),
-                  ),
-                if (onEdit != null)
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.green),
-                    tooltip: 'Editar',
-                    onPressed: () => onEdit?.call(user),
-                  ),
-                if (onDelete != null)
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    tooltip: 'Eliminar',
-                    onPressed: () => onDelete?.call(user),
-                  ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 12),
-          _buildContactInfo(user),
+          const SizedBox(height: 8),
+          _buildCorreoConIconos(user),
+          _buildContactInfoWithoutCorreo(user),
           const SizedBox(height: 10),
           _buildSpecialtySection(user),
           const SizedBox(height: 10),
@@ -95,8 +62,7 @@ class ListUser extends StatelessWidget {
     );
   }
 
-
-  // Nombre del usuario y su rol
+  // ✅ Nombre y Rol en la misma fila
   Widget _buildNameAndRole(User user) {
     return Row(
       children: [
@@ -121,19 +87,49 @@ class ListUser extends StatelessWidget {
     );
   }
 
-  // Información de contacto (correo, teléfono, dirección)
-  Widget _buildContactInfo(User user) {
+  // ✅ Correo a la izquierda, íconos a la derecha
+  Widget _buildCorreoConIconos(User user) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Text(
+            user.correo,
+            style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+          ),
+        ),
+        if (onEditRole != null)
+          IconButton(
+            icon: const Icon(Icons.admin_panel_settings, color: Colors.blue),
+            tooltip: 'Editar Rol',
+            onPressed: () => onEditRole?.call(user),
+          ),
+        if (onEdit != null)
+          IconButton(
+            icon: const Icon(Icons.edit, color: Colors.green),
+            tooltip: 'Editar',
+            onPressed: () => onEdit?.call(user),
+          ),
+        if (onDelete != null)
+          IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            tooltip: 'Eliminar',
+            onPressed: () => onDelete?.call(user),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildContactInfoWithoutCorreo(User user) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildContactText(user.correo),
         _buildContactText(user.telefono),
         _buildContactText(user.direccion),
       ],
     );
   }
 
-  // Cada línea de contacto
   Widget _buildContactText(String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
@@ -144,7 +140,6 @@ class ListUser extends StatelessWidget {
     );
   }
 
-  // Sección de especialidad con fondo gris
   Widget _buildSpecialtySection(User user) {
     return Container(
       width: double.infinity,
@@ -156,10 +151,6 @@ class ListUser extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //user.especialidad != null → ¿El usuario tiene una especialidad asignada?
-          // user.especialidad!.descripcion.isNotEmpty → ¿La descripción no está vacía?
-          // ? user.especialidad!.descripcion → Si ambas condiciones se cumplen, se muestra la descripción.
-          // : 'Sin descripción' → Si alguna falla, se muestra "Sin descripción".
           Text(
             'Especialidad: ${user.especialidad?.nombre ?? "No asignada"}',
             style: const TextStyle(fontWeight: FontWeight.bold),
@@ -176,7 +167,6 @@ class ListUser extends StatelessWidget {
     );
   }
 
-  // Fila con EPS y ARL
   Widget _buildInsuranceRow(User user) {
     return Row(
       children: [
@@ -196,7 +186,6 @@ class ListUser extends StatelessWidget {
     );
   }
 
-  // ID del usuario alineado a la derecha
   Widget _buildUserId(User user) {
     return Align(
       alignment: Alignment.centerRight,

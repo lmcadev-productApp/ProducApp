@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/helper/confirm_delete_helper.dart' show confirmarEliminacion;
+import 'package:frontend/helper/confirm_delete_helper.dart'
+    show confirmarEliminacion;
 import 'package:frontend/helper/snackbar_helper.dart' show showCustomSnackBar;
 import 'package:frontend/models/stages/stage.dart';
 import 'package:frontend/models/users/user.dart';
@@ -81,44 +82,6 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
     }
   }
 
-  void mostrarOpcionesUsuario(BuildContext context, dynamic user) {
-    ModalOptionsCustomizable.mostrar(
-      context: context,
-      titulo: 'Usuario: ${user.nombre}',
-      acciones: [
-        AccionModal(
-          icono: Icons.edit,
-          titulo: 'Editar Rol',
-          alPresionar: () {
-            mostrarEditarRolUsuario(context, user, () {
-              cargarUsuarios();
-            });
-            print('Editar usuario: ${user.nombre}');
-          },
-        ),
-        AccionModal(
-          icono: Icons.edit,
-          titulo: 'Editar',
-          alPresionar: () {
-            mostrarEditarUsuario(context, user, () {
-              cargarUsuarios();
-            });
-            print('Editar usuario: ${user.nombre}');
-          },
-        ),
-        AccionModal(
-          icono: Icons.delete,
-          titulo: 'Eliminar',
-          alPresionar: () {
-            alPresionarEliminar(context, user, () {
-              cargarUsuarios();
-            });
-          },
-        ),
-      ],
-    );
-  }
-
   @override
   void dispose() {
     searchController.dispose();
@@ -166,7 +129,8 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
                 confirmarEliminacion(
                   context: context,
                   titulo: 'Eliminar Usuario',
-                  mensaje: '¿Estás segura de eliminar al usuario "${user.nombre}"?',
+                  mensaje:
+                      '¿Estás segura de eliminar al usuario "${user.nombre}"?',
                   mensajeExito: 'Usuario eliminado correctamente 🗑️',
                   mensajeError: 'Error al eliminar el usuario ❌',
                   onDelete: () async {
@@ -175,7 +139,6 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
                   },
                 );
               },
-
             ),
           ),
         ],
