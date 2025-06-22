@@ -44,7 +44,7 @@ class ProductionStageService {
     }
   }
 
-  Future<void> asignarOperario(int etapaId, int usuarioId, String estado, DateTime fechaInicio) async {
+  Future<void> asignarOperario(int etapaId, int usuarioId, String estado, String fechaInicio) async {
     final token = await SharedPreferencesHelper.getToken();
 
  // Asegúrate de que el estado sea correcto
@@ -57,7 +57,7 @@ class ProductionStageService {
       body: json.encode({
         'usuarioId': usuarioId,
         'estado': estado,
-        'fechaInicio': fechaInicio.toIso8601String()
+        'fechaInicio': fechaInicio
       }),
     );
 

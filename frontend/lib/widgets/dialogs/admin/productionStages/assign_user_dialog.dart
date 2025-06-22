@@ -4,6 +4,8 @@ import 'package:frontend/models/productionStages/productionStages.dart';
 import 'package:frontend/models/users/user.dart';
 import 'package:frontend/services/productionStages/productionStages_Service.dart';
 import 'package:frontend/services/users/user_service.dart';
+import 'package:intl/intl.dart';
+
 
 
 
@@ -37,7 +39,8 @@ Future<void> mostrarFormularioAsignarEtapasAOperario(BuildContext context, Produ
 
   //Ventana emergente para seleccionar el operario
   if (seleccionado != null) {
-    await ProductionStageService().asignarOperario(etapa.id!, seleccionado!.id!, "EN_PROCESO", DateTime.now());
+    final fechaHoy = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    await ProductionStageService().asignarOperario(etapa.id!, seleccionado!.id!, "EN_PROCESO", fechaHoy);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Operario asignado')));
   }
 }
