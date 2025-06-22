@@ -12,15 +12,16 @@ import com.poli.productApp.model.ordenTrabajo.OrdenTrabajo;
 import com.poli.productApp.model.usuario.Usuario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "etapa_produccion")
-@Data
-@Setter
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
+@ToString(exclude = {"ordenTrabajo", "etapas"})
 public class EtapaProduccion {
 
     @Id
@@ -51,7 +52,7 @@ public class EtapaProduccion {
     private Etapa etapa;
 
     // Relación con el empleado asignado a esta etapa
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "usuario_id", nullable = true)
     private Usuario usuario;
 
