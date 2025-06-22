@@ -93,11 +93,9 @@ class _AdminUserStateManagementState extends State<AdminUserStateManagement> {
     return BaseScreen<User>(
       titulo: 'Gestión de Usuarios',
       floatingActionButton: FloatingActionButton(
-        heroTag: 'fab_usuarios',
+        heroTag: 'fab_usuarios_${DateTime.now().millisecondsSinceEpoch}',
         onPressed: () {
-          mostrarAgregarUsuarioVisual(context, () {
-            cargarUsuarios();
-          });
+          mostrarAgregarUsuarioVisual(context, cargarUsuarios);
         },
         child: const Icon(Icons.add),
       ),

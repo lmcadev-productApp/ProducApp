@@ -3,7 +3,7 @@ import '../../utils/AppColors.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool isEnabled;
   final double fontSize;
   final FontWeight fontWeight;

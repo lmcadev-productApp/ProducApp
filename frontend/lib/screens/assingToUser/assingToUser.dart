@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/productionStages/productionStages.dart';
+import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/widgets/section/section_header.dart';
 import 'package:frontend/widgets/lists/assingStageToUserList.dart';
 import 'package:frontend/widgets/searches/search_input.dart';
@@ -69,11 +70,11 @@ class _AdminOrdersPhaseStateManagement extends State<AssingToUser> {
     super.dispose();
   }
 
-  // Muestra el formulario para asignar operarios a las etapas de producción
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
       titulo: 'Asignar Operario a etapas de Producción',
+      colorHeader: AppColors.azulIntermedio,
       contenidoPersonalizado: Column(
         children: [
           SearchInput(
@@ -84,19 +85,16 @@ class _AdminOrdersPhaseStateManagement extends State<AssingToUser> {
           Expanded(
             child: ListOrder(
               productionStage: ordenesFiltradas,
-              onTap: (etapa) async {
-                // Aquí puedes mostrar el formulario para asignar usuario
+              mostrarAsignarUsuario: true,
+              onAsignarOperario: (etapa) async {
                 await mostrarFormularioAsignarEtapasAOperario(context, etapa);
-
-                // Si quieres recargar al finalizar
                 cargarOrdenes();
               },
-              mostrarAsignarUsuario: true,
             ),
           ),
         ],
       ),
-      colorHeader: const Color(0xFF4A90E2),
+
     );
   }
 }

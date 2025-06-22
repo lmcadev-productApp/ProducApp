@@ -10,6 +10,7 @@ class ListOrder extends StatelessWidget {
   final Function(WorkOrders)? onLongPress;
   final Function(WorkOrders)? onEdit;
   final Function(WorkOrders)? onDelete;
+  final Function(WorkOrders)? onAsignarOperario;
   final bool mostrarAsignarEtapas;
   final Function(WorkOrders)? onAsignacionExitosa;
   final VoidCallback? onEdicionExitosa;
@@ -18,11 +19,12 @@ class ListOrder extends StatelessWidget {
   const ListOrder({
     Key? key,
     required this.orders,
-    required this.onTap,
+    this.onTap,
     this.onLongPress,
     this.onEdit,
     this.onDelete,
     this.mostrarAsignarEtapas = false,
+    this.onAsignarOperario,
     this.onAsignacionExitosa,
     this.onEdicionExitosa,
   }) : super(key: key);
@@ -134,6 +136,14 @@ class ListOrder extends StatelessWidget {
                         },
                         tooltip: 'Eliminar orden',
                       ),
+                    if (onAsignarOperario != null)
+                      IconButton(
+                        icon: const Icon(Icons.assignment_turned_in_outlined, color: Colors.red),
+                        onPressed: () async {
+                          onAsignarOperario!(order);
+                        },
+                        tooltip: 'Asignar Operario',
+                      ),
                   ],
                 ),
               ],
@@ -182,6 +192,7 @@ class ListOrder extends StatelessWidget {
                 ),
               ),
             ]
+
           ],
         ),
       ),

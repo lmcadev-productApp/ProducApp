@@ -5,32 +5,55 @@ import 'package:frontend/services/users/user_service.dart';
 import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/widgets/buttons/custom-button.dart';
 import 'package:frontend/widgets/dialogs/dialog_general.dart';
+import 'package:frontend/helper/snackbar_helper.dart';
 
 void mostrarEditarUsuario(
-  BuildContext context,
-  User usuario,
-  VoidCallback onUsuarioActualizado,
-) {
-  final nombreCtrl = TextEditingController(text: usuario.nombre);
-  final correoCtrl = TextEditingController(text: usuario.correo);
-  final passwordCtrl = TextEditingController(text: usuario.contrasena);
-  final telefonoCtrl = TextEditingController(text: usuario.telefono);
+    BuildContext context,
+    User usuario,
+    VoidCallback onUsuarioActualizado,
+    ) {
+  final nombreCtrl    = TextEditingController(text: usuario.nombre);
+  final correoCtrl    = TextEditingController(text: usuario.correo);
+  final passwordCtrl  = TextEditingController(text: usuario.contrasena);
+  final telefonoCtrl  = TextEditingController(text: usuario.telefono);
   final direccionCtrl = TextEditingController(text: usuario.direccion);
 
-  bool isLoading = false;
-  bool passwordVis = false;
+  bool isLoading   = false;
+  bool passVisible = false;
   bool botonActivo = false;
+
+  final origNombre    = usuario.nombre.trim();
+  final origCorreo    = usuario.correo.trim();
+  final origPass      = usuario.contrasena.trim();
+  final origTelefono  = usuario.telefono.trim();
+  final origDireccion = usuario.direccion.trim();
 
   showDialog(
     context: context,
-    builder: (context) {
+    barrierDismissible: false,
+    builder: (dialogCtx) {
       return StatefulBuilder(
-        builder: (context, setState) {
+        builder: (ctx, setState) {
           void _validarCampos() {
+            if (!ctx.mounted) return;
+
+            final nom  = nombreCtrl.text.trim();
+            final cor  = correoCtrl.text.trim();
+            final pas  = passwordCtrl.text.trim();
+            final tel  = telefonoCtrl.text.trim();
+            final dir  = direccionCtrl.text.trim();
+
+            final huboCambios = nom != origNombre ||
+                cor != origCorreo ||
+                pas != origPass ||
+                tel != origTelefono ||
+                dir != origDireccion;
+
+            final obligatoriosCompletos =
+                nom.isNotEmpty && cor.isNotEmpty && pas.isNotEmpty;
+
             setState(() {
-              botonActivo = nombreCtrl.text.trim().isNotEmpty &&
-                  correoCtrl.text.trim().isNotEmpty &&
-                  passwordCtrl.text.trim().isNotEmpty;
+              botonActivo = obligatoriosCompletos && huboCambios;
             });
           }
 
@@ -62,10 +85,9 @@ void mostrarEditarUsuario(
                       hint: 'Ingrese la contraseña',
                       controller: passwordCtrl,
                       isPassword: true,
-                      passwordVisible: passwordVis,
-                      onTogglePassword: () {
-                        setState(() => passwordVis = !passwordVis);
-                      },
+                      passwordVisible: passVisible,
+                      onTogglePassword: () =>
+                          setState(() => passVisible = !passVisible),
                       onChanged: (_) => _validarCampos(),
                     ),
                     const SizedBox(height: 16),
@@ -74,12 +96,14 @@ void mostrarEditarUsuario(
                       hint: 'Ingrese el teléfono',
                       controller: telefonoCtrl,
                       tipoTeclado: TextInputType.phone,
+                      onChanged: (_) => _validarCampos(),
                     ),
                     const SizedBox(height: 16),
                     inputFormField(
                       label: 'Dirección',
                       hint: 'Ingrese la dirección',
                       controller: direccionCtrl,
+                      onChanged: (_) => _validarCampos(),
                     ),
                   ],
                 ),
@@ -87,76 +111,84 @@ void mostrarEditarUsuario(
               botonOkPersonalizado: isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : Center(
-                      child: Wrap(
-                        spacing: 14,
-                        children: [
-                          PrimaryButton(
-                            text: 'Cancelar',
-                            width: 135,
-                            height: 48,
-                            fontSize: 16,
-                            backgroundColor: AppColors.azulIntermedio,
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
-                          PrimaryButton(
-                            text: 'Guardar',
-                            width: 135,
-                            height: 48,
-                            fontSize: 16,
-                            isEnabled: botonActivo,
-                            backgroundColor: botonActivo
-                                ? AppColors.azulIntermedio
-                                : AppColors.grisTextoSecundario,
-                            onPressed: () {
-                              if (!botonActivo || isLoading) return;
-
-                              () async {
-                                try {
-                                  setState(() => isLoading = true);
-
-                                  final usuarioActualizado = usuario.copyWith(
-                                    nombre: nombreCtrl.text.trim(),
-                                    correo: correoCtrl.text.trim(),
-                                    contrasena: passwordCtrl.text.trim(),
-                                    telefono: telefonoCtrl.text.trim(),
-                                    direccion: direccionCtrl.text.trim(),
-                                  );
-
-                                  await UserService().updateUser(
-                                    usuario.id!,
-                                    usuarioActualizado,
-                                  );
-
-                                  if (context.mounted) {
-                                    Navigator.pop(context);
-                                    onUsuarioActualizado();
-                                  }
-                                } catch (e) {
-                                  if (context.mounted) Navigator.pop(context);
-                                  debugPrint('Error al actualizar usuario: $e');
-                                } finally {
-                                  if (context.mounted) {
-                                    setState(() => isLoading = false);
-                                  }
-                                }
-                              }();
-                            },
-                          ),
-                        ],
-                      ),
+                child: Wrap(
+                  spacing: 14,
+                  children: [
+                    PrimaryButton(
+                      text: 'Cancelar',
+                      width: 135,
+                      height: 48,
+                      fontSize: 16,
+                      backgroundColor: AppColors.azulIntermedio,
+                      onPressed: () {
+                        if (!isLoading) Navigator.pop(ctx);
+                      },
                     ),
+                    PrimaryButton(
+                      text: 'Guardar',
+                      width: 135,
+                      height: 48,
+                      fontSize: 16,
+                      isEnabled: botonActivo,
+                      backgroundColor: botonActivo
+                          ? AppColors.azulIntermedio
+                          : AppColors.grisTextoSecundario,
+                      onPressed: !botonActivo
+                          ? null
+                          : () async {
+                        if (!ctx.mounted) return;
+                        setState(() => isLoading = true);
+
+                        final actualizado = usuario.copyWith(
+                          nombre: nombreCtrl.text.trim(),
+                          correo: correoCtrl.text.trim(),
+                          contrasena: passwordCtrl.text.trim(),
+                          telefono: telefonoCtrl.text.trim(),
+                          direccion: direccionCtrl.text.trim(),
+                        );
+
+                        try {
+                          await UserService()
+                              .updateUser(usuario.id!, actualizado);
+
+                          if (!context.mounted) return;
+                          Navigator.pop(ctx);
+
+                          Future.delayed(
+                            const Duration(milliseconds: 50),
+                                () {
+                              onUsuarioActualizado();
+                              showCustomSnackBar(
+                                context,
+                                '✅ Usuario actualizado correctamente',
+                              );
+                            },
+                          );
+                        } catch (e, stack) {
+                          if (!context.mounted) return;
+                          Navigator.pop(ctx);
+
+                          Future.delayed(
+                            const Duration(milliseconds: 50),
+                                () => showCustomSnackBar(
+                              context,
+                              '❌ Error: ${e.toString()}',
+                            ),
+                          );
+
+                          debugPrint('⛔ Error al actualizar usuario: $e');
+                          debugPrint('🔍 Stacktrace:\n$stack');
+                        }
+
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
         },
       );
     },
-  ).then((_) {
-    Future.delayed(Duration(milliseconds: 300), () {
-      nombreCtrl.dispose();
-      correoCtrl.dispose();
-      passwordCtrl.dispose();
-      telefonoCtrl.dispose();
-      direccionCtrl.dispose();
-    });
-  });
+  );
 }
