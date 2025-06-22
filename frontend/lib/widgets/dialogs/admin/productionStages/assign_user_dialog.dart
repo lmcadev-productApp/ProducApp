@@ -35,8 +35,9 @@ Future<void> mostrarFormularioAsignarEtapasAOperario(BuildContext context, Produ
     },
   );
 
+  //Ventana emergente para seleccionar el operario
   if (seleccionado != null) {
-    await ProductionStageService().asignarOperario(etapa.id!, seleccionado!.id!);
+    await ProductionStageService().asignarOperario(etapa.id!, seleccionado!.id!, "EN_PROCESO", DateTime.now());
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Operario asignado')));
   }
 }

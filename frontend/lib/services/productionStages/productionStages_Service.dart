@@ -4,6 +4,7 @@ import 'package:frontend/models/productionStages/productionStages.dart';
 import 'package:frontend/helper/shared_preferences_helper.dart';
 import 'package:frontend/utils/constants.dart';
 
+
 class ProductionStageService {
 
 
@@ -43,9 +44,10 @@ class ProductionStageService {
     }
   }
 
-  Future<void> asignarOperario(int etapaId, int usuarioId) async {
+  Future<void> asignarOperario(int etapaId, int usuarioId, String estado, DateTime fechaInicio) async {
     final token = await SharedPreferencesHelper.getToken();
 
+ // Asegúrate de que el estado sea correcto
     final response = await http.put(
       Uri.parse('$baseUrl/etapas-produccion/asignar-operario/$etapaId'),
       headers: {
@@ -54,6 +56,8 @@ class ProductionStageService {
       },
       body: json.encode({
         'usuarioId': usuarioId,
+        'estado': estado,
+        'fechaInicio': fechaInicio.toIso8601String()
       }),
     );
 
