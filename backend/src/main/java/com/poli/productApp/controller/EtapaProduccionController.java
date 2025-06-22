@@ -12,6 +12,7 @@ import com.poli.productApp.repository.UsuarioRepository;
 
 import com.poli.productApp.service.OrdenTrabajoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -214,16 +215,76 @@ public class EtapaProduccionController {
 
     //etapa de produccion por id de usuario y estado
     @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<EtapaProduccion>> getEtapasPorUsuarioYEstado(@PathVariable Long usuarioId) {
+    public ResponseEntity<List<EtapaProduccion>> getEtapasPorUsuarioYMultiplesEstados(@PathVariable Long usuarioId) {
         try {
-            // Convierte el String a Enum
-            Estado estadoEnum = Estado.ASIGNADA;
-            // Busca las etapas por usuario y estado en el repositorio
-            List<EtapaProduccion> etapas = etapaProduccionRepository.findByUsuarioIdAndEstado(usuarioId, estadoEnum);
+            List<Estado> estados = List.of(Estado.ASIGNADA, Estado.EN_PROCESO);
+            List<EtapaProduccion> etapas = etapaProduccionRepository.findByUsuarioIdAndEstado(usuarioId, estados);
             return ResponseEntity.ok(etapas);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null); // Estado inválido
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
         }
     }
+
+    //cambia estado de etapa de produccion por id
+    @PutMapping("/cambiar-estado/{etapaId}")
+    public ResponseEntity<?> cambiarEstadoEtapa(@PathVariable Long etapaId, @RequestBody Map<String, Object> body) {
+        if (!body.containsKey("estado")) {
+            return ResponseEntity.badRequest().body("Falta el estado a cambiar");
+        }
+
+        String estadoStr = (String) body.get("estado");
+        Optional<EtapaProduccion> etapaOpt = etapaProduccionRepository.findById(etapaId);
+
+        if (etapaOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Etapa no encontrada");
+        }
+
+        EtapaProduccion etapa = etapaOpt.get();
+
+        try {
+            Estado nuevoEstado = Estado.valueOf(estadoStr.toUpperCase());
+            etapa.setEstado(nuevoEstado);
+            etapaProduccionRepository.save(etapa);
+            return ResponseEntity.ok("Estado cambiado correctamente");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Estado inválido");
+        }
+    }
+
+    //cambia estado a "COMPLETADO" de etapa de produccion por id y pasa fecha de finalización
+    @PutMapping("/completar/{etapaId}")
+    public ResponseEntity<?> completarEstado(@PathVariable Long etapaId, @RequestBody Map<String, Object> body) {
+        if (!body.containsKey("estado")) {
+            return ResponseEntity.badRequest().body("Falta el estado a cambiar");
+        }
+        if (!body.containsKey("fechaFin")) {
+            return ResponseEntity.badRequest().body("Falta la fecha de finalización");
+        }
+
+        String estadoStr = (String) body.get("estado");
+        String fechaFinStr = (String) body.get("fechaFin");
+
+        Optional<EtapaProduccion> etapaOpt = etapaProduccionRepository.findById(etapaId);
+        if (etapaOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Etapa no encontrada");
+        }
+
+        try {
+            Estado nuevoEstado = Estado.valueOf(estadoStr.toUpperCase());
+            Date fechaFin = Date.valueOf(fechaFinStr); // formato: yyyy-MM-dd
+
+            EtapaProduccion etapa = etapaOpt.get();
+            etapa.setEstado(nuevoEstado);
+            etapa.setFechaFin(fechaFin);
+            etapaProduccionRepository.save(etapa);
+
+            return ResponseEntity.ok("Estado cambiado correctamente");
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Estado o fecha inválidos: " + e.getMessage());
+        }
+    }
+
+
 
 }

@@ -4,7 +4,7 @@ import 'package:frontend/widgets/section/section_header.dart';
 import 'package:frontend/widgets/lists/assingStageToUserList.dart';
 import 'package:frontend/widgets/searches/search_input.dart';
 import 'package:frontend/services/productionStages/productionStages_Service.dart';
-import '../../widgets/dialogs/admin/productionStages/assign_user_dialog.dart';
+import '../../widgets/dialogs/assignedStageDialog/assignedStageDialog.dart';
 
 
 
@@ -85,7 +85,7 @@ class _AdminOrdersPhaseStateManagement extends State<StageList> {
               productionStage: ordenesFiltradas,
               onTap: (etapa) async {
                 // Aquí puedes mostrar el formulario para asignar usuario
-                await mostrarFormularioAsignarEtapasAOperario(context, etapa);
+                await mostrarFormularioInformacionEtapaAsignada(context, etapa);
 
                 // Si quieres recargar al finalizar
                 cargarOrdenes();

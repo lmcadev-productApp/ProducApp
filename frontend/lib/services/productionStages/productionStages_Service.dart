@@ -105,5 +105,42 @@ class ProductionStageService {
     }
   }
 
+  //cambiar estado a "EN_PROCESO"
+  Future<void> updateProductionStageToInProgress(int stageId) async {
+    final token = await SharedPreferencesHelper.getToken();
+    final response = await http.put(
+      Uri.parse('$baseUrl/etapas-produccion/cambiar-estado/$stageId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({'estado': 'EN_PROCESO'}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Error al cambiar estado a EN_PROCESO');
+    }
+  }
+
+  //cambia estado a "COMPLETADO" y pasa la fecha de finalización
+  Future<void> updateProductionStageToCompleted(int stageId, String fechaFinalizacion) async {
+    final token = await SharedPreferencesHelper.getToken();
+    final response = await http.put(
+      Uri.parse('$baseUrl/etapas-produccion/completar/$stageId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'estado': 'COMPLETADO',
+        'fechaFinalizacion': fechaFinalizacion,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Error al cambiar estado a COMPLETADO');
+    }
+  }
+
 
 }
