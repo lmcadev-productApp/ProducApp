@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/helper/snackbar_helper.dart' show showCustomSnackBar;
+import 'package:frontend/models/orders/order.dart';
 import 'package:frontend/models/productionStages/productionStages.dart';
 import 'package:frontend/models/users/user.dart';
 import 'package:frontend/services/productionStages/productionStages_Service.dart';
 import 'package:frontend/services/users/user_service.dart';
+import 'package:intl/intl.dart';
+
+
 import 'package:frontend/utils/AppColors.dart' show AppColors;
 import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/utils/app_text_styles.dart';
@@ -148,4 +151,11 @@ Future<void> mostrarFormularioAsignarEtapasAOperario(
       ),
     ),
   );
+
+  //Ventana emergente para seleccionar el operario
+  if (seleccionado != null) {
+    final fechaHoy = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    await ProductionStageService().asignarOperario(etapa.id!, seleccionado!.id!, "EN_PROCESO", fechaHoy);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Operario asignado')));
+  }
 }

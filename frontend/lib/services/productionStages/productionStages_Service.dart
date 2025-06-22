@@ -44,7 +44,7 @@ class ProductionStageService {
     }
   }
 
-  Future<void> asignarOperario(int etapaId, int usuarioId, String estado, DateTime fechaInicio) async {
+  Future<void> asignarOperario(int etapaId, int usuarioId, String estado, String fechaInicio) async {
     final token = await SharedPreferencesHelper.getToken();
 
  // Asegúrate de que el estado sea correcto
@@ -57,12 +57,34 @@ class ProductionStageService {
       body: json.encode({
         'usuarioId': usuarioId,
         'estado': estado,
-        'fechaInicio': fechaInicio.toIso8601String()
+        'fechaInicio': fechaInicio
       }),
     );
 
     if (response.statusCode != 200) {
       throw Exception('Error al asignar operario');
+    }
+  }
+
+  //adquirir etapa de produccion por id de usuario actual y estado
+  Future<List<ProductionStage>> getStagesByUserAndStatus() async {
+
+
+    final token = await SharedPreferencesHelper.getToken();
+    final userId = await SharedPreferencesHelper.getUserId();
+    final response = await http.get(
+      Uri.parse('$baseUrl/etapas-produccion/usuario/$userId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      return data.map((json) => ProductionStage.fromJson(json)).toList();
+    } else {
+      throw Exception('Error al obtener etapas de producción por usuario y estado');
     }
   }
 

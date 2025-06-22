@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -120,7 +122,12 @@ public class EtapaProduccionController {
         }
     }
 
-
+//get all etapas de produccion
+    @GetMapping("/")
+    public ResponseEntity<List<EtapaProduccion>> getAllEtapasProduccion() {
+        List<EtapaProduccion> etapas = etapaProduccionRepository.findAll();
+        return ResponseEntity.ok(etapas);
+    }
 
       // Consultar por orden de trabajo
     @GetMapping("/por-orden/{ordenId}")
@@ -149,4 +156,74 @@ public class EtapaProduccionController {
             return ResponseEntity.badRequest().body(null); // Estado inválido
         }
     }
+
+    //asignar operarios a etapas de produccion por id
+    @PutMapping("/asignar-operario/{etapaId}")
+    public ResponseEntity<?> asignarOperarioEtapa(@PathVariable Long etapaId, @RequestBody Map<String, Object> body) {
+
+
+        System.out.println("Datos: " + body + " Etapa ID: " + etapaId);
+
+        if (!body.containsKey("usuarioId")) {
+            return ResponseEntity.badRequest().body("Falta el ID del usuario a asignar");
+        }
+
+        Long usuarioId = Long.valueOf(body.get("usuarioId").toString());
+        String estadoStr = (String) body.get("estado");
+        String fechaInicioStr = (String) body.get("fechaInicio");
+
+        Optional<EtapaProduccion> etapaOpt = etapaProduccionRepository.findById(etapaId);
+        Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+
+        System.out.println("Etapa ID: " + etapaId);
+        System.out.println("Usuario ID: " + usuarioId);
+        System.out.println("Etapa encontrada: " + etapaOpt);
+        System.out.println("Usuario encontrado: " + usuarioOpt);
+
+
+        if (etapaOpt.isEmpty() || usuarioOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Etapa o usuario no encontrado");
+        }
+
+        EtapaProduccion etapa = etapaOpt.get();
+        etapa.setUsuario(usuarioOpt.get());
+
+// Parsear y setear estado
+        if (estadoStr != null) {
+            try {
+                etapa.setEstado(Estado.valueOf(estadoStr.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().body("Estado inválido");
+            }
+        }
+
+// Parsear y setear fecha
+        if (fechaInicioStr != null) {
+            try {
+                LocalDate localDate = LocalDate.parse(fechaInicioStr); // formato ISO
+                etapa.setFechaInicio(Date.valueOf(localDate));
+            } catch (DateTimeParseException e) {
+                return ResponseEntity.badRequest().body("Formato de fecha inválido. Usa yyyy-MM-dd.");
+            }
+        }
+
+        etapaProduccionRepository.save(etapa);
+        return ResponseEntity.ok("Operario asignado correctamente");
+
+    }
+
+    //etapa de produccion por id de usuario y estado
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<List<EtapaProduccion>> getEtapasPorUsuarioYEstado(@PathVariable Long usuarioId) {
+        try {
+            // Convierte el String a Enum
+            Estado estadoEnum = Estado.EN_PROCESO;
+            // Busca las etapas por usuario y estado en el repositorio
+            List<EtapaProduccion> etapas = etapaProduccionRepository.findByUsuarioIdAndEstado(usuarioId, estadoEnum);
+            return ResponseEntity.ok(etapas);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null); // Estado inválido
+        }
+    }
+
 }
