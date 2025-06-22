@@ -212,4 +212,18 @@ public class EtapaProduccionController {
 
     }
 
+    //etapa de produccion por id de usuario y estado
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<List<EtapaProduccion>> getEtapasPorUsuarioYEstado(@PathVariable Long usuarioId) {
+        try {
+            // Convierte el String a Enum
+            Estado estadoEnum = Estado.EN_PROCESO;
+            // Busca las etapas por usuario y estado en el repositorio
+            List<EtapaProduccion> etapas = etapaProduccionRepository.findByUsuarioIdAndEstado(usuarioId, estadoEnum);
+            return ResponseEntity.ok(etapas);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null); // Estado inválido
+        }
+    }
+
 }
