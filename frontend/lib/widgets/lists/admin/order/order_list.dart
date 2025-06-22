@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/orders/order.dart';
 import 'package:frontend/utils/AppColors.dart';
+import 'package:frontend/utils/role_color.dart';
 import 'package:frontend/widgets/dialogs/admin/order/assign_stages_dialog.dart'
     show mostrarFormularioAsignarEtapas;
 
@@ -243,21 +244,8 @@ class ListOrder extends StatelessWidget {
     );
   }
 
-  Widget _buildEstadoBadge(String estado) {
-    Color color;
-    switch (estado.toUpperCase()) {
-      case 'ACTIVO':
-        color = Colors.green;
-        break;
-      case 'INACTIVO':
-        color = Colors.red;
-        break;
-      case 'PENDIENTE':
-        color = Colors.orange;
-        break;
-      default:
-        color = Colors.grey;
-    }
+  Widget _buildEstadoBadge(String? estado) {
+    final Color color = getEstadoColor(estado);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -267,7 +255,7 @@ class ListOrder extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
-        estado,
+        estado ?? 'SIN ESTADO',
         style: TextStyle(
           fontSize: 13,
           color: color,
@@ -276,7 +264,6 @@ class ListOrder extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildOrderId(WorkOrders order) {
     return Align(

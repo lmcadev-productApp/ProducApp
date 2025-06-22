@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/productionStages/productionStages.dart';
 import 'package:frontend/utils/AppColors.dart' show AppColors;
 import 'package:frontend/utils/role_color.dart' show getStageColor;
+import 'package:frontend/utils/role_color.dart' show getEstadoColor;
 
 
 class ListOrder extends StatelessWidget {
@@ -12,6 +13,7 @@ class ListOrder extends StatelessWidget {
   final Function(ProductionStage)? onAsignarOperario;
   final Function(ProductionStage)? onAsignacionExitosa;
   final VoidCallback? onEdicionExitosa;
+
 
   const ListOrder({
     Key? key,
@@ -127,16 +129,46 @@ class ListOrder extends StatelessWidget {
     );
   }
 
-  Widget _buildUserName(ProductionStage productionStage) {
+  Widget buildEstadoBadge(String? estado) {
+    final Color color = getEstadoColor(estado);
+
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Expanded(
-          child: Text(
-            'Estado: ${productionStage.estado}',
-            style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+        const Text(
+          'Estado: ',
+          style: TextStyle(
+            fontSize: 14,
           ),
         ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: color),
+          ),
+          child: Text(
+            estado?.toUpperCase() ?? 'SIN ESTADO',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
+
+  Widget _buildUserName(ProductionStage productionStage) {
+    final String estado = productionStage.estado ?? 'Sin estado';
+
+    return Row(
+      children: [
+        buildEstadoBadge(estado), // el badge bonito
+        const Spacer(), // separador flexible
         if (mostrarAsignarUsuario && onAsignarOperario != null)
           TextButton.icon(
             icon: const Icon(
@@ -157,12 +189,9 @@ class ListOrder extends StatelessWidget {
             ),
             onPressed: () => onAsignarOperario!(productionStage),
           ),
-
-
       ],
     );
   }
-
 
   Widget _buildOrderId(ProductionStage productionStage) {
     return Align(

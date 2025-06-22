@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/orders/order.dart';
+import 'package:frontend/helper/snackbar_helper.dart' show showCustomSnackBar;
 import 'package:frontend/models/productionStages/productionStages.dart';
 import 'package:frontend/models/users/user.dart';
 import 'package:frontend/services/productionStages/productionStages_Service.dart';
 import 'package:frontend/services/users/user_service.dart';
-import 'package:intl/intl.dart';
-
-
 import 'package:frontend/utils/AppColors.dart' show AppColors;
-import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/utils/app_text_styles.dart';
+import 'package:frontend/utils/role_color.dart';
 import 'package:frontend/widgets/buttons/custom-button.dart';
+import 'package:intl/intl.dart';
 
 Future<void> mostrarFormularioAsignarEtapasAOperario(
     BuildContext context,
@@ -23,13 +21,13 @@ Future<void> mostrarFormularioAsignarEtapasAOperario(
     context: context,
     barrierDismissible: false,
     builder: (_) => Dialog(
-      backgroundColor: Colors.white,                     // 🔳 Panel blanco
+      backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: StatefulBuilder(
         builder: (context, setState) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // 🔹 Encabezado azul
+            // ───── Encabezado ─────
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
@@ -53,6 +51,7 @@ Future<void> mostrarFormularioAsignarEtapasAOperario(
               ),
             ),
 
+            // ───── Selector de operario ─────
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
               child: DropdownButtonFormField<User>(
@@ -75,36 +74,38 @@ Future<void> mostrarFormularioAsignarEtapasAOperario(
                 isExpanded: true,
                 value: seleccionado,
                 items: operarios.map((u) {
+                  final especialidad = u.especialidad?.nombre ?? 'Sin especialidad';
+                  final color = getEspecialidadColor(especialidad);
+
                   return DropdownMenuItem<User>(
                     value: u,
                     child: ListTile(
                       dense: true,
                       contentPadding: EdgeInsets.zero,
                       leading: CircleAvatar(
-                        backgroundColor: AppColors.azulIntermedio,
+                        backgroundColor: color,
                         child: Text(
-                          u.nombre.isNotEmpty ? u.nombre[0].toUpperCase() : '?',
+                          especialidad.isNotEmpty ? especialidad[0].toUpperCase() : '?',
                           style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ),
                       title: Text(u.nombre, style: AppTextStyles.inputText),
+                      subtitle: Text(especialidad, style: AppTextStyles.inputHint),
                     ),
                   );
                 }).toList(),
-
                 selectedItemBuilder: (context) {
                   return operarios.map((u) {
                     return Text(u.nombre, style: AppTextStyles.inputText);
                   }).toList();
                 },
-
                 onChanged: (u) => setState(() => seleccionado = u),
               ),
             ),
 
             const SizedBox(height: 28),
 
-            // 🔘 Botones
+            // ───── Botones ─────
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
               child: Row(
@@ -123,22 +124,28 @@ Future<void> mostrarFormularioAsignarEtapasAOperario(
                     child: PrimaryButton(
                       text: 'Asignar',
                       isEnabled: seleccionado != null,
-                      onPressed: () {
-                        if (seleccionado == null) return;
+                      onPressed: seleccionado == null
+                          ? null
+                          : () async {
+                        final fechaHoy = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-                        Navigator.pop(context);
-                        ProductionStageService()
-                            .asignarOperario(
-                          etapa.id!,
-                          seleccionado!.id!,
-                          'EN_PROCESO',
-                          DateTime.now(),
-                        )
-                            .then((_) {
-                          showCustomSnackBar(context, 'Operario asignado exitosamente');
-                        });
+                        try {
+                          await ProductionStageService().asignarOperario(
+                            etapa.id!,
+                            seleccionado!.id!,
+                            "EN_PROCESO",
+                            fechaHoy,
+                          );
+
+                          if (!context.mounted) return;
+                          Navigator.pop(context);
+                          showCustomSnackBar(context, '✅ Operario asignado');
+                        } catch (e) {
+                          if (!context.mounted) return;
+                          Navigator.pop(context);
+                          showCustomSnackBar(context, '❌ Error al asignar operario');
+                        }
                       },
-
                       fontSize: 16,
                       width: double.infinity,
                     ),
@@ -151,11 +158,4 @@ Future<void> mostrarFormularioAsignarEtapasAOperario(
       ),
     ),
   );
-
-  //Ventana emergente para seleccionar el operario
-  if (seleccionado != null) {
-    final fechaHoy = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    await ProductionStageService().asignarOperario(etapa.id!, seleccionado!.id!, "EN_PROCESO", fechaHoy);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Operario asignado')));
-  }
 }
