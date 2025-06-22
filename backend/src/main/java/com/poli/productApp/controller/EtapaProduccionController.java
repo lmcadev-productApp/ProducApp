@@ -218,12 +218,16 @@ public class EtapaProduccionController {
     public ResponseEntity<List<EtapaProduccion>> getEtapasPorUsuarioYMultiplesEstados(@PathVariable Long usuarioId) {
         try {
             List<Estado> estados = List.of(Estado.ASIGNADA, Estado.EN_PROCESO);
-            List<EtapaProduccion> etapas = etapaProduccionRepository.findByUsuarioIdAndEstado(usuarioId, estados);
+            System.out.println("Consultando etapas para usuario: " + usuarioId + " con estados: " + estados);
+            List<EtapaProduccion> etapas = etapaProduccionRepository.findByUsuarioIdAndEstadoIn(usuarioId, estados);
+            System.out.println("Etapas encontradas: " + etapas.size());
             return ResponseEntity.ok(etapas);
         } catch (Exception e) {
+            e.printStackTrace(); // Imprime la excepción si ocurre
             return ResponseEntity.badRequest().body(null);
         }
     }
+
 
     //cambia estado de etapa de produccion por id
     @PutMapping("/cambiar-estado/{etapaId}")
