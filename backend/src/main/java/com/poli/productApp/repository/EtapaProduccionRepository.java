@@ -2,6 +2,7 @@ package com.poli.productApp.repository;
 
 import com.poli.productApp.model.ENUMS.Estado;
 import com.poli.productApp.model.etapa.EtapaProduccion;
+import com.poli.productApp.model.ordenTrabajo.OrdenTrabajo;
 
 import java.util.List;
 
@@ -13,6 +14,10 @@ public interface EtapaProduccionRepository extends JpaRepository<EtapaProduccion
 
     // Todas las etapas de una orden específica
     List<EtapaProduccion> findByOrdenTrabajoId(Long id);
+
+    // Todas las etapas de una orden de trabajo específica
+    List<EtapaProduccion> findByOrdenTrabajo(OrdenTrabajo ordenTrabajo);
+
 
     // Todas las etapas asignadas a un empleado específico
     List<EtapaProduccion> findByUsuarioId(Long empleadoId);

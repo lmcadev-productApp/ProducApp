@@ -282,6 +282,18 @@ public class EtapaProduccionController {
             etapa.setFechaFin(fechaFin);
             etapaProduccionRepository.save(etapa);
 
+            // Verificar si todas las etapas de la orden están COMPLETADAS
+            OrdenTrabajo orden = etapa.getOrdenTrabajo();
+            List<EtapaProduccion> etapasDeOrden = etapaProduccionRepository.findByOrdenTrabajo(orden);
+
+            boolean todasCompletadas = etapasDeOrden.stream()
+                    .allMatch(e -> e.getEstado() == Estado.COMPLETADO);
+
+            if (todasCompletadas) {
+                orden.setEstado(Estado.COMPLETADO);
+                ordenTrabajoRepository.save(orden);
+            }
+
             return ResponseEntity.ok("Estado cambiado correctamente");
 
         } catch (IllegalArgumentException e) {
