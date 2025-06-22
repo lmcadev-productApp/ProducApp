@@ -68,12 +68,13 @@ class ProductionStageService {
 
   //adquirir etapa de produccion por id de usuario actual y estado
   Future<List<ProductionStage>> getStagesByUserAndStatus() async {
-
-
     final token = await SharedPreferencesHelper.getToken();
     final userId = await SharedPreferencesHelper.getUserId();
+
+    final url = '$baseUrl/etapas-produccion/usuario/$userId';
+
     final response = await http.get(
-      Uri.parse('$baseUrl/etapas-produccion/usuario/$userId'),
+      Uri.parse(url),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -81,12 +82,13 @@ class ProductionStageService {
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.map((json) => ProductionStage.fromJson(json)).toList();
+      final List<dynamic> jsonData = json.decode(response.body);
+      return jsonData.map((e) => ProductionStage.fromJson(e)).toList();
     } else {
-      throw Exception('Error al obtener etapas de producción por usuario y estado');
+      throw Exception('Error al obtener etapas');
     }
   }
+
 
 
   Future<void> updateProductionStage(ProductionStage stage) async {
@@ -125,6 +127,9 @@ class ProductionStageService {
   //cambia estado a "COMPLETADO" y pasa la fecha de finalización
   Future<void> updateProductionStageToCompleted(int stageId, String fechaFinalizacion) async {
     final token = await SharedPreferencesHelper.getToken();
+    print('ID ORDEN: $stageId');
+    print('FECHA: $fechaFinalizacion');
+
     final response = await http.put(
       Uri.parse('$baseUrl/etapas-produccion/completar/$stageId'),
       headers: {
@@ -133,14 +138,16 @@ class ProductionStageService {
       },
       body: json.encode({
         'estado': 'COMPLETADO',
-        'fechaFinalizacion': fechaFinalizacion,
+        'fechaFin': fechaFinalizacion,
       }),
     );
 
     if (response.statusCode != 200) {
+      print('Error: ${response.statusCode} - ${response.body}');
       throw Exception('Error al cambiar estado a COMPLETADO');
     }
   }
+
 
 
 }

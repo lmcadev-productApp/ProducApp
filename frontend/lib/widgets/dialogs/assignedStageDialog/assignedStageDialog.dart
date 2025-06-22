@@ -97,7 +97,7 @@ Future<void> mostrarFormularioInformacionEtapaAsignada(
                           : () async {
 
                         try {
-                          await ProductionStageService().updateProductionStageToInProgress(etapa.workOrders.id!);
+                          await ProductionStageService().updateProductionStageToInProgress(etapa.id!);
 
                           if (!context.mounted) return;
                           Navigator.pop(context);
@@ -123,7 +123,7 @@ Future<void> mostrarFormularioInformacionEtapaAsignada(
                         final fechaHoy = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
                         try {
-                          await ProductionStageService().updateProductionStageToCompleted(etapa.workOrders.id!, fechaHoy);
+                          await ProductionStageService().updateProductionStageToCompleted(etapa.id!, fechaHoy);
 
                           if (!context.mounted) return;
                           Navigator.pop(context);
