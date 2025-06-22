@@ -133,7 +133,7 @@ Future<void> mostrarFormularioAsignarEtapasAOperario(
                           await ProductionStageService().asignarOperario(
                             etapa.id!,
                             seleccionado!.id!,
-                            "EN_PROCESO",
+                            "ASIGNADA",
                             fechaHoy,
                           );
 

@@ -7,7 +7,7 @@ import 'package:frontend/utils/constants.dart';
 
 class ProductionStageService {
 
-
+// Obtiene todas las etapas de producción asignadas
   Future<List<ProductionStage>> getAllOrdersPerStages() async {
     final token = await SharedPreferencesHelper.getToken();
     final response = await http.get(

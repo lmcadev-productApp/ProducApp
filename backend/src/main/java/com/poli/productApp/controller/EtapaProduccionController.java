@@ -143,7 +143,7 @@ public class EtapaProduccionController {
         return ResponseEntity.ok(etapas);
     }
 
-    //consulta todas las etapas de produccion filtadas por estado PENDIENTE
+    //consulta todas las etapas de produccion filtadas por estado ASIGNADA
     @GetMapping("/por-estado/{estado}")
     public ResponseEntity<List<EtapaProduccion>> getEtapasPorEstado(@PathVariable String estado) {
         try {
@@ -217,7 +217,7 @@ public class EtapaProduccionController {
     public ResponseEntity<List<EtapaProduccion>> getEtapasPorUsuarioYEstado(@PathVariable Long usuarioId) {
         try {
             // Convierte el String a Enum
-            Estado estadoEnum = Estado.EN_PROCESO;
+            Estado estadoEnum = Estado.ASIGNADA;
             // Busca las etapas por usuario y estado en el repositorio
             List<EtapaProduccion> etapas = etapaProduccionRepository.findByUsuarioIdAndEstado(usuarioId, estadoEnum);
             return ResponseEntity.ok(etapas);
