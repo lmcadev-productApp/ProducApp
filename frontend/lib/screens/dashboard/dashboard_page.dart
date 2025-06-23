@@ -163,7 +163,9 @@ class _EstadoDashboard extends State<Dashboard> {
 
     switch (_rol.toUpperCase()) {
       case 'ADMINISTRADOR':
-        elementosFiltrados = todosLosElementos;
+        elementosFiltrados = todosLosElementos
+            .where((item) => item.title != 'Etapas asignadas')
+            .toList();
         break;
       case 'SUPERVISOR':
         elementosFiltrados = todosLosElementos
@@ -172,7 +174,10 @@ class _EstadoDashboard extends State<Dashboard> {
         break;
       case 'OPERARIO':
         elementosFiltrados = todosLosElementos
-            .where((item) => item.title == 'Ayuda' || item.title == 'Perfil')
+            .where((item) =>
+                item.title == 'Ayuda' ||
+                item.title == 'Perfil' ||
+                item.title == 'Etapas asignadas')
             .toList();
         break;
       default:
@@ -206,5 +211,3 @@ class _EstadoDashboard extends State<Dashboard> {
     );
   }
 }
-
-

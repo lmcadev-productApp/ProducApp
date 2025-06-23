@@ -1,17 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/helper/snackbar_helper.dart';
 import 'package:frontend/models/users/user.dart';
 import 'package:frontend/services/users/user_service.dart';
 import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/utils/app_text_styles.dart';
 import 'package:frontend/widgets/section/section_header.dart';
+import 'package:frontend/widgets/dialogs/admin/user/edit_user_dialog.dart';
 
-class UserProfileScreen extends StatelessWidget {
+class UserProfileScreen extends StatefulWidget {
+  @override
+  _UserProfileScreenState createState() => _UserProfileScreenState();
+}
+
+class _UserProfileScreenState extends State<UserProfileScreen> {
   final UserService userService = UserService();
+  late Future<User?> _usuario;
+
+  @override
+  void initState() {
+    super.initState();
+    _usuario = userService.getUsuarioActual();
+  }
+
+  void _recargarUsuario() {
+    setState(() {
+      _usuario = userService.getUsuarioActual();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<User?>(
-      future: userService.getUsuarioActual(),
+      future: _usuario,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
@@ -36,13 +56,13 @@ class UserProfileScreen extends StatelessWidget {
           titulo: 'Perfil de Usuario',
           colorHeader: AppColors.azulIntermedio,
           mostrarBack: true,
-          contenidoPersonalizado: _buildProfileContent(user),
+          contenidoPersonalizado: _buildProfileContent(context, user),
         );
       },
     );
   }
 
-  Widget _buildProfileContent(User user) {
+  Widget _buildProfileContent(BuildContext context, User user) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -57,6 +77,7 @@ class UserProfileScreen extends StatelessWidget {
         children: [
           // Header
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: Text(user.nombre, style: AppTextStyles.subtitulo),
@@ -82,17 +103,33 @@ class UserProfileScreen extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          // Info Personal
-          const Text('INFORMACIÓN PERSONAL',
-              style: AppTextStyles.textoSecundarioTitulos),
+          // Título y botón editar
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'INFORMACIÓN PERSONAL',
+                style: AppTextStyles.textoSecundarioTitulos,
+              ),
+              IconButton(
+                icon: const Icon(Icons.edit, color: Colors.blue),
+                onPressed: () {
+                  mostrarEditarUsuario(context, user, () {
+                    showCustomSnackBar(context, 'Perfil editado correctamente');
+                    _recargarUsuario(); // Aquí recargas los datos
+                  });
+                },
+              ),
+            ],
+          ),
           const SizedBox(height: 16),
+
           _info(Icons.email, user.correo),
           _info(Icons.phone, user.telefono),
           _info(Icons.location_on, user.direccion),
           _info(Icons.badge, user.id.toString()),
           const SizedBox(height: 24),
 
-          // Especialidad
           const Text('ESPECIALIDAD',
               style: AppTextStyles.textoSecundarioTitulos),
           const SizedBox(height: 16),
@@ -106,21 +143,18 @@ class UserProfileScreen extends StatelessWidget {
                   style: AppTextStyles.textoSecundario),
           const SizedBox(height: 24),
 
-          // Acceso
           const Text('ACCESO', style: AppTextStyles.textoSecundarioTitulos),
           const SizedBox(height: 16),
           _section(Colors.red[50]!, '••••••••••', 'Contraseña protegida'),
           const SizedBox(height: 24),
 
-          // Botones
           Row(
             children: [
               Expanded(child: _card('ARL', user.arl ?? 'No asignado')),
               const SizedBox(width: 16),
               Expanded(
-                child:
-                    _card('SEGURO SOCIAL', user.suguroSocial ?? 'No asignado'),
-              ),
+                  child: _card(
+                      'SEGURO SOCIAL', user.suguroSocial ?? 'No asignado')),
             ],
           ),
         ],
