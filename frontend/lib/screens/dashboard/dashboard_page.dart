@@ -10,8 +10,8 @@ import 'package:frontend/screens/login/login_page.dart';
 import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/widgets/dashboard/dashboard_grid.dart';
 import 'package:frontend/widgets/section/section_header.dart';
-
 import '../assingToUser/assingToUser.dart';
+import 'package:frontend/screens/stageList/stageList.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -66,6 +66,13 @@ class _EstadoDashboard extends State<Dashboard> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => AssingToUser()),
+    );
+  }
+
+  void _navegarAEtapasAsignadas() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => StageList()),
     );
   }
 
@@ -132,6 +139,12 @@ class _EstadoDashboard extends State<Dashboard> {
         iconColor: AppColors.azulLogoPrincipal,
       ),
       DashboardItem(
+        icon: Icons.checklist,
+        title: 'Etapas asignadas',
+        onTap: _navegarAEtapasAsignadas,
+        iconColor: AppColors.azulLogoPrincipal,
+      ),
+      DashboardItem(
         icon: Icons.account_circle,
         title: 'Perfil',
         onTap: _navegarAlPerfil,
@@ -193,3 +206,5 @@ class _EstadoDashboard extends State<Dashboard> {
     );
   }
 }
+
+

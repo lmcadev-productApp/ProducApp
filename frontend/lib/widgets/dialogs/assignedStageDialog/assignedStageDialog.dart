@@ -10,7 +10,7 @@ import 'package:frontend/utils/role_color.dart';
 import 'package:frontend/widgets/buttons/custom-button.dart';
 import 'package:intl/intl.dart';
 
-Future<void> mostrarFormularioAsignarEtapasAOperario(
+Future<void> mostrarFormularioInformacionEtapaAsignada(
     BuildContext context,
     ProductionStage etapa,
     ) async {
@@ -38,7 +38,7 @@ Future<void> mostrarFormularioAsignarEtapasAOperario(
                 children: [
                   Expanded(
                     child: Text(
-                      'Asignar operario • Orden #${etapa.workOrders.id}',
+                      'Etapa #${etapa.workOrders.id}',
                       style: AppTextStyles.tituloHeader.copyWith(color: Colors.white),
                     ),
                   ),
@@ -51,57 +51,35 @@ Future<void> mostrarFormularioAsignarEtapasAOperario(
               ),
             ),
 
-            // ───── Selector de operario ─────
+            // ───── Selector de operaciones ─────
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
-              child: DropdownButtonFormField<User>(
-                decoration: InputDecoration(
-                  labelText: 'Selecciona un operario',
-                  labelStyle: AppTextStyles.inputLabel,
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.azulIntermedio, width: 1.4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Descripción de la orden de trabajo:',
+                    style: AppTextStyles.inputLabel,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: AppColors.azulIntermedio, width: 2),
-                  ),
-                ),
-                dropdownColor: Colors.white,
-                isExpanded: true,
-                value: seleccionado,
-                items: operarios.map((u) {
-                  final especialidad = u.especialidad?.nombre ?? 'Sin especialidad';
-                  final color = getEspecialidadColor(especialidad);
-
-                  return DropdownMenuItem<User>(
-                    value: u,
-                    child: ListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      leading: CircleAvatar(
-                        backgroundColor: color,
-                        child: Text(
-                          especialidad.isNotEmpty ? especialidad[0].toUpperCase() : '?',
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      title: Text(u.nombre, style: AppTextStyles.inputText),
-                      subtitle: Text(especialidad, style: AppTextStyles.inputHint),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: AppColors.azulIntermedio, width: 1.4),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  );
-                }).toList(),
-                selectedItemBuilder: (context) {
-                  return operarios.map((u) {
-                    return Text(u.nombre, style: AppTextStyles.inputText);
-                  }).toList();
-                },
-                onChanged: (u) => setState(() => seleccionado = u),
+                    child: Text(
+                      '${etapa.workOrders.descripcion}',
+                      style: AppTextStyles.inputText,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                ],
               ),
             ),
+
 
             const SizedBox(height: 28),
 
@@ -112,9 +90,24 @@ Future<void> mostrarFormularioAsignarEtapasAOperario(
                 children: [
                   Expanded(
                     child: PrimaryButton(
-                      text: 'Cancelar',
-                      backgroundColor: AppColors.azulIntermedio,
-                      onPressed: () => Navigator.pop(context),
+                      text: 'Iniciar',
+                      isEnabled:  true,
+                      onPressed:  false
+                          ? null
+                          : () async {
+
+                        try {
+                          await ProductionStageService().updateProductionStageToInProgress(etapa.id!);
+
+                          if (!context.mounted) return;
+                          Navigator.pop(context);
+                          showCustomSnackBar(context, '✅ Etapa iniciada');
+                        } catch (e) {
+                          if (!context.mounted) return;
+                          Navigator.pop(context);
+                          showCustomSnackBar(context, '❌ Error al iniciar etapa');
+                        }
+                      },
                       fontSize: 16,
                       width: double.infinity,
                     ),
@@ -122,28 +115,23 @@ Future<void> mostrarFormularioAsignarEtapasAOperario(
                   const SizedBox(width: 12),
                   Expanded(
                     child: PrimaryButton(
-                      text: 'Asignar',
-                      isEnabled: seleccionado != null,
-                      onPressed: seleccionado == null
+                      text: 'Completar',
+                      isEnabled: true,
+                      onPressed: false
                           ? null
                           : () async {
                         final fechaHoy = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
                         try {
-                          await ProductionStageService().asignarOperario(
-                            etapa.id!,
-                            seleccionado!.id!,
-                            "ASIGNADA",
-                            fechaHoy,
-                          );
+                          await ProductionStageService().updateProductionStageToCompleted(etapa.id!, fechaHoy);
 
                           if (!context.mounted) return;
                           Navigator.pop(context);
-                          showCustomSnackBar(context, '✅ Operario asignado');
+                          showCustomSnackBar(context, '✅ Etapa completada');
                         } catch (e) {
                           if (!context.mounted) return;
                           Navigator.pop(context);
-                          showCustomSnackBar(context, '❌ Error al asignar operario');
+                          showCustomSnackBar(context, '❌ Error al completar etapa');
                         }
                       },
                       fontSize: 16,

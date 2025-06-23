@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/productionStages/productionStages.dart';
-import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/widgets/section/section_header.dart';
 import 'package:frontend/widgets/lists/assingStageToUserList.dart';
 import 'package:frontend/widgets/searches/search_input.dart';
 import 'package:frontend/services/productionStages/productionStages_Service.dart';
-
-import '../../widgets/dialogs/admin/productionStages/assign_user_dialog.dart';
-
+import '../../widgets/dialogs/assignedStageDialog/assignedStageDialog.dart';
 
 
 
 
-class AssingToUser extends StatefulWidget {
+
+class StageList extends StatefulWidget {
   @override
   _AdminOrdersPhaseStateManagement createState() =>
       _AdminOrdersPhaseStateManagement();
 }
 
-class _AdminOrdersPhaseStateManagement extends State<AssingToUser> {
+class _AdminOrdersPhaseStateManagement extends State<StageList> {
   final ProductionStageService productionStageService = ProductionStageService();
   List<ProductionStage> ordenes = [];
   List<ProductionStage> ordenesFiltradas = [];
@@ -36,7 +34,7 @@ class _AdminOrdersPhaseStateManagement extends State<AssingToUser> {
 
   void cargarOrdenes() async {
     try {
-      List<ProductionStage> lista = await productionStageService.getAllOrdersPerStages();
+      List<ProductionStage> lista = await productionStageService.getStagesByUserAndStatus();
       setState(() {
         ordenes = lista;
         ordenesFiltradas = lista;
@@ -70,11 +68,11 @@ class _AdminOrdersPhaseStateManagement extends State<AssingToUser> {
     super.dispose();
   }
 
+  // Muestra el formulario para asignar operarios a las etapas de producción
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-      titulo: 'Asignar Operario a etapas de Producción',
-      colorHeader: AppColors.azulIntermedio,
+      titulo: 'Etapas Asignadas',
       contenidoPersonalizado: Column(
         children: [
           SearchInput(
@@ -85,16 +83,19 @@ class _AdminOrdersPhaseStateManagement extends State<AssingToUser> {
           Expanded(
             child: ListOrder(
               productionStage: ordenesFiltradas,
-              mostrarAsignarUsuario: true,
-              onAsignarOperario: (etapa) async {
-                await mostrarFormularioAsignarEtapasAOperario(context, etapa);
+              onTap: (etapa) async {
+                // Aquí puedes mostrar el formulario para asignar usuario
+                await mostrarFormularioInformacionEtapaAsignada(context, etapa);
+
+                // Si quieres recargar al finalizar
                 cargarOrdenes();
               },
+              mostrarAsignarUsuario: true,
             ),
           ),
         ],
       ),
-
+      colorHeader: const Color(0xFF4A90E2),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/orders/order.dart';
 import 'package:frontend/utils/AppColors.dart';
+import 'package:frontend/utils/role_color.dart';
 import 'package:frontend/widgets/dialogs/admin/order/assign_stages_dialog.dart'
     show mostrarFormularioAsignarEtapas;
 
@@ -10,6 +11,7 @@ class ListOrder extends StatelessWidget {
   final Function(WorkOrders)? onLongPress;
   final Function(WorkOrders)? onEdit;
   final Function(WorkOrders)? onDelete;
+  final Function(WorkOrders)? onAsignarOperario;
   final bool mostrarAsignarEtapas;
   final Function(WorkOrders)? onAsignacionExitosa;
   final VoidCallback? onEdicionExitosa;
@@ -18,11 +20,12 @@ class ListOrder extends StatelessWidget {
   const ListOrder({
     Key? key,
     required this.orders,
-    required this.onTap,
+    this.onTap,
     this.onLongPress,
     this.onEdit,
     this.onDelete,
     this.mostrarAsignarEtapas = false,
+    this.onAsignarOperario,
     this.onAsignacionExitosa,
     this.onEdicionExitosa,
   }) : super(key: key);
@@ -134,6 +137,14 @@ class ListOrder extends StatelessWidget {
                         },
                         tooltip: 'Eliminar orden',
                       ),
+                    if (onAsignarOperario != null)
+                      IconButton(
+                        icon: const Icon(Icons.assignment_turned_in_outlined, color: Colors.red),
+                        onPressed: () async {
+                          onAsignarOperario!(order);
+                        },
+                        tooltip: 'Asignar Operario',
+                      ),
                   ],
                 ),
               ],
@@ -182,6 +193,7 @@ class ListOrder extends StatelessWidget {
                 ),
               ),
             ]
+
           ],
         ),
       ),
@@ -232,21 +244,8 @@ class ListOrder extends StatelessWidget {
     );
   }
 
-  Widget _buildEstadoBadge(String estado) {
-    Color color;
-    switch (estado.toUpperCase()) {
-      case 'ACTIVO':
-        color = Colors.green;
-        break;
-      case 'INACTIVO':
-        color = Colors.red;
-        break;
-      case 'PENDIENTE':
-        color = Colors.orange;
-        break;
-      default:
-        color = Colors.grey;
-    }
+  Widget _buildEstadoBadge(String? estado) {
+    final Color color = getEstadoColor(estado);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -256,7 +255,7 @@ class ListOrder extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
-        estado,
+        estado ?? 'SIN ESTADO',
         style: TextStyle(
           fontSize: 13,
           color: color,
@@ -265,7 +264,6 @@ class ListOrder extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildOrderId(WorkOrders order) {
     return Align(

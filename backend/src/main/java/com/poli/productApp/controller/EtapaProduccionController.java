@@ -12,10 +12,13 @@ import com.poli.productApp.repository.UsuarioRepository;
 
 import com.poli.productApp.service.OrdenTrabajoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -120,7 +123,12 @@ public class EtapaProduccionController {
         }
     }
 
-
+//get all etapas de produccion
+    @GetMapping("/")
+    public ResponseEntity<List<EtapaProduccion>> getAllEtapasProduccion() {
+        List<EtapaProduccion> etapas = etapaProduccionRepository.findAll();
+        return ResponseEntity.ok(etapas);
+    }
 
       // Consultar por orden de trabajo
     @GetMapping("/por-orden/{ordenId}")
@@ -136,7 +144,7 @@ public class EtapaProduccionController {
         return ResponseEntity.ok(etapas);
     }
 
-    //consulta todas las etapas de produccion filtadas por estado PENDIENTE
+    //consulta todas las etapas de produccion filtadas por estado ASIGNADA
     @GetMapping("/por-estado/{estado}")
     public ResponseEntity<List<EtapaProduccion>> getEtapasPorEstado(@PathVariable String estado) {
         try {
@@ -149,4 +157,150 @@ public class EtapaProduccionController {
             return ResponseEntity.badRequest().body(null); // Estado inválido
         }
     }
+
+    //asignar operarios a etapas de produccion por id
+    @PutMapping("/asignar-operario/{etapaId}")
+    public ResponseEntity<?> asignarOperarioEtapa(@PathVariable Long etapaId, @RequestBody Map<String, Object> body) {
+
+
+        System.out.println("Datos: " + body + " Etapa ID: " + etapaId);
+
+        if (!body.containsKey("usuarioId")) {
+            return ResponseEntity.badRequest().body("Falta el ID del usuario a asignar");
+        }
+
+        Long usuarioId = Long.valueOf(body.get("usuarioId").toString());
+        String estadoStr = (String) body.get("estado");
+        String fechaInicioStr = (String) body.get("fechaInicio");
+
+        Optional<EtapaProduccion> etapaOpt = etapaProduccionRepository.findById(etapaId);
+        Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+
+        System.out.println("Etapa ID: " + etapaId);
+        System.out.println("Usuario ID: " + usuarioId);
+        System.out.println("Etapa encontrada: " + etapaOpt);
+        System.out.println("Usuario encontrado: " + usuarioOpt);
+
+
+        if (etapaOpt.isEmpty() || usuarioOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Etapa o usuario no encontrado");
+        }
+
+        EtapaProduccion etapa = etapaOpt.get();
+        etapa.setUsuario(usuarioOpt.get());
+
+// Parsear y setear estado
+        if (estadoStr != null) {
+            try {
+                etapa.setEstado(Estado.valueOf(estadoStr.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().body("Estado inválido");
+            }
+        }
+
+// Parsear y setear fecha
+        if (fechaInicioStr != null) {
+            try {
+                LocalDate localDate = LocalDate.parse(fechaInicioStr); // formato ISO
+                etapa.setFechaInicio(Date.valueOf(localDate));
+            } catch (DateTimeParseException e) {
+                return ResponseEntity.badRequest().body("Formato de fecha inválido. Usa yyyy-MM-dd.");
+            }
+        }
+
+        etapaProduccionRepository.save(etapa);
+        return ResponseEntity.ok("Operario asignado correctamente");
+
+    }
+
+    //etapa de produccion por id de usuario y estado
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<List<EtapaProduccion>> getEtapasPorUsuarioYMultiplesEstados(@PathVariable Long usuarioId) {
+        try {
+            List<Estado> estados = List.of(Estado.ASIGNADA, Estado.EN_PROCESO);
+            System.out.println("Consultando etapas para usuario: " + usuarioId + " con estados: " + estados);
+            List<EtapaProduccion> etapas = etapaProduccionRepository.findByUsuarioIdAndEstadoIn(usuarioId, estados);
+            System.out.println("Etapas encontradas: " + etapas.size());
+            return ResponseEntity.ok(etapas);
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprime la excepción si ocurre
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+
+    //cambia estado de etapa de produccion por id
+    @PutMapping("/cambiar-estado/{etapaId}")
+    public ResponseEntity<?> cambiarEstadoEtapa(@PathVariable Long etapaId, @RequestBody Map<String, Object> body) {
+        if (!body.containsKey("estado")) {
+            return ResponseEntity.badRequest().body("Falta el estado a cambiar");
+        }
+
+        String estadoStr = (String) body.get("estado");
+        Optional<EtapaProduccion> etapaOpt = etapaProduccionRepository.findById(etapaId);
+
+        if (etapaOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Etapa no encontrada");
+        }
+
+        EtapaProduccion etapa = etapaOpt.get();
+
+        try {
+            Estado nuevoEstado = Estado.valueOf(estadoStr.toUpperCase());
+            etapa.setEstado(nuevoEstado);
+            etapaProduccionRepository.save(etapa);
+            return ResponseEntity.ok("Estado cambiado correctamente");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Estado inválido");
+        }
+    }
+
+    //cambia estado a "COMPLETADO" de etapa de produccion por id y pasa fecha de finalización
+    @PutMapping("/completar/{etapaId}")
+    public ResponseEntity<?> completarEstado(@PathVariable Long etapaId, @RequestBody Map<String, Object> body) {
+        if (!body.containsKey("estado")) {
+            return ResponseEntity.badRequest().body("Falta el estado a cambiar");
+        }
+        if (!body.containsKey("fechaFin")) {
+            return ResponseEntity.badRequest().body("Falta la fecha de finalización");
+        }
+
+        String estadoStr = (String) body.get("estado");
+        String fechaFinStr = (String) body.get("fechaFin");
+
+        Optional<EtapaProduccion> etapaOpt = etapaProduccionRepository.findById(etapaId);
+        if (etapaOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Etapa no encontrada");
+        }
+
+        try {
+            Estado nuevoEstado = Estado.valueOf(estadoStr.toUpperCase());
+            Date fechaFin = Date.valueOf(fechaFinStr); // formato: yyyy-MM-dd
+
+            EtapaProduccion etapa = etapaOpt.get();
+            etapa.setEstado(nuevoEstado);
+            etapa.setFechaFin(fechaFin);
+            etapaProduccionRepository.save(etapa);
+
+            // Verificar si todas las etapas de la orden están COMPLETADAS
+            OrdenTrabajo orden = etapa.getOrdenTrabajo();
+            List<EtapaProduccion> etapasDeOrden = etapaProduccionRepository.findByOrdenTrabajo(orden);
+
+            boolean todasCompletadas = etapasDeOrden.stream()
+                    .allMatch(e -> e.getEstado() == Estado.COMPLETADO);
+
+            if (todasCompletadas) {
+                orden.setEstado(Estado.COMPLETADO);
+                ordenTrabajoRepository.save(orden);
+            }
+
+            return ResponseEntity.ok("Estado cambiado correctamente");
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Estado o fecha inválidos: " + e.getMessage());
+        }
+    }
+
+
+
 }

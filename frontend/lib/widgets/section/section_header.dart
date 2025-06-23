@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/productionStages/productionStages.dart';
 import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/utils/app_text_styles.dart';
 
@@ -52,6 +53,7 @@ class BaseScreen<T> extends StatelessWidget {
   void _handleEditRole(BuildContext context, T item) {
     onEditRole?.call(item);
   }
+
 
 
   @override
@@ -116,6 +118,7 @@ class BaseScreen<T> extends StatelessWidget {
                             tooltip: 'Eliminar',
                             onPressed: () => _handleDelete(context, item),
                           ),
+
                         ],
                       ),
                     ),

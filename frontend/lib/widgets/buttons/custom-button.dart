@@ -3,18 +3,18 @@ import 'package:frontend/utils/AppColors.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;   //  👈  ahora puede ser null
   final bool isEnabled;
   final double fontSize;
   final FontWeight fontWeight;
   final double verticalPadding;
   final double horizontalPadding;
   final Color? backgroundColor;
-  final double? width;   // nuevo
-  final double? height;  // nuevo
+  final double? width;
+  final double? height;
 
   const PrimaryButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.isEnabled = true,
@@ -23,9 +23,9 @@ class PrimaryButton extends StatelessWidget {
     this.verticalPadding = 14,
     this.horizontalPadding = 32,
     this.backgroundColor,
-    this.width,   // inicializa
-    this.height,  // inicializa
-  }) : super(key: key);
+    this.width,
+    this.height,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class PrimaryButton extends StatelessWidget {
       width: width,
       height: height,
       child: ElevatedButton(
-        onPressed: isEnabled ? onPressed : null,
+        onPressed: isEnabled ? onPressed : null,   //  👈  Flutter aceptará null
         style: ElevatedButton.styleFrom(
           backgroundColor: isEnabled
               ? (backgroundColor ?? AppColors.azulIntermedio)

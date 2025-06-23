@@ -2,6 +2,7 @@ package com.poli.productApp.model.ENUMS;
 
 public enum Estado {
     PENDIENTE("Pediente"),
+    ASIGNADA("Asignada"),
     EN_PROCESO("En proceso"),
     COMPLETADO("Completado"),
     CANCELADO("Cancelado"),

@@ -86,6 +86,9 @@ class UserService {
     final jsonBody = json.encode(user.toJson());
     final token = await SharedPreferencesHelper.getToken();
 
+    print('📤 Enviando PUT a: $baseUrl/usuarios/$id');
+    print('🧾 Body: $jsonBody');
+
     final response = await http.put(
       Uri.parse('$baseUrl/usuarios/$id'),
       headers: {
@@ -95,12 +98,15 @@ class UserService {
       body: jsonBody,
     );
 
+    print('⬅️ Respuesta (${response.statusCode}): ${response.body}');
+
     if (response.statusCode == 200) {
       return response.body;
     } else {
-      throw Exception('Error al actualizar el usuario');
+      throw Exception('Error al actualizar el usuario: ${response.body}');
     }
   }
+
 
   /// DELETE Eliminar un usuario
   Future<String> deleteUser(int id) async {
