@@ -38,19 +38,19 @@ Color getStageColor(String? etapa) {
 Color getEstadoColor(String? estado) {
   switch (estado?.toUpperCase()) {
     case 'PENDIENTE':
-      return Colors.orange;            // ⏳
+      return Colors.orange;
+    case 'ASIGNADA':
+      return Colors.pinkAccent;
     case 'EN_PROCESO':
-      return Colors.blue;              // 🔄
-    case 'FINALIZADO':
-      return Colors.green;             // ✅
-    case 'CANCELADO':
-      return Colors.red;               // ❌
-    case 'ACTIVO':                     // ← para ordenes
+      return Colors.blue;
+    case 'COMPLETADO':
       return Colors.green;
-    case 'INACTIVO':
+    case 'RECHAZADO':
       return Colors.red;
+    case 'PAUSADO':
+      return Colors.yellowAccent;
     default:
-      return Colors.grey;              // fallback
+      return Colors.grey;
   }
 }
 

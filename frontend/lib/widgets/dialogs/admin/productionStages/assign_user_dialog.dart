@@ -27,7 +27,6 @@ Future<void> mostrarFormularioAsignarEtapasAOperario(
         builder: (context, setState) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // ───── Encabezado ─────
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(

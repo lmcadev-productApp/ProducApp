@@ -39,6 +39,7 @@ Future<void> mostrarFormularioInformacionEtapaAsignada(
                   Expanded(
                     child: Text(
                       'Etapa #${etapa.workOrders.id}',
+
                       style: AppTextStyles.tituloHeader.copyWith(color: Colors.white),
                     ),
                   ),

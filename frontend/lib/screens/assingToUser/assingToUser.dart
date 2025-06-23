@@ -85,6 +85,7 @@ class _AdminOrdersPhaseStateManagement extends State<AssingToUser> {
           Expanded(
             child: ListOrder(
               productionStage: ordenesFiltradas,
+              mostrarAsignarEtapa: false,
               mostrarAsignarUsuario: true,
               onAsignarOperario: (etapa) async {
                 await mostrarFormularioAsignarEtapasAOperario(context, etapa);

@@ -10,7 +10,9 @@ class ListOrder extends StatelessWidget {
   final Function(ProductionStage)? onTap;
   final Function(ProductionStage)? onLongPress;
   final bool mostrarAsignarUsuario;
+  final bool mostrarAsignarEtapa;
   final Function(ProductionStage)? onAsignarOperario;
+  final Function(ProductionStage)? onAsignarEtapas;
   final Function(ProductionStage)? onAsignacionExitosa;
   final VoidCallback? onEdicionExitosa;
 
@@ -21,10 +23,13 @@ class ListOrder extends StatelessWidget {
     this.onTap,
     this.onLongPress,
     this.mostrarAsignarUsuario = false,
+    this.mostrarAsignarEtapa = false,
     this.onAsignarOperario,
+    this.onAsignarEtapas,
     this.onAsignacionExitosa,
     this.onEdicionExitosa,
   }) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +72,7 @@ class ListOrder extends StatelessWidget {
             _buildEstado(order),
             const SizedBox(height: 6),
             _buildUserName(order),
-            const SizedBox(height: 4),
+            const SizedBox(height: 6),
             _buildOrderId(order),
           ],
         ),
@@ -161,6 +166,31 @@ class ListOrder extends StatelessWidget {
     );
   }
 
+  Widget _buildBotonAsignarEtapa(ProductionStage etapa) {
+    if (!mostrarAsignarEtapa || onAsignarEtapas == null) {
+      return const SizedBox.shrink(); // No mostrar nada si no se permite asignar
+    }
+
+    return TextButton.icon(
+      icon: const Icon(
+        Icons.playlist_add_check_circle_outlined, // ícono claro para "etapa"
+        color: AppColors.negro,
+      ),
+      label: const Text(
+        'Asignar etapa',
+        style: TextStyle(color: AppColors.negro),
+      ),
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        backgroundColor: AppColors.azulClaroFondo,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: const BorderSide(color: AppColors.negro),
+        ),
+      ),
+      onPressed: () => onAsignarEtapas!(etapa),
+    );
+  }
 
   Widget _buildUserName(ProductionStage productionStage) {
     final String estado = productionStage.estado ?? 'Sin estado';
@@ -169,6 +199,8 @@ class ListOrder extends StatelessWidget {
       children: [
         buildEstadoBadge(estado), // el badge bonito
         const Spacer(), // separador flexible
+        if (mostrarAsignarEtapa && onAsignarEtapas != null)
+          _buildBotonAsignarEtapa(productionStage),
         if (mostrarAsignarUsuario && onAsignarOperario != null)
           TextButton.icon(
             icon: const Icon(

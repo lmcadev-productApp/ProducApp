@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/productionStages/productionStages.dart';
+import 'package:frontend/utils/AppColors.dart';
 import 'package:frontend/widgets/section/section_header.dart';
 import 'package:frontend/widgets/lists/assingStageToUserList.dart';
 import 'package:frontend/widgets/searches/search_input.dart';
 import 'package:frontend/services/productionStages/productionStages_Service.dart';
 import '../../widgets/dialogs/assignedStageDialog/assignedStageDialog.dart';
-
 
 
 
@@ -83,19 +83,21 @@ class _AdminOrdersPhaseStateManagement extends State<StageList> {
           Expanded(
             child: ListOrder(
               productionStage: ordenesFiltradas,
-              onTap: (etapa) async {
+              mostrarAsignarUsuario: false,
+              mostrarAsignarEtapa: true,
+              onAsignarEtapas: (etapa) async {
                 // Aquí puedes mostrar el formulario para asignar usuario
                 await mostrarFormularioInformacionEtapaAsignada(context, etapa);
 
                 // Si quieres recargar al finalizar
                 cargarOrdenes();
               },
-              mostrarAsignarUsuario: true,
+
             ),
           ),
         ],
       ),
-      colorHeader: const Color(0xFF4A90E2),
+      colorHeader: AppColors.azulIntermedio,
     );
   }
 }
