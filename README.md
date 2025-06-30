@@ -153,8 +153,6 @@ En el frontend, se usan pruebas con flutter_test.
 - Cardenas Jaramillo Yuliana Aide
 - Castañeda Arciniegas Luis Miguel
 - Cortes Cubides Julian David
-- Cortes Guayara Juan Felipe
-- Cárdenas Peláez William Felipe
 
 ---
 
